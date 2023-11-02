@@ -7,7 +7,7 @@ import java.util.Objects;
  * <p>{@link User#id} уникальный идентификатор пользователя</p>
  * <p>{@link User#name} имя</p>
  * <p>{@link User#settingReminders} флаг на разрешение пользователя присылать напоминание о предстоящем мероприятии</p>
- * <p>{@link User#randomExposureSetting} флаг на разешение расслыки о случайном экспонате</p>
+ * <p>{@link User#randomExhibitSetting} флаг на разешение расслыки о случайном экспонате</p>
  *
  */
 public class User {
@@ -15,13 +15,13 @@ public class User {
     private String name;
 
     private boolean settingReminders;
-    private boolean randomExposureSetting;
+    private boolean randomExhibitSetting;
 
-    public User(Long id, String name, boolean settingReminders, boolean randomExposureSetting) {
+    public User(Long id, String name, boolean settingReminders, boolean randomExhibitSetting) {
         this.id = id;
         this.name = name;
         this.settingReminders = settingReminders;
-        this.randomExposureSetting = randomExposureSetting;
+        this.randomExhibitSetting = randomExhibitSetting;
     }
 
     public User() {
@@ -39,8 +39,8 @@ public class User {
         return settingReminders;
     }
 
-    public boolean isRandomExposureSetting() {
-        return randomExposureSetting;
+    public boolean isRandomExhibitSetting() {
+        return randomExhibitSetting;
     }
 
     @Override
@@ -49,7 +49,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", settingReminders=" + settingReminders +
-                ", randomExposureSetting=" + randomExposureSetting +
+                ", randomExposureSetting=" + randomExhibitSetting +
                 '}';
     }
 
@@ -58,11 +58,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return settingReminders == user.settingReminders && randomExposureSetting == user.randomExposureSetting && Objects.equals(id, user.id) && Objects.equals(name, user.name);
+        return settingReminders == user.settingReminders && randomExhibitSetting == user.randomExhibitSetting && Objects.equals(id, user.id) && Objects.equals(name, user.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, settingReminders, randomExposureSetting);
+        return Objects.hash(id, name, settingReminders, randomExhibitSetting);
     }
 }
