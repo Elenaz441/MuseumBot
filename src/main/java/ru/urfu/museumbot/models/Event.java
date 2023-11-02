@@ -1,5 +1,6 @@
 package ru.urfu.museumbot.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -58,14 +59,9 @@ public class Event {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", date=" + date +
-                ", duration=" + duration +
-                ", address='" + address + '\'' +
-                '}';
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy");
+        return String.format("%s\n%s\nДата: %s\nДлительность: %s\nАдрес: %s", title, description,
+                dateFormat.format(date), duration, address);
     }
 
 
