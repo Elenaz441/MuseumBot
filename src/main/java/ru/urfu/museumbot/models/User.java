@@ -7,7 +7,7 @@ import java.util.Objects;
  * <p>{@link User#id} уникальный идентификатор пользователя</p>
  * <p>{@link User#name} имя</p>
  * <p>{@link User#settingReminders} флаг на разрешение пользователя присылать напоминание о предстоящем мероприятии</p>
- * <p>{@link User#randomExposureSetting} флаг на разешение расслыки о случайном мероприятии</p>
+ * <p>{@link User#randomExposureSetting} флаг на разешение расслыки о случайном экспонате</p>
  *
  */
 public class User {
