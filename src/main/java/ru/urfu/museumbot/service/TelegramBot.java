@@ -11,7 +11,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.urfu.museumbot.models.Event;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +25,7 @@ import java.util.List;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
+    public static final int AMOUNT_TO_ADD_DATE = 7;
     final BotConfig config;
 
     final EventController eventData;
@@ -29,10 +34,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.config = config;
         this.eventData = eventData;
         List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand("/start", "get started"));
-        listOfCommands.add(new BotCommand("/help", "need help?"));
-//        listOfCommands.add(new BotCommand("/viewUpcomingEvents", "view Upcoming Events"));
-//        listOfCommands.add(new BotCommand("/signUpForEvent", "sing Up For Event"));
+        listOfCommands.add(new BotCommand("/start", "Старт"));
+        listOfCommands.add(new BotCommand("/help", "Нужна помощь?"));
+        listOfCommands.add(new BotCommand("/view_upcoming_events", "Посмотреть ближайшие мероприятия"));
+        listOfCommands.add(new BotCommand("/sign_up_for_event", "Зарегистрироваться на мероприятие"));
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
@@ -67,22 +72,33 @@ public class TelegramBot extends TelegramLongPollingBot {
                     startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
                     break;
                 case "/help":
-                    sendMessage(chatId, "help..");
+                    sendMessage(chatId, "загрушка: помощь");
                     break;
-                case "/viewUpcomingEvents":
-                    for (Event listEvent : eventData.getListEvents()) {
-                        sendMessage(chatId, listEvent.toString());
-                    }
+                case "/view_upcoming_events":
+                    viewUpcomingEvents(chatId);
                     break;
-                case "/signUpForEvent":
-                    sendMessage(chatId, "In developing..");
+                case "/sign_up_for_event":
+                    sendMessage(chatId, "В разработке..");
                     break;
                 default:
-                    sendMessage(chatId, "Sorry, command was not recognized");
+                    sendMessage(chatId, "Извините, команда не распознана");
             }
         }
 
 
+    }
+
+    private void viewUpcomingEvents(long chatId) {
+        Instant now = new Date().toInstant();
+        Instant dateTo  = now.plus(AMOUNT_TO_ADD_DATE, ChronoUnit.DAYS);
+        eventData.getListEvents().stream().filter(event -> event.getDate().
+                toInstant().isBefore(dateTo) && event.getDate().toInstant().isAfter(now)).sorted(new Comparator<Event>() {
+                    @Override
+                    public int compare(Event o1, Event o2) {
+                        return o1.getDate().compareTo(o2.getDate());
+                    }
+                })
+                .forEach(event -> sendMessage(chatId, event.toString()));
     }
 
     /**
@@ -93,7 +109,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void startCommandReceived(long chatId, String name) {
 
 
-        String answer = "Hi, " + name + ", I`m Museum bot!";
+        String answer = "Привет, " + name + ", я бот для мезеев!";
 
 
         sendMessage(chatId, answer);

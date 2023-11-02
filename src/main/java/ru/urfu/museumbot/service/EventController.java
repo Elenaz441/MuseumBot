@@ -28,6 +28,11 @@ public class EventController {
                 new GregorianCalendar(2023, Calendar.NOVEMBER, 4, 13, 0).getTime(),
                 120,
                 "ул. Карла Либкнехта, 26"));
+        this.listEvents.add(new Event(++ID, "Ожившие полотна Леонардо да Винчи. Тайна Моны Лизы",
+                "«Ожившая» Мона Лиза и первый в мире прототип вертолета: новая мультимедийная выставка о Леонардо да Винчи.",
+                new GregorianCalendar(2023, Calendar.NOVEMBER, 6, 13, 0).getTime(),
+                50,
+                "просп. Ленина, 50ж"));
     }
 
     public List<Event> getListEvents() {
