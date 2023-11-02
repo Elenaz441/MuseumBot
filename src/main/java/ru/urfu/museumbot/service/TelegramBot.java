@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>Класс реализации функционала телеграм бота</p>
@@ -75,7 +76,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     sendMessage(chatId, "загрушка: помощь");
                     break;
                 case "/view_upcoming_events":
-                    viewUpcomingEvents(chatId);
+                    viewUpcomingEvents(chatId).forEach(event -> sendMessage(chatId, event.toString()));
                     break;
                 case "/sign_up_for_event":
                     sendMessage(chatId, "В разработке..");
@@ -88,17 +89,22 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     }
 
-    private void viewUpcomingEvents(long chatId) {
+    /**
+     * Получить записи из списка предстоящих мероприятий
+     * @param chatId индентификатор чата <br>
+     * @return List<Event> предстоящие мероприятия не позднее {@link TelegramBot#AMOUNT_TO_ADD_DATE} количества дней отсортированные в порядке возрастания</p>
+     */
+    private List<Event> viewUpcomingEvents(long chatId) {
         Instant now = new Date().toInstant();
         Instant dateTo  = now.plus(AMOUNT_TO_ADD_DATE, ChronoUnit.DAYS);
-        eventData.getListEvents().stream().filter(event -> event.getDate().
+        return eventData.getListEvents().stream().filter(event -> event.getDate().
                 toInstant().isBefore(dateTo) && event.getDate().toInstant().isAfter(now)).sorted(new Comparator<Event>() {
                     @Override
                     public int compare(Event o1, Event o2) {
                         return o1.getDate().compareTo(o2.getDate());
                     }
                 })
-                .forEach(event -> sendMessage(chatId, event.toString()));
+                .collect(Collectors.toList());
     }
 
     /**
