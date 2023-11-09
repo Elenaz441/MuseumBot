@@ -129,4 +129,13 @@ public class User {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    /**
+     * добавляет отзыв в список
+     * @param review отзыв, который нужно добавить
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
+    }
 }

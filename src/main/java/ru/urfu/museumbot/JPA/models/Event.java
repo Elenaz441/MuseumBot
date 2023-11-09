@@ -115,8 +115,8 @@ public class Event {
     @Override
     public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy, HH:mm");
-        return String.format("%s\n\n%s\n\nДата: %s\nДлительность: %s минут\nАдрес: %s\nEventId: %d", title, description,
-                dateFormat.format(date), duration, address, id);
+        return String.format("%s\n\n%s\n\nДата: %s\nДлительность: %s минут\nАдрес: %s", title, description,
+                dateFormat.format(date), duration, address);
     }
 
     @Override
@@ -130,5 +130,14 @@ public class Event {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    /**
+     * добавить отзыв в список
+     * @param review отзыв, который нужно добавить
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setEvent(this);
     }
 }
