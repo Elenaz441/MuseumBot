@@ -114,14 +114,21 @@ public class TelegramBot extends TelegramLongPollingBot {
             message.setChatId(String.valueOf(chatId));
             message.setText(text);
             message.setMessageId(messageId);
-
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                System.out.println(e.getMessage());
-            }
+            executEditMessage(message);
         }
     }
+
+    /**
+     * Осуществяет отправку сообщения
+     */
+    private void executEditMessage(EditMessageText message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 
     /**
      * <p>Регистрирует на выбранное мероприятие</p>
@@ -207,7 +214,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         markupInline.setKeyboard(rowsInline);
         message.setReplyMarkup(markupInline);
-        executeMessage(message);
+        executEditMessage(message);
     }
 
     /**
@@ -233,7 +240,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         markupInline.setKeyboard(rowsInline);
         message.setReplyMarkup(markupInline);
-        executeMessage(message);
+        executEditMessage(message);
     }
 
     /**
@@ -261,14 +268,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
-        executeMessage(message);
+        executEditMessage(message);
     }
 
     /**
      * <p>Осуществить отправку сообщения</p>
      * @param message - сообщение
      */
-    private void executeMessage(SendMessage message){
+    private void executEditMessage(SendMessage message){
         try {
             execute(message);
         } catch (TelegramApiException e) {
