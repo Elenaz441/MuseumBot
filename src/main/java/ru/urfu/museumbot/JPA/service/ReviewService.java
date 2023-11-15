@@ -56,4 +56,18 @@ public class ReviewService {
         eventRepository.save(event);
         reviewRepository.deleteById(review.getId());
     }
+
+    /**
+    * <p>Добавить отзыв в базу данных</p>
+     */
+    @Transactional
+    public void addReview(Review review) {
+        User user = review.getUser();
+        user.addReview(review);
+        userRepository.save(user);
+        Event event = review.getEvent();
+        event.addReview(review);
+        eventRepository.save(event);
+        reviewRepository.save(review);
+    }
 }
