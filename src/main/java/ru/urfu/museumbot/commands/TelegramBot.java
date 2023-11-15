@@ -89,39 +89,90 @@ public class TelegramBot extends TelegramLongPollingBot {
                 case "/start" -> startCommandReceived(chatId, update.getMessage().getChat().getFirstName());
                 case "/help" -> sendMessage(chatId, StaticText.HELP_TEXT);
                 case "/view_upcoming_events" -> viewUpcomingEvents(chatId);
-                case "/sign_up_for_event" -> sendMessage(chatId, "В разработке..");
+                case "/sign_up_for_event" -> signUp(chatId);
                 case "/cancel" -> cancel(chatId);
                 case "/view_my_events" -> viewMyEvents(chatId);
                 default -> sendMessage(chatId, "Извините, команда не распознана");
             }
         }
         else if (update.hasCallbackQuery()) {
+            // при нажатии на кнопку в зависимости от текста, передаваемого кнопкой, обрабатывается соответсвующая команда
             String callbackData = update.getCallbackQuery().getData();
             Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
 
-            String text = "Вы отменили свою запись на выбранное мероприятие";
+            String text = "";
 
             if (callbackData.startsWith("CancelEvent")){
-                Long eventId = Long.valueOf(callbackData.replace("CancelEvent", ""));
-                Review review = reviewService.getReview(
-                        userService.getUserByChatId(chatId),
-                        eventData.getEventById(eventId));
-                reviewService.deleteReview(review);
+                text = cancelReviewCommand(callbackData, chatId);
+            }
+
+            if (callbackData.startsWith("AddEvent")){
+                text = addReviewCommand(callbackData, chatId);
             }
 
             EditMessageText message = new EditMessageText();
             message.setChatId(String.valueOf(chatId));
             message.setText(text);
             message.setMessageId(messageId);
-
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                System.out.println(e.getMessage());
-            }
+            executEditMessage(message);
         }
     }
+
+    /**
+     * Осуществяет отправку сообщения
+     */
+    private void executEditMessage(EditMessageText message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+  
+     /**
+     * <p>Регистрирует на выбранное мероприятие</p>
+     * <p>Добавляет в таблицу Review запись о мероприятии на которое записался пользователь</p>
+     * * @param callbackData текст идентификации действия получаемый при нажатии на кнопку
+     * @return текст, который выводится пользователю при успехе
+     */
+    private String addReviewCommand(String callbackData, Long chatId) {
+        String text;
+        text = "Вы записались на выбранное мероприятие";
+        Long eventId = Long.valueOf(callbackData.replace("AddEvent", ""));
+        Review review = new Review();
+        User user = userService.getUserByChatId(chatId);
+        Event event = eventService.getEventById(eventId);
+
+        Review prevReview = reviewService.getReview(user, event);
+        if(prevReview == null) {
+            review.setUser(user);
+            review.setEvent(event);
+            reviewService.addReview(review);
+        }
+        else{
+            text = String.format("Вы уже записаны на мероприятие \"%s\"", prevReview.getEvent().getTitle());
+        }
+        return text;
+    }
+  
+     /**
+     * <p>Отменяет запись на выбранное мероприятие</p>
+     * <p>Удаляет выбранную запись мероприятия из таблицы Review</p>
+     * @param callbackData текст идентификации действия получаемый при нажатии на кнопку
+     * @return текст, который выводится пользователю при успехе
+     */
+    private String cancelReviewCommand(String callbackData, Long chatId) {
+        String text;
+        text = "Вы отменили свою запись на выбранное мероприятие";
+        Long eventId = Long.valueOf(callbackData.replace("CancelEvent", ""));
+        Review review = reviewService.getReview(
+                userService.getUserByChatId(chatId),
+                eventService.getEventById(eventId));
+        reviewService.deleteReview(review);
+        return text;
+    }
+
 
     /**
      * <p>Посмотреть предстоящие мероприятия</p>
@@ -162,7 +213,33 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         markupInline.setKeyboard(rowsInline);
         message.setReplyMarkup(markupInline);
-        executeMessage(message);
+        executEditMessage(message);
+    }
+
+    /**
+     * <p>Промежуточное действие перед регистрацией на мероприятие</p>
+     * <p>Выводит список ближайших мероприятий в виде кнопок с возможностью для пользователя заипсаться на одно из них</p>
+     */
+    private void signUp(Long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText("Выберете мероприятие, на которое хотите записаться:");
+
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        List<Event> allEvents = eventService.getListEvents();
+
+        for (Event event : allEvents) {
+            List<InlineKeyboardButton> rowInline = new ArrayList<>();
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText(event.getTitle());
+            inlineKeyboardButton.setCallbackData("AddEvent" + event.getId());
+            rowInline.add(inlineKeyboardButton);
+            rowsInline.add(rowInline);
+        }
+        markupInline.setKeyboard(rowsInline);
+        message.setReplyMarkup(markupInline);
+        executEditMessage(message);
     }
 
     /**
@@ -190,14 +267,14 @@ public class TelegramBot extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(chatId));
         message.setText(textToSend);
-        executeMessage(message);
+        executEditMessage(message);
     }
 
     /**
      * <p>Осуществить отправку сообщения</p>
      * @param message - сообщение
      */
-    private void executeMessage(SendMessage message){
+    private void executEditMessage(SendMessage message){
         try {
             execute(message);
         } catch (TelegramApiException e) {
