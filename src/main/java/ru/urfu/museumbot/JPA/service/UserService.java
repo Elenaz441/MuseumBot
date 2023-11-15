@@ -16,8 +16,16 @@ import java.util.List;
 @Service
 public class UserService {
 
+    private final UserRepository userRepository;
+
+    /**
+     * Конструктор для класса {@link EventService}
+     * @param userRepository - репозиторий для сущности "Пользователь"
+     */
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Добавляет нового пользователя в базу данных

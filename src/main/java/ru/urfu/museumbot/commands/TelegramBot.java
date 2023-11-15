@@ -38,16 +38,17 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     String botToken;
 
-    @Autowired
-    final EventService eventService = new EventService();
+    private final EventService eventData;
+
+    private final UserService userService;
+
+    private final ReviewService reviewService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    ReviewService reviewService;
-
-    public TelegramBot() {
+    public TelegramBot(EventService eventService, UserService userService, ReviewService reviewService) {
+        this.eventData = eventService;
+        this.userService = userService;
+        this.reviewService = reviewService;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "Старт"));
         listOfCommands.add(new BotCommand("/help", "Нужна помощь?"));
@@ -94,8 +95,8 @@ public class TelegramBot extends TelegramLongPollingBot {
                 default -> sendMessage(chatId, "Извините, команда не распознана");
             }
         }
-       else if (update.hasCallbackQuery()) {
-           // при нажатии на кнопку в зависимости от текста передаваемого кнопкой обрабатывается соответсвующая команда
+        else if (update.hasCallbackQuery()) {
+            // при нажатии на кнопку в зависимости от текста, передаваемого кнопкой, обрабатывается соответсвующая команда
             String callbackData = update.getCallbackQuery().getData();
             Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
             Long chatId = update.getCallbackQuery().getMessage().getChatId();
@@ -128,9 +129,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             System.out.println(e.getMessage());
         }
     }
-
-
-    /**
+  
+     /**
      * <p>Регистрирует на выбранное мероприятие</p>
      * <p>Добавляет в таблицу Review запись о мероприятии на которое записался пользователь</p>
      * * @param callbackData текст идентификации действия получаемый при нажатии на кнопку
@@ -155,8 +155,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
         return text;
     }
-
-    /**
+  
+     /**
      * <p>Отменяет запись на выбранное мероприятие</p>
      * <p>Удаляет выбранную запись мероприятия из таблицы Review</p>
      * @param callbackData текст идентификации действия получаемый при нажатии на кнопку
@@ -173,12 +173,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         return text;
     }
 
+
     /**
      * <p>Посмотреть предстоящие мероприятия</p>
      */
     private void viewUpcomingEvents(long chatId) {
-        eventService.getListEvents().forEach(event ->
-                sendMessage(chatId, event.toString()));
+        eventData.getListEvents().forEach(event -> sendMessage(chatId, event.toString()));
     }
 
     /**
@@ -194,7 +194,6 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * <p>Отменить запись пользователя на мероприятия</p>
-     * <p>Выводит списком кнопок мероприятия на которые записан пользователь с возможностью отмены записи на мероприятие</p>
      */
     private void cancel(Long chatId) {
         SendMessage message = new SendMessage();
