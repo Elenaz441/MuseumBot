@@ -17,14 +17,24 @@ import ru.urfu.museumbot.JPA.repository.UserRepository;
 @Service
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
+    private final EventRepository eventRepository;
+
+    /**
+     * Конструктор для класса {@link ReviewService}
+     * @param reviewRepository - репозиторий для сущности "Отзыв"
+     * @param userRepository - репозиторий для сущности "Пользователь"
+     * @param eventRepository - репозиторий для сущности "Мероприятие"
+     */
     @Autowired
-    EventRepository eventRepository;
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, EventRepository eventRepository) {
+        this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+    }
 
     /**
      * <p>Получить отзыв по пользователю и мероприятию</p>
