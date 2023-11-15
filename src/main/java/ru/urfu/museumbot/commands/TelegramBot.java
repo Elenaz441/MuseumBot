@@ -38,16 +38,17 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     String botToken;
 
-    @Autowired
-    final EventService eventData = new EventService();
+    private final EventService eventData;
+
+    private final UserService userService;
+
+    private final ReviewService reviewService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    ReviewService reviewService;
-
-    public TelegramBot() {
+    public TelegramBot(EventService eventService, UserService userService, ReviewService reviewService) {
+        this.eventData = eventService;
+        this.userService = userService;
+        this.reviewService = reviewService;
         List<BotCommand> listOfCommands = new ArrayList<>();
         listOfCommands.add(new BotCommand("/start", "Старт"));
         listOfCommands.add(new BotCommand("/help", "Нужна помощь?"));

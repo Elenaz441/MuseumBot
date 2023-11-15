@@ -21,6 +21,10 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
+    /**
+     * Конструктор для класса {@link EventService}
+     * @param eventRepository - репозиторий для сущности "Мероприятие"
+     */
     @Autowired
     public EventService(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
