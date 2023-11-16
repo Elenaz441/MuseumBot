@@ -3,10 +3,14 @@ package ru.urfu.museumbot.JPA.service;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.urfu.museumbot.JPA.models.Event;
 import ru.urfu.museumbot.JPA.models.Review;
 import ru.urfu.museumbot.JPA.models.User;
+import ru.urfu.museumbot.JPA.repository.EventRepository;
+import ru.urfu.museumbot.JPA.repository.ReviewRepository;
+import ru.urfu.museumbot.JPA.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +27,15 @@ class ReviewServiceTest {
 
     @InjectMocks
     ReviewService reviewService;
+
+    @Mock
+    UserRepository userRepository;
+
+    @Mock
+    EventRepository eventRepository;
+
+    @Mock
+    ReviewRepository reviewRepository;
 
     /**
      * Проверка удаления Отзыва
