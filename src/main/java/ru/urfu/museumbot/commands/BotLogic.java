@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static ru.urfu.museumbot.commands.Commands.*;
 
+
 /**
  * Класс логики
  */
@@ -44,6 +45,7 @@ public class BotLogic {
         this.userService = userService;
         this.reviewService = reviewService;
         this.gui = new Widgets();
+
     }
 
     /**
