@@ -16,6 +16,9 @@ public class MuseumService {
         this.museumRepository = museumRepository;
     }
 
+    /**
+     * <p>Получить организацию по id</p>
+     */
     public Museum getExhibitById(Long id) {
         return museumRepository.getMuseumById(id);
     }
