@@ -1,6 +1,5 @@
 package ru.urfu.museumbot.commands;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,9 +18,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static ru.urfu.museumbot.commands.Commands.*;
 
 /**
  * Класс логики
@@ -166,6 +166,28 @@ public class BotLogic {
         return message;
     }
 
+
+    /**
+     * Создаёт графический интерфейс в виде кнопок с выбором
+     * @param callbackData в зависимости от того, какая команда сейчас выполняется
+     * @param variants варианты выбора для пользователя
+     * @return виджет последоватлеьной разметки кнопками
+     */
+    public InlineKeyboardMarkup getMarkupInline(String callbackData, List<Event> variants){
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        for (Event event : variants) {
+            List<InlineKeyboardButton> rowInline = new ArrayList<>();
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText(event.getTitle());
+            inlineKeyboardButton.setCallbackData(callbackData + event.getId());
+            rowInline.add(inlineKeyboardButton);
+            rowsInline.add(rowInline);
+        }
+        markupInline.setKeyboard(rowsInline);
+        return markupInline;
+    }
+
     /**
      * <p>Промежуточное действие перед регистрацией на мероприятие</p>
      * <p>Выводит список ближайших мероприятий в виде кнопок с возможностью для пользователя записаться на одно из них</p>
@@ -174,20 +196,8 @@ public class BotLogic {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText("Выберете мероприятие, на которое хотите записаться:");
-
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<Event> allEvents = eventService.getListEvents();
-
-        for (Event event : allEvents) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData("AddEvent" + event.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
+        InlineKeyboardMarkup markupInline = getMarkupInline("AddEvent", allEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
@@ -198,26 +208,13 @@ public class BotLogic {
     private SendMessage cancel(Long chatId) {
         SendMessage message = new SendMessage();
         String text = "Выберете мероприятие, на которое хотите отменить запись:";
-
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<Event> userEvents = userService.getUserEvents(chatId);
-        for (Event event : userEvents) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData("CancelEvent" + event.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-
         if (userEvents.size() == 0) {
             text = "Вы ещё не записаны ни на одно мероприятие.";
         }
-
         message.setChatId(chatId);
         message.setText(text);
-        markupInline.setKeyboard(rowsInline);
+        InlineKeyboardMarkup markupInline = getMarkupInline("CancelEvent", userEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
