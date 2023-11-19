@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.urfu.museumbot.GUI.Widgets;
 import ru.urfu.museumbot.JPA.models.Event;
 import ru.urfu.museumbot.JPA.models.Review;
 import ru.urfu.museumbot.JPA.models.User;
@@ -35,6 +36,7 @@ public class BotLogic {
     private final UserService userService;
 
     private final ReviewService reviewService;
+    private final Widgets gui;
 
     /**
      * Создание логики бота
@@ -44,6 +46,7 @@ public class BotLogic {
         this.eventService = eventService;
         this.userService = userService;
         this.reviewService = reviewService;
+        this.gui = new Widgets();
     }
 
     /**
@@ -167,26 +170,7 @@ public class BotLogic {
     }
 
 
-    /**
-     * Создаёт графический интерфейс в виде кнопок с выбором
-     * @param callbackData в зависимости от того, какая команда сейчас выполняется
-     * @param variants варианты выбора для пользователя
-     * @return виджет последоватлеьной разметки кнопками
-     */
-    public InlineKeyboardMarkup getMarkupInline(String callbackData, List<Event> variants){
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for (Event event : variants) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData(callbackData + event.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
-        return markupInline;
-    }
+
 
     /**
      * <p>Промежуточное действие перед регистрацией на мероприятие</p>
@@ -197,7 +181,7 @@ public class BotLogic {
         message.setChatId(chatId);
         message.setText("Выберете мероприятие, на которое хотите записаться:");
         List<Event> allEvents = eventService.getListEvents();
-        InlineKeyboardMarkup markupInline = getMarkupInline("AddEvent", allEvents);
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline("AddEvent", allEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
@@ -214,7 +198,7 @@ public class BotLogic {
         }
         message.setChatId(chatId);
         message.setText(text);
-        InlineKeyboardMarkup markupInline = getMarkupInline("CancelEvent", userEvents);
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline("CancelEvent", userEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
