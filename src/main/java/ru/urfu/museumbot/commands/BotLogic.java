@@ -52,12 +52,12 @@ public class BotLogic {
     public SendMessage handleIncomingTextMessage(String messageText, Long chatId, String username) {
         SendMessage message;
         switch (messageText) {
-            case "/start" -> message = startCommandReceived(chatId, username);
-            case "/help" -> message = new SendMessage(String.valueOf(chatId), StaticText.HELP_TEXT);
-            case "/view_upcoming_events" -> message = viewUpcomingEvents(chatId);
-            case "/sign_up_for_event" -> message = signUp(chatId);
-            case "/cancel" -> message = cancel(chatId);
-            case "/view_my_events" -> message = viewMyEvents(chatId);
+            case START -> message = startCommandReceived(chatId, username);
+            case HELP -> message = new SendMessage(String.valueOf(chatId), StaticText.HELP_TEXT);
+            case VIEW_UPCOMING_EVENTS -> message = viewUpcomingEvents(chatId);
+            case SIGN_UP_FOR_EVENT -> message = signUp(chatId);
+            case CANCEL -> message = cancel(chatId);
+            case VIEW_MY_EVENTS -> message = viewMyEvents(chatId);
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
         return message;
