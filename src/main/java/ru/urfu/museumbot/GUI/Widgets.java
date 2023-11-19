@@ -12,12 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Map.entry;
-import static ru.urfu.museumbot.commands.CommandName.CANCEL;
-import static ru.urfu.museumbot.commands.CommandName.HELP;
-import static ru.urfu.museumbot.commands.CommandName.SIGN_UP_FOR_EVENT;
-import static ru.urfu.museumbot.commands.CommandName.START;
-import static ru.urfu.museumbot.commands.CommandName.VIEW_MY_EVENTS;
-import static ru.urfu.museumbot.commands.CommandName.VIEW_UPCOMING_EVENTS;
+import static ru.urfu.museumbot.commands.Commands.*;
 
 /**
  * <p>класс виджетов</p>
@@ -28,12 +23,12 @@ public class Widgets {
      * Отображение, которое сожержит ключ:команда значение:описание
      */
     public static Map<String, String> description = Map.ofEntries(
-            entry(START.getCommandName(), "Старт"),
-            entry(HELP.getCommandName(), "Нужна помощь?"),
-            entry(VIEW_UPCOMING_EVENTS.getCommandName(), "Посмотреть ближайшие мероприятия"),
-            entry(SIGN_UP_FOR_EVENT.getCommandName(), "Зарегистрироваться на мероприятие"),
-            entry(CANCEL.getCommandName(), "Отменить запись на мероприятие"),
-            entry(VIEW_MY_EVENTS.getCommandName(), "Посмотреть на записанные мероприятия")
+            entry(START, "Старт"),
+            entry(HELP, "Нужна помощь?"),
+            entry(VIEW_UPCOMING_EVENTS, "Посмотреть ближайшие мероприятия"),
+            entry(SIGN_UP_FOR_EVENT, "Зарегистрироваться на мероприятие"),
+            entry(CANCEL, "Отменить запись на мероприятие"),
+            entry(VIEW_MY_EVENTS, "Посмотреть на записанные мероприятия")
     );
 
     /**
