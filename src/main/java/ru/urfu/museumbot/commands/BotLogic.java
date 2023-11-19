@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.urfu.museumbot.GUI.Widgets;
 import ru.urfu.museumbot.JPA.models.Event;
 import ru.urfu.museumbot.JPA.models.Review;
 import ru.urfu.museumbot.JPA.models.User;
@@ -15,7 +16,11 @@ import ru.urfu.museumbot.JPA.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static ru.urfu.museumbot.commands.Commands.*;
+
 
 /**
  * Класс логики
@@ -23,11 +28,13 @@ import java.util.stream.Collectors;
 @Component
 public class BotLogic {
 
+
     private final EventService eventService;
 
     private final UserService userService;
 
     private final ReviewService reviewService;
+    private final Widgets gui;
 
     /**
      * Создание логики бота
@@ -37,6 +44,8 @@ public class BotLogic {
         this.eventService = eventService;
         this.userService = userService;
         this.reviewService = reviewService;
+        this.gui = new Widgets();
+
     }
 
     /**
@@ -48,12 +57,12 @@ public class BotLogic {
     public SendMessage handleIncomingTextMessage(String messageText, Long chatId, String username) {
         SendMessage message;
         switch (messageText) {
-            case "/start" -> message = startCommandReceived(chatId, username);
-            case "/help" -> message = new SendMessage(String.valueOf(chatId), StaticText.HELP_TEXT);
-            case "/view_upcoming_events" -> message = viewUpcomingEvents(chatId);
-            case "/sign_up_for_event" -> message = signUp(chatId);
-            case "/cancel" -> message = cancel(chatId);
-            case "/view_my_events" -> message = viewMyEvents(chatId);
+            case START -> message = startCommandReceived(chatId, username);
+            case HELP -> message = new SendMessage(String.valueOf(chatId), StaticText.HELP_TEXT);
+            case VIEW_UPCOMING_EVENTS -> message = viewUpcomingEvents(chatId);
+            case SIGN_UP_FOR_EVENT -> message = signUp(chatId);
+            case CANCEL -> message = cancel(chatId);
+            case VIEW_MY_EVENTS -> message = viewMyEvents(chatId);
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
         return message;
@@ -131,6 +140,9 @@ public class BotLogic {
         return message;
     }
 
+
+
+
     /**
      * <p>Промежуточное действие перед регистрацией на мероприятие</p>
      * <p>Выводит список ближайших мероприятий в виде кнопок с возможностью для пользователя записаться на одно из них</p>
@@ -139,20 +151,8 @@ public class BotLogic {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText("Выберете мероприятие, на которое хотите записаться:");
-
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<Event> allEvents = eventService.getListEvents();
-
-        for (Event event : allEvents) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData("AddEvent" + event.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline("AddEvent", allEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
@@ -163,26 +163,13 @@ public class BotLogic {
     private SendMessage cancel(Long chatId) {
         SendMessage message = new SendMessage();
         String text = "Выберете мероприятие, на которое хотите отменить запись:";
-
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<Event> userEvents = userService.getUserEvents(chatId);
-        for (Event event : userEvents) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData("CancelEvent" + event.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-
         if (userEvents.size() == 0) {
             text = "Вы ещё не записаны ни на одно мероприятие.";
         }
-
         message.setChatId(chatId);
         message.setText(text);
-        markupInline.setKeyboard(rowsInline);
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline("CancelEvent", userEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }

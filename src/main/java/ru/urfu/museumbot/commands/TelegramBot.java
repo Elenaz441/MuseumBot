@@ -12,9 +12,10 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import ru.urfu.museumbot.GUI.Widgets;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 
 /**
@@ -34,13 +35,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     public TelegramBot(BotLogic logic) {
         this.logic = logic;
-        List<BotCommand> listOfCommands = new ArrayList<>();
-        listOfCommands.add(new BotCommand("/start", "Старт"));
-        listOfCommands.add(new BotCommand("/help", "Нужна помощь?"));
-        listOfCommands.add(new BotCommand("/view_upcoming_events", "Посмотреть ближайшие мероприятия"));
-        listOfCommands.add(new BotCommand("/sign_up_for_event", "Зарегистрироваться на мероприятие"));
-        listOfCommands.add(new BotCommand("/cancel", "Отменить запись на мероприятие"));
-        listOfCommands.add(new BotCommand("/view_my_events", "Посмотреть на записанные мероприятия"));
+        List<BotCommand> listOfCommands = new Widgets().getMenuOfCommands();
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
@@ -48,6 +43,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             System.out.println(e.getMessage());
         }
     }
+
+
 
     @Override
     public String getBotUsername() {
