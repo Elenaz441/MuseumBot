@@ -28,8 +28,8 @@ public class Museum {
     @Column(name = "address")
 
     private String address;
-    @Column(name = "description")
-
+    @Lob
+    @Column(name="description", columnDefinition = "text")
     private String description;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "museum", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
