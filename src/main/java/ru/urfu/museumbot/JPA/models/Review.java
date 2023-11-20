@@ -82,13 +82,9 @@ public class Review {
 
     @Override
     public String toString() {
-        return "Review{" +
-                "id=" + id +
-                ", user=" + user +
-                ", event=" + event +
-                ", rating=" + rating +
-                ", review='" + review + '\'' +
-                '}';
+        return "Мероприятие: " + event.getTitle() +
+                "\nОценка: " + rating +
+                "\nОтзыв: " + review;
     }
 
     @Override

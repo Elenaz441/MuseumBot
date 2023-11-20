@@ -10,9 +10,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.urfu.museumbot.JPA.models.Event;
+import ru.urfu.museumbot.JPA.models.Museum;
 import ru.urfu.museumbot.JPA.models.Review;
 import ru.urfu.museumbot.JPA.models.User;
 import ru.urfu.museumbot.JPA.service.EventService;
+import ru.urfu.museumbot.JPA.service.MuseumService;
 import ru.urfu.museumbot.JPA.service.ReviewService;
 import ru.urfu.museumbot.JPA.service.UserService;
 
@@ -38,6 +40,9 @@ class BotLogicTest {
 
     @Mock
     ReviewService reviewService;
+
+    @Mock
+    MuseumService museumService;
 
     /**
      * Тест для функции /view_upcoming_events
@@ -135,6 +140,26 @@ class BotLogicTest {
     }
 
     /**
+     * Тест на проверку запросов, где нужно вывести список музеев
+     */
+    @Test
+    void handleIncomingTextMessage_viewMuseums() {
+        List<Museum> museums = getMuseums();
+        Mockito.doReturn(museums)
+                .when(museumService)
+                .getMuseums();
+        SendMessage message = logic.handleIncomingTextMessage("/view_museum", 77L, "Rufus");
+
+        assertEquals("Выберете музей:", message.getText());
+
+        InlineKeyboardMarkup keyboard = (InlineKeyboardMarkup) message.getReplyMarkup();
+
+        assertEquals(2, keyboard.getKeyboard().size());
+        assertEquals(1, keyboard.getKeyboard().get(0).size());
+        assertEquals("Museum 1", keyboard.getKeyboard().get(0).get(0).getText());
+    }
+
+    /**
      * Тест на регистрацию пользователя на выбранное мероприятие
      */
     @Test
@@ -144,7 +169,7 @@ class BotLogicTest {
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Mockito.doReturn(event).when(eventService).getEventById(1L);
 
-        EditMessageText messageText = logic.handleCallbackQuery("AddEvent1", 111, 1L);
+        EditMessageText messageText = logic.handleCallbackQuery("AddEvent 1", 111, 1L);
         assertEquals("Вы записались на выбранное мероприятие", messageText.getText());
     }
 
@@ -166,7 +191,7 @@ class BotLogicTest {
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
 
-        EditMessageText messageText = logic.handleCallbackQuery("AddEvent1", 111, 1L);
+        EditMessageText messageText = logic.handleCallbackQuery("AddEvent 1", 111, 1L);
         assertEquals("Вы уже записаны на мероприятие \"Event 1\"", messageText.getText());
     }
 
@@ -189,8 +214,54 @@ class BotLogicTest {
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
 
-        EditMessageText messageText = logic.handleCallbackQuery("CancelEvent1", 111, 1L);
+        EditMessageText messageText = logic.handleCallbackQuery("CancelEvent 1", 111, 1L);
         assertEquals("Вы отменили свою запись на выбранное мероприятие", messageText.getText());
+    }
+
+    /**
+     * Тест для проверки функции /view_museum_rank
+     */
+    @Test
+    void handleCallbackQuery_getMuseumCommand() {
+        Museum museum = new Museum();
+        museum.setId(1L);
+        List<Event> events = getEvents();
+        museum.setEvents(events);
+
+        User user1 = new User();
+        User user2 = new User();
+
+        Review review1 = new Review();
+        review1.setUser(user1);
+        review1.setEvent(events.get(0));
+        review1.setRating(5);
+        review1.setReview("Review 1");
+        Review review2 = new Review();
+        review2.setUser(user2);
+        review2.setEvent(events.get(1));
+        review2.setRating(7);
+        review2.setReview("Review 2");
+
+        Mockito.doReturn(List.of(review1, review2))
+                .when(museumService)
+                .getMuseumReviews(1L);
+        Mockito.doReturn("6.5")
+                .when(museumService)
+                .getMuseumRank(1L);
+
+        EditMessageText messageText = logic.handleCallbackQuery("GetRank 1", 120, 1L);
+        assertEquals("""
+                Средняя оценка от пользователей: 6.5. Ниже несколько последних отзывов:\s
+                Мероприятие: Event 1
+                Оценка: 5
+                Отзыв: Review 1
+                
+                ===============================
+                
+                Мероприятие: Event 2
+                Оценка: 7
+                Отзыв: Review 2""",
+                messageText.getText());
     }
 
     /**
@@ -215,5 +286,25 @@ class BotLogicTest {
         event2.setAddress("Ленина, 52");
 
         return List.of(event1, event2);
+    }
+
+    /**
+     * Получить список музеев
+     * @return - список музеев
+     */
+    List<Museum> getMuseums() {
+        Museum museum1 = new Museum();
+        museum1.setId(1L);
+        museum1.setTitle("Museum 1");
+        museum1.setDescription("Descript");
+        museum1.setAddress("Ленина, 51");
+
+        Museum museum2 = new Museum();
+        museum2.setId(2L);
+        museum2.setTitle("Museum 2");
+        museum2.setDescription("Descript");
+        museum2.setAddress("Ленина, 52");
+
+        return List.of(museum1, museum2);
     }
 }

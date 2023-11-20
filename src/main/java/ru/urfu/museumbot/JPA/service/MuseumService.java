@@ -7,7 +7,10 @@ import ru.urfu.museumbot.JPA.models.Museum;
 import ru.urfu.museumbot.JPA.models.Review;
 import ru.urfu.museumbot.JPA.repository.MuseumRepository;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +29,7 @@ public class MuseumService {
     /**
      * <p>Получить организацию по id</p>
      */
-    public Museum getExhibitById(Long id) {
+    public Museum getMuseumById(Long id) {
         return museumRepository.getMuseumById(id);
     }
 
@@ -37,6 +40,27 @@ public class MuseumService {
         return museumRepository.findAll();
     }
 
+    /**
+     * Получить ближайшие мероприятия музея
+     */
+    public List<Event> getUpcomingEvents(Long id) {
+        Instant now = new Date().toInstant();
+        Instant dateTo = now.plus(7, ChronoUnit.DAYS);
+        Museum museum = museumRepository.getMuseumById(id);
+        return museum.getEvents()
+                .stream()
+                .filter(event -> event.getDate()
+                        .toInstant()
+                        .isBefore(dateTo)
+                        && event.getDate()
+                        .toInstant()
+                        .isAfter(now))
+                .toList();
+    }
+
+    /**
+     * Получить все отзывы музея
+     */
     public List<Review> getMuseumReviews(Long id) {
         Museum museum = museumRepository.getMuseumById(id);
         return museum.getEvents()
@@ -48,6 +72,9 @@ public class MuseumService {
                 .toList();
     }
 
+    /**
+     * Посчитать среднее значение оценок
+     */
     public String getMuseumRank(Long id) {
         List<Review> reviews = getMuseumReviews(id);
         Double rank = reviews.stream()
@@ -56,7 +83,7 @@ public class MuseumService {
                 .average()
                 .orElse(-1);
         String result = String.valueOf(rank);
-        if (result.equals("-1")) {
+        if (result.equals("-1.0")) {
             result = "Оценок ещё нет";
         }
         return result;

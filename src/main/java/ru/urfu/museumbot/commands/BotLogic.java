@@ -7,16 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.urfu.museumbot.GUI.Widgets;
 import ru.urfu.museumbot.JPA.models.*;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Museum;
-import ru.urfu.museumbot.JPA.models.Review;
-import ru.urfu.museumbot.JPA.models.User;
-import ru.urfu.museumbot.JPA.service.EventService;
-import ru.urfu.museumbot.JPA.service.ExhibitService;
-import ru.urfu.museumbot.JPA.service.MuseumService;
-import ru.urfu.museumbot.JPA.service.ReviewService;
-import ru.urfu.museumbot.JPA.service.UserService;
+import ru.urfu.museumbot.JPA.service.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -37,10 +28,12 @@ public class BotLogic {
     private final UserService userService;
 
     private final ReviewService reviewService;
-    private final Widgets gui;
+
     private final ExhibitService exhibitService;
 
     private final MuseumService museumService;
+
+    private final Widgets gui;
 
     /**
      * Создание логики бота
@@ -51,8 +44,8 @@ public class BotLogic {
         this.userService = userService;
         this.reviewService = reviewService;
         this.museumService = museumService;
-        this.gui = new Widgets();
         this.exhibitService = exhibitService;
+        this.gui = new Widgets();
     }
 
     /**
@@ -72,6 +65,8 @@ public class BotLogic {
             case VIEW_MY_EVENTS -> message = viewMyEvents(chatId);
             case VIEW_EXHIBIT -> message = viewExhibit(chatId);
             case LEAVE_REVIEW -> message = leaveReview(chatId);
+            case VIEW_MUSEUM -> message = viewMuseums(chatId, GET_MUSEUM);
+            case VIEW_MUSEUM_RANK -> message = viewMuseums(chatId, GET_RANK);
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
         return message;
@@ -149,6 +144,8 @@ public class BotLogic {
             case CANCEL_EVENT -> text = cancelReviewCommand(commandContext, chatId);
             case VIEW_EXHIBIT -> text = viewExhibitCommand(commandContext);
             case LEAVE_REVIEW -> text = leaveReviewCommand(commandContext);
+            case GET_MUSEUM -> text = getMuseumCommand(commandContext);
+            case GET_RANK -> text = getMuseumRankCommand(commandContext);
             default -> text = "Что-то пошло не так, попробуйте позже.";
         }
         EditMessageText message = new EditMessageText();
@@ -161,7 +158,7 @@ public class BotLogic {
     /**
      * Выполняет добавление оценки и комментария к отзову
      * @param commandContext идентификатор отзыва
-     * @return сообщение от бота о успешном выполнении команды
+     * @return сообщение от бота об успешном выполнении команды
      */
     private String leaveReviewCommand(Long commandContext) {
         //TODO
@@ -288,7 +285,7 @@ public class BotLogic {
     /**
      * <p>Отменяет запись на выбранное мероприятие</p>
      * <p>Удаляет выбранную запись мероприятия из таблицы Review</p>
-     * @param eventId идентификатор меропритиия
+     * @param eventId идентификатор мероприятия
      * @return текст, который выводится пользователю при успехе
      */
     private String cancelReviewCommand(Long eventId, Long chatId) {
@@ -303,37 +300,36 @@ public class BotLogic {
     /**
      * Посмотреть список музеев
      */
-    private SendMessage viewMuseums(Long chatId, String func) {
+    private SendMessage viewMuseums(Long chatId, String command) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText("Выберете музей:");
-
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
         List<Museum> allMuseums = museumService.getMuseums();
-
-        for (Museum museum : allMuseums) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(museum.getTitle());
-            inlineKeyboardButton.setCallbackData(func + museum.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
+        Map<Long, String> variants = allMuseums
+                .stream()
+                .collect(Collectors.toMap(Museum::getId, Museum::getTitle));
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline(command, variants);
         message.setReplyMarkup(markupInline);
         return message;
     }
 
-    private String getMuseumCommand(String callbackData) {
-        Long museumId = Long.valueOf(callbackData.replace("GetMuseum", ""));
-        Museum museum = museumService.getExhibitById(museumId);
-        return museum.toString();
+    /**
+     * Получить информацию о музее
+     */
+    private String getMuseumCommand(Long museumId) {
+        List<Event> events = museumService.getUpcomingEvents(museumId);
+        String textEvents = events
+                .stream()
+                .map(Event::toString)
+                .collect(Collectors.joining("\n\n===============================\n\n"));
+        return museumService.getMuseumById(museumId).toString() + "\n\nБлижайшие мероприятия:\n" + textEvents;
     }
 
-    private String getMuseumRankCommand(String callbackData) {
-        String text = "Средняя оценка от пользователей - ";
-        Long museumId = Long.valueOf(callbackData.replace("GetRank", ""));
+    /**
+     * Получить рейтинг музея (среднюю оценку пользователей) и последние 10 отзывов (или меньше, если их меньше 10)
+     */
+    private String getMuseumRankCommand(Long museumId) {
+        String text = "Средняя оценка от пользователей: ";
         List<Review> reviews = museumService.getMuseumReviews(museumId);
         String rank = museumService.getMuseumRank(museumId);
         if (reviews.size() > 10) {

@@ -3,7 +3,6 @@ package ru.urfu.museumbot.GUI;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.urfu.museumbot.JPA.models.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +15,11 @@ import static ru.urfu.museumbot.commands.Commands.*;
 
 /**
  * <p>класс виджетов</p>
- * <p>предоставляет активные элементы для оботражения сообщений от бота</p>
+ * <p>предоставляет активные элементы для отображения сообщений от бота</p>
  */
 public class Widgets {
     /**
-     * Отображение, которое сожержит ключ:команда значение:описание
+     * Отображение, которое содержит ключ:команда значение:описание
      */
     public static Map<String, String> description = Map.ofEntries(
             entry(START, "Старт"),
@@ -28,7 +27,9 @@ public class Widgets {
             entry(VIEW_UPCOMING_EVENTS, "Посмотреть ближайшие мероприятия"),
             entry(SIGN_UP_FOR_EVENT, "Зарегистрироваться на мероприятие"),
             entry(CANCEL, "Отменить запись на мероприятие"),
-            entry(VIEW_MY_EVENTS, "Посмотреть на записанные мероприятия")
+            entry(VIEW_MY_EVENTS, "Посмотреть на записанные мероприятия"),
+            entry(VIEW_MUSEUM, "Посмотреть информацию о музее"),
+            entry(VIEW_MUSEUM_RANK, "Посмотреть рейтинг и отзывы музея")
     );
 
     /**
@@ -46,7 +47,7 @@ public class Widgets {
      * Создаёт графический интерфейс в виде кнопок с выбором
      * @param callbackData в зависимости от того, какая команда сейчас выполняется
      * @param variants варианты выбора для пользователя
-     * @return виджет последоватлеьной разметки кнопками
+     * @return виджет последовательностей разметки кнопками
      */
     public InlineKeyboardMarkup getMarkupInline(String callbackData, Map<Long, String> variants){
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
