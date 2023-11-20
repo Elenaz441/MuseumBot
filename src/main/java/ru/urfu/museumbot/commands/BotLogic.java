@@ -1,5 +1,6 @@
 package ru.urfu.museumbot.commands;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -13,9 +14,14 @@ import ru.urfu.museumbot.JPA.service.EventService;
 import ru.urfu.museumbot.JPA.service.ReviewService;
 import ru.urfu.museumbot.JPA.service.UserService;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Класс логики
@@ -54,9 +60,38 @@ public class BotLogic {
             case "/sign_up_for_event" -> message = signUp(chatId);
             case "/cancel" -> message = cancel(chatId);
             case "/view_my_events" -> message = viewMyEvents(chatId);
+            case "/viewExhibit" -> message = viewExhibit(chatId);
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
         return message;
+    }
+
+    private SendMessage viewExhibit(Long chatId) {
+        String text = "";
+        SendMessage message = new SendMessage();
+        List<Event> usersEvents = userService
+                .getUserEvents(chatId)
+                .stream().collect(Collectors.toList());
+        Optional<Event> eventInActive = isUserAtEvent(usersEvents);
+        if(eventInActive.isPresent()){
+            //need inline keyboard
+        }
+        else {
+            text = "Выставка ещё не началась. Эта команда недоступна";
+        }
+        return message;
+    }
+
+    private Optional<Event> isUserAtEvent(List<Event> usersEvents) {
+        Instant now = Instant.now();
+        Event result = null;
+        for(Event event: usersEvents){
+            Instant eventDate = event.getDate().toInstant();
+            if(eventDate.isAfter(now) && eventDate.plus(event.getDuration(), ChronoUnit.MINUTES).isBefore(now)) {
+                result = event;
+            }
+        }
+        return Optional.ofNullable(result);
     }
 
     /**
