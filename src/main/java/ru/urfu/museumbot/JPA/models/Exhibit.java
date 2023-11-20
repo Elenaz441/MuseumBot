@@ -20,7 +20,8 @@ public class Exhibit {
     private Long id;
     @Column(name="title")
     private String title;
-    @Column(name = "description")
+    @Lob
+    @Column(name="description", columnDefinition = "text")
     private String description;
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "museum_exhibit_id"), name = "museum_exhibit_id")
