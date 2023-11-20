@@ -18,6 +18,7 @@ import java.util.Objects;
  * <p>{@link Event#duration} длительность мероприятия </p>
  * <p>{@link Event#address} Место проведения/адрес </p>
  * <p>{@link Event#reviews} Отзывы о мероприятии </p>
+ * <p>{@link Event#museum} Организация, в которой проходит мероприятие</p>
  */
 @Entity
 @Table(name = "museum_event")
@@ -44,9 +45,20 @@ public class Event {
     @JsonIgnore
     private List<Review> reviews;
 
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "museum_event_id"), name = "museum_event_id")
+    private Museum museum;
+
     public Event() {
     }
 
+    public Museum getMuseum() {
+        return museum;
+    }
+
+    public void setMuseum(Museum museum) {
+        this.museum = museum;
+    }
     public Long getId() {
         return id;
     }
