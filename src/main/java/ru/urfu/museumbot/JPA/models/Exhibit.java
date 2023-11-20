@@ -81,7 +81,7 @@ public class Exhibit {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", museum=" + museum +
                 '}';
     }
+
 }
