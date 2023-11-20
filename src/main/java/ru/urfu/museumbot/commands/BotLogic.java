@@ -7,9 +7,11 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.urfu.museumbot.JPA.models.Event;
+import ru.urfu.museumbot.JPA.models.Museum;
 import ru.urfu.museumbot.JPA.models.Review;
 import ru.urfu.museumbot.JPA.models.User;
 import ru.urfu.museumbot.JPA.service.EventService;
+import ru.urfu.museumbot.JPA.service.MuseumService;
 import ru.urfu.museumbot.JPA.service.ReviewService;
 import ru.urfu.museumbot.JPA.service.UserService;
 
@@ -29,14 +31,17 @@ public class BotLogic {
 
     private final ReviewService reviewService;
 
+    private final MuseumService museumService;
+
     /**
      * Создание логики бота
      */
     @Autowired
-    public BotLogic(EventService eventService, UserService userService, ReviewService reviewService) {
+    public BotLogic(EventService eventService, UserService userService, ReviewService reviewService, MuseumService museumService) {
         this.eventService = eventService;
         this.userService = userService;
         this.reviewService = reviewService;
+        this.museumService = museumService;
     }
 
     /**
@@ -54,6 +59,8 @@ public class BotLogic {
             case "/sign_up_for_event" -> message = signUp(chatId);
             case "/cancel" -> message = cancel(chatId);
             case "/view_my_events" -> message = viewMyEvents(chatId);
+            case "/view_museum" -> message = viewMuseums(chatId, "GetMuseum");
+            case "/view_museum_rank" -> message = viewMuseums(chatId, "GetRank");
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
         return message;
@@ -71,6 +78,14 @@ public class BotLogic {
 
         if (callbackData.startsWith("CancelEvent")){
             text = cancelReviewCommand(callbackData, chatId);
+        }
+
+        if (callbackData.startsWith("GetMuseum")){
+            text = getMuseumCommand(callbackData);
+        }
+
+        if (callbackData.startsWith("GetRank")){
+            text = getMuseumRankCommand(callbackData);
         }
 
         EditMessageText message = new EditMessageText();
@@ -226,5 +241,51 @@ public class BotLogic {
                 eventService.getEventById(eventId));
         reviewService.deleteReview(review);
         return text;
+    }
+
+    /**
+     * Посмотреть список музеев
+     */
+    private SendMessage viewMuseums(Long chatId, String func) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText("Выберете музей:");
+
+        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
+        List<Museum> allMuseums = museumService.getMuseums();
+
+        for (Museum museum : allMuseums) {
+            List<InlineKeyboardButton> rowInline = new ArrayList<>();
+            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
+            inlineKeyboardButton.setText(museum.getTitle());
+            inlineKeyboardButton.setCallbackData(func + museum.getId());
+            rowInline.add(inlineKeyboardButton);
+            rowsInline.add(rowInline);
+        }
+        markupInline.setKeyboard(rowsInline);
+        message.setReplyMarkup(markupInline);
+        return message;
+    }
+
+    private String getMuseumCommand(String callbackData) {
+        Long museumId = Long.valueOf(callbackData.replace("GetMuseum", ""));
+        Museum museum = museumService.getExhibitById(museumId);
+        return museum.toString();
+    }
+
+    private String getMuseumRankCommand(String callbackData) {
+        String text = "Средняя оценка от пользователей - ";
+        Long museumId = Long.valueOf(callbackData.replace("GetRank", ""));
+        List<Review> reviews = museumService.getMuseumReviews(museumId);
+        String rank = museumService.getMuseumRank(museumId);
+        if (reviews.size() > 10) {
+            reviews = reviews.subList(0, 11);
+        }
+        String textReviews = reviews
+                .stream()
+                .map(Review::toString)
+                .collect(Collectors.joining("\n\n===============================\n\n"));
+        return text + rank + ". Ниже несколько последних отзывов: \n" + textReviews;
     }
 }
