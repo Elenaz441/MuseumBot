@@ -9,6 +9,7 @@ public class Commands {
     public static final String VIEW_MY_EVENTS = "/view_my_events";
     public static final String VIEW_EXHIBIT = "/viewExhibit";
     public static final String LEAVE_REVIEW = "/leaveReview";
-
+    public static final String ADD_EVENT = "AddEvent";
+    public static final String CANCEL_EVENT = "CancelEvent";
 
 }
