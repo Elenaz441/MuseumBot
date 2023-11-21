@@ -48,14 +48,14 @@ public class Widgets {
      * @param variants варианты выбора для пользователя
      * @return виджет последоватлеьной разметки кнопками
      */
-    public InlineKeyboardMarkup getMarkupInline(String callbackData, List<Event> variants){
+    public InlineKeyboardMarkup getMarkupInline(String callbackData, Map<Long, String> variants){
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for (Event event : variants) {
+        for (Map.Entry<Long, String>variant : variants.entrySet()) {
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData(callbackData + event.getId());
+            inlineKeyboardButton.setText(variant.getValue());
+            inlineKeyboardButton.setCallbackData(callbackData + " " + variant.getKey());
             rowInline.add(inlineKeyboardButton);
             rowsInline.add(rowInline);
         }
