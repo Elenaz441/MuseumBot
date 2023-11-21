@@ -7,18 +7,15 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.urfu.museumbot.GUI.Widgets;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Review;
-import ru.urfu.museumbot.JPA.models.User;
+import ru.urfu.museumbot.JPA.models.*;
 import ru.urfu.museumbot.JPA.service.EventService;
+import ru.urfu.museumbot.JPA.service.ExhibitService;
 import ru.urfu.museumbot.JPA.service.ReviewService;
 import ru.urfu.museumbot.JPA.service.UserService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,17 +35,18 @@ public class BotLogic {
 
     private final ReviewService reviewService;
     private final Widgets gui;
+    private final ExhibitService exhibitService;
 
     /**
      * Создание логики бота
      */
     @Autowired
-    public BotLogic(EventService eventService, UserService userService, ReviewService reviewService) {
+    public BotLogic(EventService eventService, UserService userService, ReviewService reviewService, ExhibitService exhibitService) {
         this.eventService = eventService;
         this.userService = userService;
         this.reviewService = reviewService;
         this.gui = new Widgets();
-
+        this.exhibitService = exhibitService;
     }
 
     /**
@@ -66,23 +64,28 @@ public class BotLogic {
             case SIGN_UP_FOR_EVENT -> message = signUp(chatId);
             case CANCEL -> message = cancel(chatId);
             case VIEW_MY_EVENTS -> message = viewMyEvents(chatId);
+            case VIEW_EXHIBIT -> message = viewExhibit(chatId);
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
         return message;
     }
 
     private SendMessage viewExhibit(Long chatId) {
-        String text = "";
         SendMessage message = new SendMessage();
-        List<Event> usersEvents = userService
-                .getUserEvents(chatId)
-                .stream().collect(Collectors.toList());
+        message.setChatId(chatId);
+        List<Event> usersEvents = userService.getUserEvents(chatId);
         Optional<Event> eventInActive = isUserAtEvent(usersEvents);
         if(eventInActive.isPresent()){
-            //need inline keyboard
+                List<Exhibit> stualExhibits = eventInActive.get().getMuseum().getExhibits();
+            Map<Long, String> variants = stualExhibits
+                    .stream()
+                    .collect(Collectors.toMap(Exhibit::getId, Exhibit::getTitle));
+            InlineKeyboardMarkup markup = gui.getMarkupInline("viewExhibit", variants);
+            message.setText("Чтобы получить информацию выберете экспонат");
+            message.setReplyMarkup(markup);
         }
         else {
-            text = "Выставка ещё не началась. Эта команда недоступна";
+            message.setText("Выставка ещё не началась. Эта команда недоступна");
         }
         return message;
     }
@@ -92,7 +95,7 @@ public class BotLogic {
         Event result = null;
         for(Event event: usersEvents){
             Instant eventDate = event.getDate().toInstant();
-            if(eventDate.isAfter(now) && eventDate.plus(event.getDuration(), ChronoUnit.MINUTES).isBefore(now)) {
+            if(now.isAfter(eventDate) && now.isBefore(eventDate.plus(event.getDuration(), ChronoUnit.MINUTES))) {
                 result = event;
             }
         }
@@ -112,12 +115,19 @@ public class BotLogic {
         if (callbackData.startsWith("CancelEvent")){
             text = cancelReviewCommand(callbackData, chatId);
         }
+        if (callbackData.startsWith("viewEvent")){
+            text = viewExhibitCommand(callbackData, Long.valueOf(callbackData.split(" ")[1]));
+        }
 
         EditMessageText message = new EditMessageText();
         message.setChatId(String.valueOf(chatId));
         message.setText(text);
         message.setMessageId(messageId);
         return message;
+    }
+
+    private String viewExhibitCommand(String callbackData, Long exhibitId) {
+        return  exhibitService.getExhibitById(exhibitId).toString();
     }
 
     /**
@@ -171,9 +181,6 @@ public class BotLogic {
         return message;
     }
 
-
-
-
     /**
      * <p>Промежуточное действие перед регистрацией на мероприятие</p>
      * <p>Выводит список ближайших мероприятий в виде кнопок с возможностью для пользователя записаться на одно из них</p>
@@ -183,7 +190,10 @@ public class BotLogic {
         message.setChatId(chatId);
         message.setText("Выберете мероприятие, на которое хотите записаться:");
         List<Event> allEvents = eventService.getListEvents();
-        InlineKeyboardMarkup markupInline = gui.getMarkupInline("AddEvent", allEvents);
+        Map<Long, String> variants = allEvents
+                .stream()
+                .collect(Collectors.toMap(Event::getId, Event::getTitle));
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline("AddEvent", variants);
         message.setReplyMarkup(markupInline);
         return message;
     }
@@ -200,7 +210,10 @@ public class BotLogic {
         }
         message.setChatId(chatId);
         message.setText(text);
-        InlineKeyboardMarkup markupInline = gui.getMarkupInline("CancelEvent", userEvents);
+        Map<Long, String> variants = userEvents
+                .stream()
+                .collect(Collectors.toMap(Event::getId, Event::getTitle));
+        InlineKeyboardMarkup markupInline = gui.getMarkupInline("CancelEvent", variants);
         message.setReplyMarkup(markupInline);
         return message;
     }

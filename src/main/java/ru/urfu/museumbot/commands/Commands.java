@@ -7,4 +7,6 @@ public class Commands {
     public static final String SIGN_UP_FOR_EVENT = "/sign_up_for_event";
     public static final String CANCEL = "/cancel";
     public static final String VIEW_MY_EVENTS = "/view_my_events";
+    public static final String VIEW_EXHIBIT = "/viewExhibit";
+
 }
