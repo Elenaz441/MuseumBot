@@ -8,7 +8,6 @@ import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.repository.UserRepository;
 
 import java.time.Instant;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,7 +56,7 @@ public class UserService {
         return userRepository.getUserByChatId(chatId);
     }
 
-    public List<Event> getAlVisitedEvents(Long chatId) {
+    public List<Event> getAllVisitedEvents(Long chatId) {
         Instant now = new Date().toInstant();
         return userRepository.getUserByChatId(chatId)
                 .getReviews().stream().filter(review -> review.getEvent().getDate().
