@@ -97,8 +97,6 @@ public class Museum {
                 ", title='" + title + '\'' +
                 ", address='" + address + '\'' +
                 ", description='" + description + '\'' +
-                ", exhibits=" + exhibits +
-                ", events=" + events +
                 '}';
     }
 
