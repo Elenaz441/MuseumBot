@@ -1,4 +1,4 @@
-package ru.urfu.museumbot.JPA.service;
+package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
