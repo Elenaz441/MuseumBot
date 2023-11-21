@@ -65,8 +65,21 @@ public class BotLogic {
             case CANCEL -> message = cancel(chatId);
             case VIEW_MY_EVENTS -> message = viewMyEvents(chatId);
             case VIEW_EXHIBIT -> message = viewExhibit(chatId);
+            case LEAVE_REVIEW -> message = leaveReview(chatId);
             default -> message = new SendMessage(String.valueOf(chatId), "Извините, команда не распознана");
         }
+        return message;
+    }
+
+    private SendMessage leaveReview(Long chatId) {
+        SendMessage message = new SendMessage();
+        List<Event> events = userService.getAlVisitedEvents(chatId);
+        Map<Long, String> visitedEvents = events
+                .stream()
+                .collect(Collectors.toMap(Event::getId, Event::getTitle));
+        message.setChatId(chatId);
+        message.setText("Выберите мероприятие:\n");
+        message.setReplyMarkup(gui.getMarkupInline("leaveReview", visitedEvents));
         return message;
     }
 
@@ -127,6 +140,10 @@ public class BotLogic {
             text = cancelReviewCommand(callbackData, chatId);
         }
         if (callbackData.startsWith("viewEvent")){
+            text = viewExhibitCommand(Long.valueOf(callbackData.split(" ")[1]));
+        }
+        if (callbackData.startsWith("leaveReview")){
+
             text = viewExhibitCommand(Long.valueOf(callbackData.split(" ")[1]));
         }
 
