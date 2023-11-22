@@ -1,8 +1,11 @@
-package ru.urfu.museumbot.JPA.repository;
+package ru.urfu.museumbot.jpa.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.urfu.museumbot.JPA.models.Event;
+import ru.urfu.museumbot.jpa.models.Event;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -12,4 +15,6 @@ import ru.urfu.museumbot.JPA.models.Event;
 public interface EventRepository extends JpaRepository<Event, Long> {
 
     Event getEventById(Long id);
+
+    List<Event> findAllByDateBetweenOrderByDate(Date startDate, Date endDate);
 }

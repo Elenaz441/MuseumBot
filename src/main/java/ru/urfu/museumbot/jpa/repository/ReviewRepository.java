@@ -1,10 +1,10 @@
-package ru.urfu.museumbot.JPA.repository;
+package ru.urfu.museumbot.jpa.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Review;
-import ru.urfu.museumbot.JPA.models.User;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Review;
+import ru.urfu.museumbot.jpa.models.User;
 
 
 /**
