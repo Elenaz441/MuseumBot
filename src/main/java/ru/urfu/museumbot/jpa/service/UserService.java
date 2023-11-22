@@ -1,11 +1,11 @@
-package ru.urfu.museumbot.JPA.service;
+package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Review;
-import ru.urfu.museumbot.JPA.models.User;
-import ru.urfu.museumbot.JPA.repository.UserRepository;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Review;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.repository.UserRepository;
 
 import java.util.List;
 

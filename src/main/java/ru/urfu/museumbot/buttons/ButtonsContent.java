@@ -1,52 +1,45 @@
-package ru.urfu.museumbot.GUI;
+package ru.urfu.museumbot.buttons;
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.urfu.museumbot.JPA.models.Event;
+import ru.urfu.museumbot.jpa.models.Event;
+import static ru.urfu.museumbot.commands.Commands.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static java.util.Map.entry;
-import static ru.urfu.museumbot.commands.Commands.*;
 
 /**
  * <p>класс виджетов</p>
- * <p>предоставляет активные элементы для оботражения сообщений от бота</p>
+ * <p>предоставляет активные элементы для отображения сообщений от бота</p>
  */
-public class Widgets {
+public class ButtonsContent {
+
     /**
-     * Отображение, которое сожержит ключ:команда значение:описание
+     * Отображение, которое содержит ключ:команда значение:описание
      */
-    public static Map<String, String> description = Map.ofEntries(
-            entry(START, "Старт"),
-            entry(HELP, "Нужна помощь?"),
-            entry(VIEW_UPCOMING_EVENTS, "Посмотреть ближайшие мероприятия"),
-            entry(SIGN_UP_FOR_EVENT, "Зарегистрироваться на мероприятие"),
-            entry(CANCEL, "Отменить запись на мероприятие"),
-            entry(VIEW_MY_EVENTS, "Посмотреть на записанные мероприятия")
+    private final List<BotCommand> commands = List.of(
+            new BotCommand(START, "Старт"),
+            new BotCommand(HELP, "Нужна помощь?"),
+            new BotCommand(VIEW_UPCOMING_EVENTS, "Посмотреть ближайшие мероприятия"),
+            new BotCommand(SIGN_UP_FOR_EVENT, "Зарегистрироваться на мероприятие"),
+            new BotCommand(CANCEL, "Отменить запись на мероприятие"),
+            new BotCommand(VIEW_MY_EVENTS, "Посмотреть на записанные мероприятия")
     );
 
     /**
+     * Получить меню команд
      * @return Список из команд, которые отображаются в меню
      */
     public List<BotCommand> getMenuOfCommands() {
-        Set<Map.Entry<String, String>> descriptionCommands = description.entrySet();
-        return descriptionCommands
-                .stream()
-                .map(entry->new BotCommand(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+        return commands;
     }
 
     /**
      * Создаёт графический интерфейс в виде кнопок с выбором
      * @param callbackData в зависимости от того, какая команда сейчас выполняется
      * @param variants варианты выбора для пользователя
-     * @return виджет последоватлеьной разметки кнопками
+     * @return виджет последовательной разметки кнопками
      */
     public InlineKeyboardMarkup getMarkupInline(String callbackData, List<Event> variants){
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();

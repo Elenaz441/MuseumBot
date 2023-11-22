@@ -9,7 +9,7 @@ public class StaticText {
     /**
      * <p>Текст для запроса /help</p>
      */
-    static String HELP_TEXT = """
+    public static final String HELP_TEXT = """
             Доступны следующие команды:
             \t/help - Справка
             \t/view_upcoming_events - Посмотреть предстоящие мероприятия

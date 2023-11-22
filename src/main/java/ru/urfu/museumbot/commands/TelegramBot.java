@@ -1,9 +1,5 @@
 package ru.urfu.museumbot.commands;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -12,30 +8,25 @@ import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScope
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import ru.urfu.museumbot.GUI.Widgets;
+import ru.urfu.museumbot.buttons.ButtonsContent;
 
 import java.util.List;
-
-
 
 /**
  * <p>Класс реализации функционала телеграм бота</p>
  */
-@Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-    @Value("${bot.name}")
-    String botName;
-
-    @Value("${bot.token}")
-    String botToken;
-
+    private final String botName;
+    private final String botToken;
     private final BotLogic logic;
 
-    @Autowired
-    public TelegramBot(BotLogic logic) {
+    public TelegramBot(BotLogic logic, String botToken, String botName) {
+        super(botToken);
+        this.botToken = botToken;
+        this.botName = botName;
         this.logic = logic;
-        List<BotCommand> listOfCommands = new Widgets().getMenuOfCommands();
+        List<BotCommand> listOfCommands = new ButtonsContent().getMenuOfCommands();
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
@@ -43,8 +34,6 @@ public class TelegramBot extends TelegramLongPollingBot {
             System.out.println(e.getMessage());
         }
     }
-
-
 
     @Override
     public String getBotUsername() {

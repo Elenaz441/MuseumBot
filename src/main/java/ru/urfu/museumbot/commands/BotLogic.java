@@ -5,18 +5,15 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.urfu.museumbot.GUI.Widgets;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Review;
-import ru.urfu.museumbot.JPA.models.User;
-import ru.urfu.museumbot.JPA.service.EventService;
-import ru.urfu.museumbot.JPA.service.ReviewService;
-import ru.urfu.museumbot.JPA.service.UserService;
+import ru.urfu.museumbot.buttons.ButtonsContent;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Review;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.jpa.service.ReviewService;
+import ru.urfu.museumbot.jpa.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static ru.urfu.museumbot.commands.Commands.*;
@@ -30,11 +27,9 @@ public class BotLogic {
 
 
     private final EventService eventService;
-
     private final UserService userService;
-
     private final ReviewService reviewService;
-    private final Widgets gui;
+    private final ButtonsContent buttonsContent;
 
     /**
      * Создание логики бота
@@ -44,8 +39,7 @@ public class BotLogic {
         this.eventService = eventService;
         this.userService = userService;
         this.reviewService = reviewService;
-        this.gui = new Widgets();
-
+        this.buttonsContent = new ButtonsContent();
     }
 
     /**
@@ -152,13 +146,14 @@ public class BotLogic {
         message.setChatId(chatId);
         message.setText("Выберете мероприятие, на которое хотите записаться:");
         List<Event> allEvents = eventService.getListEvents();
-        InlineKeyboardMarkup markupInline = gui.getMarkupInline("AddEvent", allEvents);
+        InlineKeyboardMarkup markupInline = buttonsContent.getMarkupInline("AddEvent", allEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
 
     /**
-     * <p>Отменить запись пользователя на мероприятия</p>
+     * <p>Промежуточное действие перед отменой регистрации пользователя на мероприятие</p>
+     * <p>Выводит список мероприятий, на которые пользователь зарегистрирован, в виде кнопок</p>
      */
     private SendMessage cancel(Long chatId) {
         SendMessage message = new SendMessage();
@@ -169,7 +164,7 @@ public class BotLogic {
         }
         message.setChatId(chatId);
         message.setText(text);
-        InlineKeyboardMarkup markupInline = gui.getMarkupInline("CancelEvent", userEvents);
+        InlineKeyboardMarkup markupInline = buttonsContent.getMarkupInline("CancelEvent", userEvents);
         message.setReplyMarkup(markupInline);
         return message;
     }
