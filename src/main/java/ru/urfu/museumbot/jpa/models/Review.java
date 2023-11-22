@@ -1,4 +1,4 @@
-package ru.urfu.museumbot.JPA.models;
+package ru.urfu.museumbot.jpa.models;
 
 import jakarta.persistence.*;
 

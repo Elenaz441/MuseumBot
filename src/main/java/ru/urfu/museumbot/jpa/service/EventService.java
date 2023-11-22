@@ -1,13 +1,9 @@
-package ru.urfu.museumbot.JPA.service;
+package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.repository.EventRepository;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.repository.EventRepository;
 import java.util.*;
 
 
@@ -16,8 +12,6 @@ import java.util.*;
  */
 @Service
 public class EventService {
-
-    public static final int AMOUNT_TO_ADD_DATE = 7;
 
     private final EventRepository eventRepository;
 
@@ -31,15 +25,15 @@ public class EventService {
     }
 
     /**
-     * <p>Получить список ближайших мероприятий</p>
+     * <p>Получить список ближайших мероприятий (за ближайшие 7 дней)</p>
      */
     public List<Event> getListEvents() {
-        Instant now = new Date().toInstant();
-        Instant dateTo = now.plus(AMOUNT_TO_ADD_DATE, ChronoUnit.DAYS);
-        return eventRepository.findAll().stream().filter(event -> event.getDate().
-                        toInstant().isBefore(dateTo) && event.getDate().toInstant().isAfter(now))
-                .sorted(Comparator.comparing(Event::getDate))
-                .collect(Collectors.toList());
+        Date now = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(now);
+        cal.add(Calendar.DATE, 7);
+        Date dateTo = cal.getTime();
+        return eventRepository.findAllByDateBetweenOrderByDate(now, dateTo);
     }
 
     /**

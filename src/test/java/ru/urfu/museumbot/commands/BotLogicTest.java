@@ -9,12 +9,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Review;
-import ru.urfu.museumbot.JPA.models.User;
-import ru.urfu.museumbot.JPA.service.EventService;
-import ru.urfu.museumbot.JPA.service.ReviewService;
-import ru.urfu.museumbot.JPA.service.UserService;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Review;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.jpa.service.ReviewService;
+import ru.urfu.museumbot.jpa.service.UserService;
 
 import java.util.Date;
 import java.util.List;
@@ -39,12 +39,36 @@ class BotLogicTest {
     @Mock
     ReviewService reviewService;
 
+    List<Event> events;
+
+    /**
+     * Конструктор класса, здесь создается список мероприятий
+     */
+    public BotLogicTest() {
+        Event event1 = new Event();
+        event1.setId(1L);
+        event1.setTitle("Event 1");
+        event1.setDescription("Descript");
+        event1.setDate(new Date());
+        event1.setDuration(60);
+        event1.setAddress("Ленина, 51");
+
+        Event event2 = new Event();
+        event2.setId(2L);
+        event2.setTitle("Event 2");
+        event2.setDescription("Descript");
+        event2.setDate(new Date());
+        event2.setDuration(60);
+        event2.setAddress("Ленина, 52");
+
+        this.events = List.of(event1, event2);
+    }
+
     /**
      * Тест для функции /view_upcoming_events
      */
     @Test
     void handleIncomingTextMessage_ViewUpcomingEvents() {
-        List<Event> events = getEvents();
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
@@ -61,7 +85,6 @@ class BotLogicTest {
      */
     @Test
     void handleIncomingTextMessage_ViewMyEvents() {
-        List<Event> events = getEvents();
         Long chatId = 1L;
         Mockito.doReturn(events)
                 .when(userService)
@@ -79,7 +102,6 @@ class BotLogicTest {
      */
     @Test
     void handleIncomingTextMessage_SignUp() {
-        List<Event> events = getEvents();
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
@@ -97,6 +119,7 @@ class BotLogicTest {
         assertEquals(2, keyboard.getKeyboard().size());
         assertEquals(1, keyboard.getKeyboard().get(0).size());
         assertEquals("Event 1", keyboard.getKeyboard().get(0).get(0).getText());
+        assertEquals("Event 2", keyboard.getKeyboard().get(1).get(0).getText());
     }
 
     /**
@@ -104,7 +127,6 @@ class BotLogicTest {
      */
     @Test
     void handleIncomingTextMessage_cancel() {
-        List<Event> events = getEvents();
         Long chatId = 1L;
         Mockito.doReturn(events)
                 .when(userService)
@@ -191,29 +213,5 @@ class BotLogicTest {
 
         EditMessageText messageText = logic.handleCallbackQuery("CancelEvent1", 111, 1L);
         assertEquals("Вы отменили свою запись на выбранное мероприятие", messageText.getText());
-    }
-
-    /**
-     * Получить список мероприятий
-     * @return - список мероприятий
-     */
-    List<Event> getEvents() {
-        Event event1 = new Event();
-        event1.setId(1L);
-        event1.setTitle("Event 1");
-        event1.setDescription("Descript");
-        event1.setDate(new Date());
-        event1.setDuration(60);
-        event1.setAddress("Ленина, 51");
-
-        Event event2 = new Event();
-        event2.setId(2L);
-        event2.setTitle("Event 2");
-        event2.setDescription("Descript");
-        event2.setDate(new Date());
-        event2.setDuration(60);
-        event2.setAddress("Ленина, 52");
-
-        return List.of(event1, event2);
     }
 }
