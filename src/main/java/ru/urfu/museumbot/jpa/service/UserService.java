@@ -7,7 +7,10 @@ import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.repository.UserRepository;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -51,5 +54,14 @@ public class UserService {
      */
     public User getUserByChatId(Long chatId) {
         return userRepository.getUserByChatId(chatId);
+    }
+
+    public List<Event> getAllVisitedEvents(Long chatId) {
+        Instant now = new Date().toInstant();
+        return userRepository.getUserByChatId(chatId)
+                .getReviews().stream().filter(review -> review.getEvent().getDate().
+                        toInstant().isBefore(now))
+                .map(Review::getEvent)
+                .collect(Collectors.toList());
     }
 }

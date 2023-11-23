@@ -10,5 +10,6 @@ public class Commands {
     public static final String VIEW_EXHIBIT = "/viewExhibit";
     public static final String ADD_EVENT = "AddEvent";
     public static final String CANCEL_EVENT = "CencelEvent";
+    public static final String LEAVE_REVIEW = "/leaveReview";
 
 }
