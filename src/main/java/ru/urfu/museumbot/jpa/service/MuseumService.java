@@ -1,10 +1,10 @@
-package ru.urfu.museumbot.JPA.service;
+package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.JPA.models.Exhibit;
-import ru.urfu.museumbot.JPA.models.Museum;
-import ru.urfu.museumbot.JPA.repository.MuseumRepository;
+import ru.urfu.museumbot.jpa.models.Exhibit;
+import ru.urfu.museumbot.jpa.models.Museum;
+import ru.urfu.museumbot.jpa.repository.MuseumRepository;
 /**
  * <p>Класс для работы с данными из бд для сущности "Организация"</p>
  */

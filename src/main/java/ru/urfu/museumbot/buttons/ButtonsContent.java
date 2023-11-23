@@ -41,14 +41,14 @@ public class ButtonsContent {
      * @param variants варианты выбора для пользователя
      * @return виджет последовательной разметки кнопками
      */
-    public InlineKeyboardMarkup getMarkupInline(String callbackData, Map<Long, String> variants){
+    public InlineKeyboardMarkup getMarkupInline(String callbackData, List<Event> variants){
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for (Map.Entry<Long, String>variant : variants.entrySet()) {
+        for (Event event : variants) {
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(variant.getValue());
-            inlineKeyboardButton.setCallbackData(callbackData + " " + variant.getKey());
+            inlineKeyboardButton.setText(event.getTitle());
+            inlineKeyboardButton.setCallbackData(callbackData+ " " + event.getId());
             rowInline.add(inlineKeyboardButton);
             rowsInline.add(rowInline);
         }
