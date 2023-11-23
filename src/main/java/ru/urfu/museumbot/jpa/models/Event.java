@@ -112,11 +112,23 @@ public class Event {
         review.setEvent(null);
     }
 
-    @Override
-    public String toString() {
+    public String toFormattedString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy, HH:mm");
         return String.format("%s\n\n%s\n\nДата: %s\nДлительность: %s минут\nАдрес: %s", title, description,
                 dateFormat.format(date), duration, address);
+    }
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", date=" + date +
+                ", duration=" + duration +
+                ", address='" + address + '\'' +
+                ", reviews=" + reviews +
+                '}';
     }
 
     @Override

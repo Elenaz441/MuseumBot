@@ -48,7 +48,7 @@ public class ButtonsContent {
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData(callbackData + event.getId());
+            inlineKeyboardButton.setCallbackData(callbackData+ " " + event.getId());
             rowInline.add(inlineKeyboardButton);
             rowsInline.add(rowInline);
         }
