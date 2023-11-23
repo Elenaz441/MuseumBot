@@ -41,7 +41,7 @@ public class ViewMyEventsCommand implements  Command {
         return userService
                 .getUserEvents(chatId)
                 .stream()
-                .map(Event::toString)
+                .map(Event::toFormattedString)
                 .collect(Collectors.joining("\n\n===============================\n\n"));
     }
 }

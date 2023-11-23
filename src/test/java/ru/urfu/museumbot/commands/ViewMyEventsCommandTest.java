@@ -11,23 +11,20 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.jpa.models.Event;
-import ru.urfu.museumbot.jpa.service.EventService;
 import ru.urfu.museumbot.jpa.service.ServiceContext;
+import ru.urfu.museumbot.jpa.service.UserService;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Класс для тестирования класса {@link ViewUpcomingEventsCommand}
+ * Класс для тестирования класса {@link ViewMyEventsCommand}
  */
 @ExtendWith(MockitoExtension.class)
-class ViewUpcomingEventsCommandTest {
+class ViewMyEventsCommandTest {
 
-    ViewUpcomingEventsCommand viewUpcomingEventsCommand;
+    ViewMyEventsCommand viewMyEventsCommand;
 
     @Mock
     TelegramBot telegramBot;
@@ -36,16 +33,16 @@ class ViewUpcomingEventsCommandTest {
     ServiceContext serviceContext;
 
     @Mock
-    EventService eventService;
-
-    FakeSender fakeSender;
+    UserService userService;
 
     List<Event> events;
+
+    FakeSender fakeSender;
 
     /**
      * Подготовка данных для тестов
      */
-    public ViewUpcomingEventsCommandTest() {
+    public ViewMyEventsCommandTest() {
         Calendar calendar = new GregorianCalendar(2017, Calendar.NOVEMBER, 25, 12, 0);
         Date date = calendar.getTime();
         Event event1 = new Event();
@@ -71,28 +68,29 @@ class ViewUpcomingEventsCommandTest {
      * Настройка данных перед каждым тестом
      */
     @BeforeEach
-    public void setUp() {
-        Mockito.doReturn(eventService)
+    void setUp() {
+        Mockito.doReturn(userService)
                 .when(serviceContext)
-                .getEventService();
+                .getUserService();
         fakeSender = new FakeSender(telegramBot);
-        this.viewUpcomingEventsCommand = new ViewUpcomingEventsCommand(fakeSender, serviceContext);
+        viewMyEventsCommand = new ViewMyEventsCommand(fakeSender, serviceContext);
     }
 
     /**
-     * Тест на вывод предстоящих мероприятий
+     * Тест на вывод предстоящих мероприятий, на которые пользователь зарегистрирован
      */
     @Test
     void execute() {
+        Long chatId = 1L;
         Mockito.doReturn(events)
-                .when(eventService)
-                .getListEvents();
-        Chat chat = new Chat(1L, "test");
+                .when(userService)
+                .getUserEvents(chatId);
+        Chat chat = new Chat(chatId, "test");
         Message message = new Message();
         message.setChat(chat);
         Update update = new Update();
         update.setMessage(message);
-        viewUpcomingEventsCommand.execute(update);
+        viewMyEventsCommand.execute(update);
         assertEquals(1, fakeSender.getMessages().size());
         assertEquals("""
                 Event 1
@@ -113,5 +111,24 @@ class ViewUpcomingEventsCommandTest {
                 Длительность: 60 минут
                 Адрес: Ленина, 52""",
                 fakeSender.getMessages().get(0).getText());
+    }
+
+    /**
+     * Тест случая, когда пользователь не зарегистрирован ни на одно мероприятие
+     */
+    @Test
+    void executeIfNotSignedUp() {
+        Long chatId = 1L;
+        Mockito.doReturn(new ArrayList<>())
+                .when(userService)
+                .getUserEvents(chatId);
+        Chat chat = new Chat(chatId, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        Update update = new Update();
+        update.setMessage(message);
+        viewMyEventsCommand.execute(update);
+        assertEquals(1, fakeSender.getMessages().size());
+        assertEquals("Вы ещё не записаны ни на одно мероприятие", fakeSender.getMessages().get(0).getText());
     }
 }
