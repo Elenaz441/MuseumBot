@@ -37,7 +37,7 @@ public class ViewUpcomingEventsCommand implements Command{
         return eventService
                 .getListEvents()
                 .stream()
-                .map(Event::toString)
+                .map(Event::toFormattedString)
                 .collect(Collectors.joining("\n\n===============================\n\n"));
     }
 }
