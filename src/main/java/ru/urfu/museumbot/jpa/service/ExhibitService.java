@@ -1,10 +1,10 @@
-package ru.urfu.museumbot.JPA.service;
+package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.JPA.models.Event;
-import ru.urfu.museumbot.JPA.models.Exhibit;
-import ru.urfu.museumbot.JPA.repository.ExhibitRepository;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Exhibit;
+import ru.urfu.museumbot.jpa.repository.ExhibitRepository;
 
 /**
  * <p>Класс для работы с данными из бд для сущности "Экспонат"</p>
