@@ -31,9 +31,8 @@ public class SignUpCommand implements Command {
     @Override
     public void execute(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
         String callback = update.getCallbackQuery().getData();
-        sendBotMessageService.sendEditMessage(chatId.toString(), messageId, signUp(callback, chatId));
+        sendBotMessageService.sendMessage(chatId.toString(), signUp(callback, chatId));
     }
 
     /**

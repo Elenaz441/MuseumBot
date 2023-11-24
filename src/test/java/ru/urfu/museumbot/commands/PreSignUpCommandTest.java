@@ -44,6 +44,8 @@ class PreSignUpCommandTest {
 
     List<Event> events;
 
+    Update update;
+
     /**
      * Подготовка данных для тестов
      */
@@ -79,6 +81,12 @@ class PreSignUpCommandTest {
                 .getEventService();
         fakeSender = new FakeSender(telegramBot);
         this.preSignUpCommand = new PreSignUpCommand(fakeSender, serviceContext);
+
+        Chat chat = new Chat(1L, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        update = new Update();
+        update.setMessage(message);
     }
 
     /**
@@ -89,11 +97,6 @@ class PreSignUpCommandTest {
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
-        Chat chat = new Chat(1L, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        Update update = new Update();
-        update.setMessage(message);
         preSignUpCommand.execute(update);
         assertEquals(1, fakeSender.getMessages().size());
 
