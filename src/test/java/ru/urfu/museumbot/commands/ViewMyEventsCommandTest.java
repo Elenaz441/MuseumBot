@@ -35,6 +35,8 @@ class ViewMyEventsCommandTest {
     @Mock
     UserService userService;
 
+    Update update;
+
     List<Event> events;
 
     FakeSender fakeSender;
@@ -74,6 +76,12 @@ class ViewMyEventsCommandTest {
                 .getUserService();
         fakeSender = new FakeSender(telegramBot);
         viewMyEventsCommand = new ViewMyEventsCommand(fakeSender, serviceContext);
+
+        Chat chat = new Chat(1L, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        update = new Update();
+        update.setMessage(message);
     }
 
     /**
@@ -81,15 +89,9 @@ class ViewMyEventsCommandTest {
      */
     @Test
     void execute() {
-        Long chatId = 1L;
         Mockito.doReturn(events)
                 .when(userService)
-                .getUserEvents(chatId);
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        Update update = new Update();
-        update.setMessage(message);
+                .getUserEvents(1L);
         viewMyEventsCommand.execute(update);
         assertEquals(1, fakeSender.getMessages().size());
         assertEquals("""
@@ -118,15 +120,9 @@ class ViewMyEventsCommandTest {
      */
     @Test
     void executeIfNotSignedUp() {
-        Long chatId = 1L;
         Mockito.doReturn(new ArrayList<>())
                 .when(userService)
-                .getUserEvents(chatId);
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        Update update = new Update();
-        update.setMessage(message);
+                .getUserEvents(1L);
         viewMyEventsCommand.execute(update);
         assertEquals(1, fakeSender.getMessages().size());
         assertEquals("Вы ещё не записаны ни на одно мероприятие", fakeSender.getMessages().get(0).getText());

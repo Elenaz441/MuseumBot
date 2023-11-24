@@ -1,7 +1,6 @@
 package ru.urfu.museumbot.commands;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.buttons.ButtonsContent;
@@ -17,15 +16,10 @@ import java.util.List;
 public class FakeSender extends SendBotMessageService {
 
     private final List<SendMessage> messages = new ArrayList<>();
-    private final List<EditMessageText> editedMessages = new ArrayList<>();
     private final ButtonsContent buttonsContent;
 
     public List<SendMessage> getMessages() {
         return messages;
-    }
-
-    public List<EditMessageText> getEditedMessages() {
-        return editedMessages;
     }
 
     public FakeSender(TelegramBot telegramBot) {
@@ -49,14 +43,5 @@ public class FakeSender extends SendBotMessageService {
         InlineKeyboardMarkup markupInline = buttonsContent.getMarkupInline(callbackData, events);
         sendMessage.setReplyMarkup(markupInline);
         messages.add(sendMessage);
-    }
-
-    @Override
-    public void sendEditMessage(String chatId, Integer messageId, String message) {
-        EditMessageText editMessageText = new EditMessageText();
-        editMessageText.setChatId(chatId);
-        editMessageText.setMessageId(messageId);
-        editMessageText.setText(message);
-        editedMessages.add(editMessageText);
     }
 }

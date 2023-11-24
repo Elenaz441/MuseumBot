@@ -44,6 +44,8 @@ class PreCancelCommandTest {
 
     List<Event> events;
 
+    Update update;
+
     /**
      * Подготовка данных для тестов
      */
@@ -79,6 +81,12 @@ class PreCancelCommandTest {
                 .getUserService();
         fakeSender = new FakeSender(telegramBot);
         this.preCancelCommand = new PreCancelCommand(fakeSender, serviceContext);
+
+        Chat chat = new Chat(1L, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        update = new Update();
+        update.setMessage(message);
     }
 
     /**
@@ -90,11 +98,6 @@ class PreCancelCommandTest {
         Mockito.doReturn(events)
                 .when(userService)
                 .getUserEvents(chatId);
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        Update update = new Update();
-        update.setMessage(message);
         preCancelCommand.execute(update);
         assertEquals(1, fakeSender.getMessages().size());
 

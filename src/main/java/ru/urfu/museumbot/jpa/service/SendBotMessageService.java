@@ -3,7 +3,6 @@ package ru.urfu.museumbot.jpa.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.urfu.museumbot.TelegramBot;
@@ -60,25 +59,6 @@ public class SendBotMessageService {
 
         try {
             bot.execute(sendMessage);
-        } catch (TelegramApiException e) {
-            System.out.printf("Сообщение с текстом \"%s\" не отправилось!", message);
-        }
-    }
-
-    /**
-     * Отредактировать отправленное сообщение
-     * @param chatId чат для отправки
-     * @param messageId id сообщения, которое нужно отредактировать
-     * @param message сообщение
-     */
-    public void sendEditMessage(String chatId, Integer messageId, String message) {
-        EditMessageText editMessageText = new EditMessageText();
-        editMessageText.setChatId(chatId);
-        editMessageText.setMessageId(messageId);
-        editMessageText.setText(message);
-
-        try {
-            bot.execute(editMessageText);
         } catch (TelegramApiException e) {
             System.out.printf("Сообщение с текстом \"%s\" не отправилось!", message);
         }

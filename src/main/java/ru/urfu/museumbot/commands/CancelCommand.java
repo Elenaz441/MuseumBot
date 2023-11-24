@@ -29,9 +29,8 @@ public class CancelCommand implements Command {
     @Override
     public void execute(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
         String callback = update.getCallbackQuery().getData();
-        sendBotMessageService.sendEditMessage(chatId.toString(), messageId, cancel(callback, chatId));
+        sendBotMessageService.sendMessage(chatId.toString(), cancel(callback, chatId));
     }
 
     /**
@@ -43,7 +42,11 @@ public class CancelCommand implements Command {
         Review review = reviewService.getReview(
                 userService.getUserByChatId(chatId),
                 eventService.getEventById(eventId));
-        reviewService.deleteReview(review);
+        if (review == null) {
+            text = "Вы не записаны на данное мероприятие";
+        } else {
+            reviewService.deleteReview(review);
+        }
         return text;
     }
 

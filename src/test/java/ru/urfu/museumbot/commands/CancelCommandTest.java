@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -42,6 +42,8 @@ class CancelCommandTest {
 
     FakeSender fakeSender;
 
+    Update update;
+
     /**
      * Настройка данных перед каждым тестом
      */
@@ -58,6 +60,16 @@ class CancelCommandTest {
                 .getReviewService();
         fakeSender = new FakeSender(telegramBot);
         this.cancelCommand = new CancelCommand(fakeSender, serviceContext);
+
+        Chat chat = new Chat(1L, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        message.setMessageId(1);
+        CallbackQuery callbackQuery = new CallbackQuery();
+        callbackQuery.setMessage(message);
+        callbackQuery.setData("CancelEvent 1");
+        update = new Update();
+        update.setCallbackQuery(callbackQuery);
     }
 
     /**
@@ -80,21 +92,24 @@ class CancelCommandTest {
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
 
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        message.setMessageId(1);
-        CallbackQuery callbackQuery = new CallbackQuery();
-        callbackQuery.setMessage(message);
-        callbackQuery.setData("CancelEvent 1");
-        Update update = new Update();
-        update.setCallbackQuery(callbackQuery);
-
         cancelCommand.execute(update);
-        assertEquals(1, fakeSender.getEditedMessages().size());
+        assertEquals(1, fakeSender.getMessages().size());
 
-        EditMessageText messageText = fakeSender.getEditedMessages().get(0);
+        SendMessage messageText = fakeSender.getMessages().get(0);
         assertEquals("Вы отменили свою запись на выбранное мероприятие", messageText.getText());
         Mockito.verify(reviewService, Mockito.times(1)).deleteReview(review);
+    }
+
+    /**
+     * Проверка случая,
+     * когда пользователь пытается отменить запись на мероприятие,
+     * на которое он не зарегистрирован
+     */
+    @Test
+    void executeIfNotSignedUp() {
+        cancelCommand.execute(update);
+        SendMessage messageText = fakeSender.getMessages().get(0);
+        assertEquals("Вы не записаны на данное мероприятие", messageText.getText());
+        Mockito.verify(reviewService, Mockito.never()).deleteReview(Mockito.any(Review.class));
     }
 }

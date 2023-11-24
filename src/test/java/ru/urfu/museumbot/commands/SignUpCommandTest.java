@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -42,6 +42,8 @@ class SignUpCommandTest {
 
     FakeSender fakeSender;
 
+    Update update;
+
     /**
      * Настройка данных перед каждым тестом
      */
@@ -58,6 +60,16 @@ class SignUpCommandTest {
                 .getReviewService();
         fakeSender = new FakeSender(telegramBot);
         this.signUpCommand = new SignUpCommand(fakeSender, serviceContext);
+
+        Chat chat = new Chat(1L, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        message.setMessageId(1);
+        CallbackQuery callbackQuery = new CallbackQuery();
+        callbackQuery.setMessage(message);
+        callbackQuery.setData("AddEvent 1");
+        update = new Update();
+        update.setCallbackQuery(callbackQuery);
     }
 
     /**
@@ -74,21 +86,13 @@ class SignUpCommandTest {
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Mockito.doReturn(event).when(eventService).getEventById(1L);
 
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        message.setMessageId(1);
-        CallbackQuery callbackQuery = new CallbackQuery();
-        callbackQuery.setMessage(message);
-        callbackQuery.setData("AddEvent 1");
-        Update update = new Update();
-        update.setCallbackQuery(callbackQuery);
-
         signUpCommand.execute(update);
-        assertEquals(1, fakeSender.getEditedMessages().size());
+        assertEquals(1, fakeSender.getMessages().size());
 
-        EditMessageText messageText = fakeSender.getEditedMessages().get(0);
+        SendMessage messageText = fakeSender.getMessages().get(0);
         assertEquals("Вы записались на выбранное мероприятие", messageText.getText());
+
+        Mockito.verify(reviewService, Mockito.times(1)).addReview(Mockito.any(Review.class));
     }
 
     /**
@@ -111,20 +115,10 @@ class SignUpCommandTest {
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
 
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        message.setMessageId(1);
-        CallbackQuery callbackQuery = new CallbackQuery();
-        callbackQuery.setMessage(message);
-        callbackQuery.setData("AddEvent 1");
-        Update update = new Update();
-        update.setCallbackQuery(callbackQuery);
-
         signUpCommand.execute(update);
-        assertEquals(1, fakeSender.getEditedMessages().size());
+        assertEquals(1, fakeSender.getMessages().size());
 
-        EditMessageText messageText = fakeSender.getEditedMessages().get(0);
+        SendMessage messageText = fakeSender.getMessages().get(0);
         assertEquals("Вы уже записаны на мероприятие \"Event 1\"", messageText.getText());
     }
 }

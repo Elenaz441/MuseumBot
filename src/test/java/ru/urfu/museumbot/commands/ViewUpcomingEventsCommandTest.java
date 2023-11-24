@@ -40,6 +40,8 @@ class ViewUpcomingEventsCommandTest {
 
     FakeSender fakeSender;
 
+    Update update;
+
     List<Event> events;
 
     /**
@@ -77,6 +79,12 @@ class ViewUpcomingEventsCommandTest {
                 .getEventService();
         fakeSender = new FakeSender(telegramBot);
         this.viewUpcomingEventsCommand = new ViewUpcomingEventsCommand(fakeSender, serviceContext);
+
+        Chat chat = new Chat(1L, "test");
+        Message message = new Message();
+        message.setChat(chat);
+        update = new Update();
+        update.setMessage(message);
     }
 
     /**
@@ -87,11 +95,6 @@ class ViewUpcomingEventsCommandTest {
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
-        Chat chat = new Chat(1L, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        Update update = new Update();
-        update.setMessage(message);
         viewUpcomingEventsCommand.execute(update);
         assertEquals(1, fakeSender.getMessages().size());
         assertEquals("""
