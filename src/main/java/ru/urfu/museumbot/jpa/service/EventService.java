@@ -13,6 +13,11 @@ import java.util.*;
 @Service
 public class EventService {
 
+    /**
+     * Количество ближайших дней, за которые хотим получить мероприятия
+     */
+    public final int NEXT_DAYS_COUNT = 7;
+
     private final EventRepository eventRepository;
 
     /**
@@ -31,7 +36,7 @@ public class EventService {
         Date now = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
-        cal.add(Calendar.DATE, 7);
+        cal.add(Calendar.DATE, NEXT_DAYS_COUNT);
         Date dateTo = cal.getTime();
         return eventRepository.findAllByDateBetweenOrderByDate(now, dateTo);
     }

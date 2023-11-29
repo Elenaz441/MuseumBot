@@ -1,5 +1,6 @@
 package ru.urfu.museumbot.commands;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
@@ -13,26 +14,29 @@ import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
  */
 public class SignUpCommand implements Command {
 
-    private final SendBotMessageService sendBotMessageService;
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
 
-    public SignUpCommand(SendBotMessageService sendBotMessageService, ServiceContext serviceContext) {
-        this.sendBotMessageService = sendBotMessageService;
-        this.eventService = serviceContext.getEventService();
-        this.reviewService = serviceContext.getReviewService();
-        this.userService = serviceContext.getUserService();
+    public SignUpCommand(EventService eventService,
+                         ReviewService reviewService,
+                         UserService userService) {
+        this.eventService = eventService;
+        this.reviewService = reviewService;
+        this.userService = userService;
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public void execute(Update update) {
+    public SendMessage getMessage(Update update) {
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
         String callback = update.getCallbackQuery().getData();
-        sendBotMessageService.sendMessage(chatId.toString(), signUp(callback, chatId));
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId.toString());
+        message.setText(signUp(callback, chatId));
+        return message;
     }
 
     /**

@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <p>класс виджетов</p>
- * <p>предоставляет активные элементы для отображения сообщений от бота</p>
+ * Класс, отвечающий за содержимое кнопок (надписи)
  */
 public class ButtonsContent {
 

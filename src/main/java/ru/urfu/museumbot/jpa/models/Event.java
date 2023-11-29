@@ -3,7 +3,6 @@ package ru.urfu.museumbot.jpa.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -110,12 +109,6 @@ public class Event {
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setEvent(null);
-    }
-
-    public String toFormattedString() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, d MMMM yyyy, HH:mm");
-        return String.format("%s\n\n%s\n\nДата: %s\nДлительность: %s минут\nАдрес: %s", title, description,
-                dateFormat.format(date), duration, address);
     }
 
     @Override

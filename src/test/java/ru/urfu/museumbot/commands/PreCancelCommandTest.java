@@ -11,9 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.jpa.models.Event;
-import ru.urfu.museumbot.jpa.service.ServiceContext;
 import ru.urfu.museumbot.jpa.service.UserService;
 
 import java.util.Calendar;
@@ -32,15 +30,7 @@ class PreCancelCommandTest {
     PreCancelCommand preCancelCommand;
 
     @Mock
-    TelegramBot telegramBot;
-
-    @Mock
-    ServiceContext serviceContext;
-
-    @Mock
     UserService userService;
-
-    FakeSender fakeSender;
 
     List<Event> events;
 
@@ -76,11 +66,7 @@ class PreCancelCommandTest {
      */
     @BeforeEach
     void setUp() {
-        Mockito.doReturn(userService)
-                .when(serviceContext)
-                .getUserService();
-        fakeSender = new FakeSender(telegramBot);
-        this.preCancelCommand = new PreCancelCommand(fakeSender, serviceContext);
+        this.preCancelCommand = new PreCancelCommand(userService);
 
         Chat chat = new Chat(1L, "test");
         Message message = new Message();
@@ -93,21 +79,18 @@ class PreCancelCommandTest {
      * Тест на вывод мероприятий, на которые пользователь зарегистрирован, с помощью кнопок
      */
     @Test
-    void execute() {
+    void getMessage() {
         Long chatId = 1L;
         Mockito.doReturn(events)
                 .when(userService)
                 .getUserEvents(chatId);
-        preCancelCommand.execute(update);
-        assertEquals(1, fakeSender.getMessages().size());
-
-        SendMessage sendMessage = fakeSender.getMessages().get(0);
+        SendMessage message = preCancelCommand.getMessage(update);
         assertEquals(
                 "Выберете мероприятие, на которое хотите отменить запись:",
-                sendMessage.getText());
-        assertEquals(InlineKeyboardMarkup.class, sendMessage.getReplyMarkup().getClass());
+                message.getText());
+        assertEquals(InlineKeyboardMarkup.class, message.getReplyMarkup().getClass());
 
-        InlineKeyboardMarkup keyboard = (InlineKeyboardMarkup) sendMessage.getReplyMarkup();
+        InlineKeyboardMarkup keyboard = (InlineKeyboardMarkup) message.getReplyMarkup();
 
         assertEquals(2, keyboard.getKeyboard().size());
         assertEquals(1, keyboard.getKeyboard().get(0).size());

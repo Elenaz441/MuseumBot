@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.jpa.models.*;
 import ru.urfu.museumbot.jpa.service.*;
 
@@ -26,12 +25,6 @@ class CancelCommandTest {
     CancelCommand cancelCommand;
 
     @Mock
-    TelegramBot telegramBot;
-
-    @Mock
-    ServiceContext serviceContext;
-
-    @Mock
     EventService eventService;
 
     @Mock
@@ -40,8 +33,6 @@ class CancelCommandTest {
     @Mock
     ReviewService reviewService;
 
-    FakeSender fakeSender;
-
     Update update;
 
     /**
@@ -49,17 +40,7 @@ class CancelCommandTest {
      */
     @BeforeEach
     void setUp() {
-        Mockito.doReturn(eventService)
-                .when(serviceContext)
-                .getEventService();
-        Mockito.doReturn(userService)
-                .when(serviceContext)
-                .getUserService();
-        Mockito.doReturn(reviewService)
-                .when(serviceContext)
-                .getReviewService();
-        fakeSender = new FakeSender(telegramBot);
-        this.cancelCommand = new CancelCommand(fakeSender, serviceContext);
+        this.cancelCommand = new CancelCommand(eventService, reviewService, userService);
 
         Chat chat = new Chat(1L, "test");
         Message message = new Message();
@@ -76,7 +57,7 @@ class CancelCommandTest {
      * Тест на отмену регистрации пользователя
      */
     @Test
-    void execute() {
+    void getMessage() {
         Long chatId = 1L;
         Event event = new Event();
         event.setId(1L);
@@ -92,11 +73,8 @@ class CancelCommandTest {
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
 
-        cancelCommand.execute(update);
-        assertEquals(1, fakeSender.getMessages().size());
-
-        SendMessage messageText = fakeSender.getMessages().get(0);
-        assertEquals("Вы отменили свою запись на выбранное мероприятие", messageText.getText());
+        SendMessage message = cancelCommand.getMessage(update);
+        assertEquals("Вы отменили свою запись на выбранное мероприятие", message.getText());
         Mockito.verify(reviewService, Mockito.times(1)).deleteReview(review);
     }
 
@@ -106,10 +84,9 @@ class CancelCommandTest {
      * на которое он не зарегистрирован
      */
     @Test
-    void executeIfNotSignedUp() {
-        cancelCommand.execute(update);
-        SendMessage messageText = fakeSender.getMessages().get(0);
-        assertEquals("Вы не записаны на данное мероприятие", messageText.getText());
+    void getMessageIfNotSignedUp() {
+        SendMessage message = cancelCommand.getMessage(update);
+        assertEquals("Вы не записаны на данное мероприятие", message.getText());
         Mockito.verify(reviewService, Mockito.never()).deleteReview(Mockito.any(Review.class));
     }
 }

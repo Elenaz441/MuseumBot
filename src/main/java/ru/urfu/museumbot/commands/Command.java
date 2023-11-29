@@ -1,5 +1,6 @@
 package ru.urfu.museumbot.commands;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 /**
@@ -10,5 +11,5 @@ public interface Command {
     /**
      * Основной метод, который вызывает работу команды
      */
-    void execute(Update update);
+    SendMessage getMessage(Update update);
 }
