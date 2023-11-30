@@ -7,7 +7,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 /**
  * Команды, которые начинаются не со /
  */
-@Service
 public class NonCommand implements Command {
 
     static final String UNKNOWN_MESSAGE = "Извините, команда не распознана, напишите /help чтобы узнать что я умею.";

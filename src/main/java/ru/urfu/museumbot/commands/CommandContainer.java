@@ -16,6 +16,8 @@ public class CommandContainer {
     private final Map<String, Command> commandMap;
     private final Command unknownCommand;
     @Autowired
+    private final List<Command> commandList;
+
     public CommandContainer(
                             StartCommand startCommand,
                             HelpCommand helpCommand,
@@ -25,7 +27,7 @@ public class CommandContainer {
                             PreCancelCommand preCancelCommand,
                             SignUpCommand signUpCommand,
                             CancelCommand cancelCommand) {
-        List<Command> commands = List.of(startCommand,
+        commandList = List.of(startCommand,
                 helpCommand,
                 viewUpcomingEventsCommand,
                 viewMyEventsCommand,
@@ -33,7 +35,7 @@ public class CommandContainer {
                 preSignUpCommand,
                 signUpCommand,
                 cancelCommand);
-        this.commandMap = commands.stream().collect(Collectors.toMap(Command::getCommandName, command -> command));
+        this.commandMap = commandList.stream().collect(Collectors.toMap(Command::getCommandName, command -> command));
         unknownCommand = new NonCommand();
     }
 
