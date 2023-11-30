@@ -1,11 +1,15 @@
 package ru.urfu.museumbot.commands;
 
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import static ru.urfu.museumbot.commands.Commands.HELP;
+
 
 /**
  * Help {@link Command}.
  */
+@Service
 public class HelpCommand implements Command {
 
     public final String HELP_MESSAGE =  """
@@ -29,5 +33,10 @@ public class HelpCommand implements Command {
         message.setChatId(update.getMessage().getChatId().toString());
         message.setText(HELP_MESSAGE);
         return message;
+    }
+
+    @Override
+    public String getCommandName() {
+        return HELP;
     }
 }

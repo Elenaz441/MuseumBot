@@ -12,4 +12,5 @@ public interface Command {
      * Основной метод, который вызывает работу команды
      */
     SendMessage getMessage(Update update);
+    String getCommandName();
 }

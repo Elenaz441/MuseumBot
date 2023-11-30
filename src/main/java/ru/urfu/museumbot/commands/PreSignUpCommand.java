@@ -1,5 +1,7 @@
 package ru.urfu.museumbot.commands;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -10,18 +12,21 @@ import ru.urfu.museumbot.jpa.service.EventService;
 import java.util.List;
 
 import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
+import static ru.urfu.museumbot.commands.Commands.SIGN_UP_FOR_EVENT;
+
 
 /**
  * Промежуточная команда перед регистрацией на мероприятие.
  * Здесь пользователю предоставляется список ближайших мероприятий.
  */
+@Service
 public class PreSignUpCommand implements Command {
 
     public final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите записаться:";
 
     private final EventService eventService;
     private final ButtonsContent buttonsContent;
-
+    @Autowired
     public PreSignUpCommand(EventService eventService) {
         this.eventService = eventService;
         this.buttonsContent = new ButtonsContent();
@@ -38,6 +43,11 @@ public class PreSignUpCommand implements Command {
         message.setText(CHOOSE_EVENT_MESSAGE);
         message.setReplyMarkup(markupInline);
         return message;
+    }
+
+    @Override
+    public String getCommandName() {
+        return SIGN_UP_FOR_EVENT;
     }
 
     /**

@@ -1,5 +1,7 @@
 package ru.urfu.museumbot.commands;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Event;
@@ -12,12 +14,13 @@ import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
 /**
  * Класс для команды регистрации пользователя на мероприятие
  */
+@Service
 public class SignUpCommand implements Command {
 
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
-
+    @Autowired
     public SignUpCommand(EventService eventService,
                          ReviewService reviewService,
                          UserService userService) {
@@ -37,6 +40,11 @@ public class SignUpCommand implements Command {
         message.setChatId(chatId.toString());
         message.setText(signUp(callback, chatId));
         return message;
+    }
+
+    @Override
+    public String getCommandName() {
+        return ADD_EVENT;
     }
 
     /**
