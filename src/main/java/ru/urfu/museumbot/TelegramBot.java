@@ -15,7 +15,6 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.urfu.museumbot.buttons.ButtonsContent;
 import ru.urfu.museumbot.commands.CommandContainer;
-import ru.urfu.museumbot.jpa.service.*;
 
 import java.util.List;
 
@@ -31,16 +30,11 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
 
     public TelegramBot(@Value("${bot.name}") String botName,
                        @Value("${bot.token}") String botToken,
-                       EventService eventService,
-                       ReviewService reviewService,
-                       UserService userService) {
+                       CommandContainer commandContainer) {
         super(botToken);
         this.botToken = botToken;
         this.botName = botName;
-        this.commandContainer = new CommandContainer(
-                eventService,
-                reviewService,
-                userService);
+        this.commandContainer = commandContainer;
         List<BotCommand> listOfCommands = new ButtonsContent().getMenuOfCommands();
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));

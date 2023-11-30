@@ -1,5 +1,7 @@
 package ru.urfu.museumbot.commands;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Review;
@@ -10,12 +12,14 @@ import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
 /**
  * Класс для команды отмены регистрации на мероприятие
  */
+@Service
 public class CancelCommand implements Command {
 
+    static final String MESSAGE_SUCCESS = "Вы отменили свою запись на выбранное мероприятие";
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
-
+    @Autowired
     public CancelCommand(EventService eventService,
                          ReviewService reviewService,
                          UserService userService) {
@@ -37,11 +41,16 @@ public class CancelCommand implements Command {
         return message;
     }
 
+    @Override
+    public String getCommandName() {
+        return CANCEL_EVENT;
+    }
+
     /**
      * Отмена регистрации на выбранное мероприятие
      */
     private String cancel(String callbackData, Long chatId) {
-        String text = "Вы отменили свою запись на выбранное мероприятие";
+        String text = MESSAGE_SUCCESS;
         Long eventId = Long.valueOf(callbackData.replace(CANCEL_EVENT + " ", ""));
         Review review = reviewService.getReview(
                 userService.getUserByChatId(chatId),

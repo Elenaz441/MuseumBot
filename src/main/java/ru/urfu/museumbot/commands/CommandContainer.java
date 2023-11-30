@@ -1,31 +1,39 @@
 package ru.urfu.museumbot.commands;
 
-import ru.urfu.museumbot.jpa.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import static ru.urfu.museumbot.commands.Commands.*;
+import java.util.stream.Collectors;
+
 
 /**
  * Хранилище {@link Command}s, которое используется для обработки входящих сообщений.
  */
+@Service
 public class CommandContainer {
-
     private final Map<String, Command> commandMap;
     private final Command unknownCommand;
-
-    public CommandContainer(EventService eventService,
-                            ReviewService reviewService,
-                            UserService userService) {
-        this.commandMap = new HashMap<>();
-        commandMap.put(START, new StartCommand());
-        commandMap.put(HELP, new HelpCommand());
-        commandMap.put(VIEW_UPCOMING_EVENTS, new ViewUpcomingEventsCommand(eventService));
-        commandMap.put(VIEW_MY_EVENTS, new ViewMyEventsCommand(userService));
-        commandMap.put(SIGN_UP_FOR_EVENT, new PreSignUpCommand(eventService));
-        commandMap.put(CANCEL, new PreCancelCommand(userService));
-        commandMap.put(ADD_EVENT, new SignUpCommand(eventService, reviewService, userService));
-        commandMap.put(CANCEL_EVENT, new CancelCommand(eventService, reviewService, userService));
+    @Autowired
+    public CommandContainer(
+                            StartCommand startCommand,
+                            HelpCommand helpCommand,
+                            ViewUpcomingEventsCommand viewUpcomingEventsCommand,
+                            ViewMyEventsCommand viewMyEventsCommand,
+                            PreSignUpCommand preSignUpCommand,
+                            PreCancelCommand preCancelCommand,
+                            SignUpCommand signUpCommand,
+                            CancelCommand cancelCommand) {
+        List<Command> commands = List.of(startCommand,
+                helpCommand,
+                viewUpcomingEventsCommand,
+                viewMyEventsCommand,
+                preCancelCommand,
+                preSignUpCommand,
+                signUpCommand,
+                cancelCommand);
+        this.commandMap = commands.stream().collect(Collectors.toMap(Command::getCommandName, command -> command));
         unknownCommand = new NonCommand();
     }
 
