@@ -1,10 +1,9 @@
 package ru.urfu.museumbot.commands;
 
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.dataFormat.EventFormat;
 import ru.urfu.museumbot.jpa.service.EventService;
-import ru.urfu.museumbot.jpa.service.SendBotMessageService;
-import ru.urfu.museumbot.jpa.service.ServiceContext;
 
 import java.util.stream.Collectors;
 
@@ -13,31 +12,32 @@ import java.util.stream.Collectors;
  */
 public class ViewUpcomingEventsCommand implements Command{
 
-    private final SendBotMessageService sendBotMessageService;
     private final EventService eventService;
 
-    public ViewUpcomingEventsCommand(SendBotMessageService sendBotMessageService, ServiceContext serviceContext) {
-        this.sendBotMessageService = sendBotMessageService;
-        this.eventService = serviceContext.getEventService();
+    public ViewUpcomingEventsCommand(EventService eventService) {
+        this.eventService = eventService;
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public void execute(Update update) {
-        Long chatId = update.getMessage().getChatId();
-        sendBotMessageService.sendMessage(chatId.toString(), viewUpcomingEvents());
+    public SendMessage getMessage(Update update) {
+        SendMessage message = new SendMessage();
+        message.setChatId(update.getMessage().getChatId().toString());
+        message.setText(viewUpcomingEvents());
+        return message;
     }
 
     /**
      * <p>Посмотреть предстоящие мероприятия</p>
      */
     private String viewUpcomingEvents() {
+        EventFormat eventFormat = new EventFormat();
         return eventService
                 .getListEvents()
                 .stream()
-                .map(Event::toFormattedString)
+                .map(eventFormat::toFormattedString)
                 .collect(Collectors.joining("\n\n===============================\n\n"));
     }
 }

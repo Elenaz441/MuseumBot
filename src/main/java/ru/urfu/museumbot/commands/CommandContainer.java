@@ -1,7 +1,6 @@
 package ru.urfu.museumbot.commands;
 
-import ru.urfu.museumbot.jpa.service.SendBotMessageService;
-import ru.urfu.museumbot.jpa.service.ServiceContext;
+import ru.urfu.museumbot.jpa.service.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,17 +14,19 @@ public class CommandContainer {
     private final Map<String, Command> commandMap;
     private final Command unknownCommand;
 
-    public CommandContainer(SendBotMessageService sendBotMessageService, ServiceContext serviceContext) {
+    public CommandContainer(EventService eventService,
+                            ReviewService reviewService,
+                            UserService userService) {
         this.commandMap = new HashMap<>();
-        commandMap.put(START, new StartCommand(sendBotMessageService));
-        commandMap.put(HELP, new HelpCommand(sendBotMessageService));
-        commandMap.put(VIEW_UPCOMING_EVENTS, new ViewUpcomingEventsCommand(sendBotMessageService, serviceContext));
-        commandMap.put(VIEW_MY_EVENTS, new ViewMyEventsCommand(sendBotMessageService, serviceContext));
-        commandMap.put(SIGN_UP_FOR_EVENT, new PreSignUpCommand(sendBotMessageService, serviceContext));
-        commandMap.put(CANCEL, new PreCancelCommand(sendBotMessageService, serviceContext));
-        commandMap.put(ADD_EVENT, new SignUpCommand(sendBotMessageService, serviceContext));
-        commandMap.put(CANCEL_EVENT, new CancelCommand(sendBotMessageService, serviceContext));
-        unknownCommand = new NonCommand(sendBotMessageService);
+        commandMap.put(START, new StartCommand());
+        commandMap.put(HELP, new HelpCommand());
+        commandMap.put(VIEW_UPCOMING_EVENTS, new ViewUpcomingEventsCommand(eventService));
+        commandMap.put(VIEW_MY_EVENTS, new ViewMyEventsCommand(userService));
+        commandMap.put(SIGN_UP_FOR_EVENT, new PreSignUpCommand(eventService));
+        commandMap.put(CANCEL, new PreCancelCommand(userService));
+        commandMap.put(ADD_EVENT, new SignUpCommand(eventService, reviewService, userService));
+        commandMap.put(CANCEL_EVENT, new CancelCommand(eventService, reviewService, userService));
+        unknownCommand = new NonCommand();
     }
 
     /**

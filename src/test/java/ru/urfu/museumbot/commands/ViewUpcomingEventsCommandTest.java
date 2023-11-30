@@ -6,13 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.EventService;
-import ru.urfu.museumbot.jpa.service.ServiceContext;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -30,15 +29,7 @@ class ViewUpcomingEventsCommandTest {
     ViewUpcomingEventsCommand viewUpcomingEventsCommand;
 
     @Mock
-    TelegramBot telegramBot;
-
-    @Mock
-    ServiceContext serviceContext;
-
-    @Mock
     EventService eventService;
-
-    FakeSender fakeSender;
 
     Update update;
 
@@ -74,11 +65,7 @@ class ViewUpcomingEventsCommandTest {
      */
     @BeforeEach
     public void setUp() {
-        Mockito.doReturn(eventService)
-                .when(serviceContext)
-                .getEventService();
-        fakeSender = new FakeSender(telegramBot);
-        this.viewUpcomingEventsCommand = new ViewUpcomingEventsCommand(fakeSender, serviceContext);
+        this.viewUpcomingEventsCommand = new ViewUpcomingEventsCommand(eventService);
 
         Chat chat = new Chat(1L, "test");
         Message message = new Message();
@@ -91,12 +78,11 @@ class ViewUpcomingEventsCommandTest {
      * Тест на вывод предстоящих мероприятий
      */
     @Test
-    void execute() {
+    void getMessage() {
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
-        viewUpcomingEventsCommand.execute(update);
-        assertEquals(1, fakeSender.getMessages().size());
+        SendMessage message = viewUpcomingEventsCommand.getMessage(update);
         assertEquals("""
                 Event 1
                                 
@@ -115,6 +101,6 @@ class ViewUpcomingEventsCommandTest {
                 Дата: суббота, 25 ноября 2017, 12:00
                 Длительность: 60 минут
                 Адрес: Ленина, 52""",
-                fakeSender.getMessages().get(0).getText());
+                message.getText());
     }
 }

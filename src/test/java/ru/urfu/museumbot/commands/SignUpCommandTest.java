@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.jpa.models.*;
 import ru.urfu.museumbot.jpa.service.*;
 
@@ -26,12 +25,6 @@ class SignUpCommandTest {
     SignUpCommand signUpCommand;
 
     @Mock
-    TelegramBot telegramBot;
-
-    @Mock
-    ServiceContext serviceContext;
-
-    @Mock
     EventService eventService;
 
     @Mock
@@ -40,8 +33,6 @@ class SignUpCommandTest {
     @Mock
     ReviewService reviewService;
 
-    FakeSender fakeSender;
-
     Update update;
 
     /**
@@ -49,17 +40,7 @@ class SignUpCommandTest {
      */
     @BeforeEach
     void setUp() {
-        Mockito.doReturn(eventService)
-                .when(serviceContext)
-                .getEventService();
-        Mockito.doReturn(userService)
-                .when(serviceContext)
-                .getUserService();
-        Mockito.doReturn(reviewService)
-                .when(serviceContext)
-                .getReviewService();
-        fakeSender = new FakeSender(telegramBot);
-        this.signUpCommand = new SignUpCommand(fakeSender, serviceContext);
+        this.signUpCommand = new SignUpCommand(eventService, reviewService, userService);
 
         Chat chat = new Chat(1L, "test");
         Message message = new Message();
@@ -76,7 +57,7 @@ class SignUpCommandTest {
      * Тест на регистрацию пользователя
      */
     @Test
-    void execute() {
+    void getMessage() {
         Long chatId = 1L;
         Event event = new Event();
         event.setId(1L);
@@ -86,11 +67,8 @@ class SignUpCommandTest {
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Mockito.doReturn(event).when(eventService).getEventById(1L);
 
-        signUpCommand.execute(update);
-        assertEquals(1, fakeSender.getMessages().size());
-
-        SendMessage messageText = fakeSender.getMessages().get(0);
-        assertEquals("Вы записались на выбранное мероприятие", messageText.getText());
+        SendMessage message = signUpCommand.getMessage(update);
+        assertEquals("Вы записались на выбранное мероприятие", message.getText());
 
         Mockito.verify(reviewService, Mockito.times(1)).addReview(Mockito.any(Review.class));
     }
@@ -99,7 +77,7 @@ class SignUpCommandTest {
      * Тест на регистрацию пользователя, если он уже зарегистрирован
      */
     @Test
-    void executeIfSignedUp() {
+    void getMessageIfSignedUp() {
         Long chatId = 1L;
         Event event = new Event();
         event.setId(1L);
@@ -114,11 +92,8 @@ class SignUpCommandTest {
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
+        SendMessage message = signUpCommand.getMessage(update);
 
-        signUpCommand.execute(update);
-        assertEquals(1, fakeSender.getMessages().size());
-
-        SendMessage messageText = fakeSender.getMessages().get(0);
-        assertEquals("Вы уже записаны на мероприятие \"Event 1\"", messageText.getText());
+        assertEquals("Вы уже записаны на мероприятие \"Event 1\"", message.getText());
     }
 }
