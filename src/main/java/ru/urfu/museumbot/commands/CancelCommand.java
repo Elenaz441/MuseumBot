@@ -15,6 +15,7 @@ import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
 @Service
 public class CancelCommand implements Command {
 
+    static final String MESSAGE_SUCCESS = "Вы отменили свою запись на выбранное мероприятие";
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
@@ -49,7 +50,7 @@ public class CancelCommand implements Command {
      * Отмена регистрации на выбранное мероприятие
      */
     private String cancel(String callbackData, Long chatId) {
-        String text = "Вы отменили свою запись на выбранное мероприятие";
+        String text = MESSAGE_SUCCESS;
         Long eventId = Long.valueOf(callbackData.replace(CANCEL_EVENT + " ", ""));
         Review review = reviewService.getReview(
                 userService.getUserByChatId(chatId),

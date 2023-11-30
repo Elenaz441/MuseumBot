@@ -12,7 +12,7 @@ import static ru.urfu.museumbot.commands.Commands.HELP;
 @Service
 public class HelpCommand implements Command {
 
-    public final String HELP_MESSAGE =  """
+    static final String HELP_MESSAGE =  """
             Доступны следующие команды:
             \t/help - Справка
             \t/view_upcoming_events - Посмотреть предстоящие мероприятия

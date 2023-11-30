@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Service
 public class NonCommand implements Command {
 
-    public static final String UNKNOWN_MESSAGE = "Извините, команда не распознана, напишите /help чтобы узнать что я умею.";
+    static final String UNKNOWN_MESSAGE = "Извините, команда не распознана, напишите /help чтобы узнать что я умею.";
 
     public NonCommand() {
     }

@@ -17,6 +17,7 @@ import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
 @Service
 public class SignUpCommand implements Command {
 
+    static final String MESSAGE_SUCCESS = "Вы записались на выбранное мероприятие";
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
@@ -51,7 +52,7 @@ public class SignUpCommand implements Command {
      * Регистрация пользователя на выбранное мероприятие
      */
     private String signUp(String callbackData, Long chatId) {
-        String text = "Вы записались на выбранное мероприятие";
+        String text = MESSAGE_SUCCESS;
         Long eventId = Long.valueOf(callbackData.replace(ADD_EVENT + " ", ""));
         Review review = new Review();
         User user = userService.getUserByChatId(chatId);
