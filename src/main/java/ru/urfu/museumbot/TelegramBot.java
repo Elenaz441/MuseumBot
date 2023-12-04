@@ -10,18 +10,15 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.urfu.museumbot.buttons.ButtonContent;
 import ru.urfu.museumbot.buttons.ButtonsContext;
 import ru.urfu.museumbot.commands.CommandArgs;
 import ru.urfu.museumbot.commands.CommandContainer;
-import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.message.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     private final String botName;
     private final String botToken;
     private final CommandContainer commandContainer;
+    private final ButtonContent buttonContent;
 
     public TelegramBot(@Value("${bot.name}") String botName,
                        @Value("${bot.token}") String botToken,
@@ -41,7 +39,8 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         this.botToken = botToken;
         this.botName = botName;
         this.commandContainer = commandContainer;
-        List<BotCommand> listOfCommands = new Message().getMenuOfCommands();
+        this.buttonContent = new ButtonContent();
+        List<BotCommand> listOfCommands = buttonContent.getMenuOfCommands();
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
@@ -115,26 +114,10 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getText());
         if (message.getButtonsContext().isPresent()) {
             ButtonsContext buttonsContext = message.getButtonsContext().get();
-            sendMessage.setReplyMarkup(getMarkupInline(buttonsContext));
+            sendMessage.setReplyMarkup(buttonContent.getMarkupInline(
+                    buttonsContext.getCallbackData(),
+                    buttonsContext.getVariants()));
         }
         return sendMessage;
-    }
-
-    /**
-     * Задать кнопки у телеграмма.
-     */
-    private InlineKeyboardMarkup getMarkupInline(ButtonsContext buttonsContext) {
-        InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for (Event event : buttonsContext.getVariants()) {
-            List<InlineKeyboardButton> rowInline = new ArrayList<>();
-            InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData(buttonsContext.getCallbackData() + " " + event.getId());
-            rowInline.add(inlineKeyboardButton);
-            rowsInline.add(rowInline);
-        }
-        markupInline.setKeyboard(rowsInline);
-        return markupInline;
     }
 }
