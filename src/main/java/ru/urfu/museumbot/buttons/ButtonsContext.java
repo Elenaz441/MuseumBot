@@ -3,6 +3,7 @@ package ru.urfu.museumbot.buttons;
 import ru.urfu.museumbot.jpa.models.Event;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Класс, который хранит информацию необходимую для создания разметки с кнопками.
@@ -17,9 +18,9 @@ public class ButtonsContext {
     /**
      * Варианты выбора
      */
-    protected List<Event> variants;
+    protected Map<Long, String> variants;
 
-    public ButtonsContext(String callbackData, List<Event> variants) {
+    public ButtonsContext(String callbackData, Map<Long, String> variants) {
         this.callbackData = callbackData;
         this.variants = variants;
     }
@@ -28,7 +29,7 @@ public class ButtonsContext {
         return callbackData;
     }
 
-    public List<Event> getVariants() {
+    public Map<Long, String> getVariants() {
         return variants;
     }
 }

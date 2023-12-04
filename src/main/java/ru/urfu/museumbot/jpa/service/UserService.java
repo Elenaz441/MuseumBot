@@ -2,6 +2,7 @@ package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.commands.State;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
@@ -64,4 +65,32 @@ public class UserService {
                 .map(Review::getEvent)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Устанавливает состояние чата пользователя
+     * @param chatId Идентификатор чата пользователя
+     * @param state устанавливаемое состояние
+     */
+    public void updateUserState(Long chatId, State state) {
+        User user = getUserByChatId(chatId);
+        user.setState(state.getStateString());
+        userRepository.save(user);
+    }
+
+    /**
+     * Устанавливает идентификатор мероприятия, на которое пользователь оставляет отзыв в данный момент
+     * @param chatId чат пользователя
+     * @param eventId
+     */
+    public void setReviewingEvent(Long chatId, Long eventId){
+        User user = getUserByChatId(chatId);
+        user.setReviewingEvent(eventId);
+        userRepository.save(user);
+    }
+
+//    public void updateUserState(User user, Long reviewingEvent){
+//        User updateEntity = userRepository.getUserByChatId(user.getChatId());
+//        updateEntity.setReviewingEvent(reviewingEvent);
+//        userRepository.save(updateEntity);
+//    }
 }

@@ -10,6 +10,8 @@ import ru.urfu.museumbot.jpa.repository.EventRepository;
 import ru.urfu.museumbot.jpa.repository.ReviewRepository;
 import ru.urfu.museumbot.jpa.repository.UserRepository;
 
+import java.util.List;
+
 
 /**
  * <p>Класс для работы с данными из бд для сущности "Отзыв"</p>
@@ -58,7 +60,7 @@ public class ReviewService {
     }
 
     /**
-    * <p>Добавить отзыв в базу данных</p>
+     * <p>Добавить отзыв в базу данных</p>
      */
     @Transactional
     public void addReview(Review review) {
@@ -68,6 +70,26 @@ public class ReviewService {
         Event event = review.getEvent();
         event.addReview(review);
         eventRepository.save(event);
+        reviewRepository.save(review);
+    }
+
+    public void updateReview(Review review) {
+        reviewRepository.save(review);
+    }
+    public List<Review> getAllByUser(Long user){
+        return reviewRepository.getAllByUser(user);
+    }
+
+    /**
+     * Оставить оценку посещённого мероприятию
+     * @param chatId чат пользователя, который оценивает
+     * @param rating оценка от 0 до 10
+     */
+    public void rateEvent(Long chatId, double rating) {
+        User user = userRepository.getUserByChatId(chatId);
+        Event event = eventRepository.getEventById(user.getReviewingEvent());
+        Review review = getReview(user, event);
+        review.setRating(rating);
         reviewRepository.save(review);
     }
 }

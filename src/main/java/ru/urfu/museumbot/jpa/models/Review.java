@@ -31,7 +31,7 @@ public class Review {
     @JoinColumn(foreignKey = @ForeignKey(name = "event_id"), name = "event_id")
     private Event event;
 
-    private  int rating = 0;
+    private double rating = 0.0;
 
     @Lob
     @Column(columnDefinition = "text")
@@ -64,11 +64,11 @@ public class Review {
         this.event = eventId;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

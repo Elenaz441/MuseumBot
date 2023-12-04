@@ -14,6 +14,19 @@ public class CommandArgs {
      * и какую операцию на данный момент выполняем
      */
     private String callbackData = "";
+    /**
+     * ответ пользователя
+     */
+    private String userInput = "";
+
+
+    public String getUserInput() {
+        return userInput;
+    }
+
+    public void setUserInput(String userInput) {
+        this.userInput = userInput;
+    }
 
     public Long getChatId() {
         return chatId;

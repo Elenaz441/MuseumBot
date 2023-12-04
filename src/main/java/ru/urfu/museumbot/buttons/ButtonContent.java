@@ -7,6 +7,7 @@ import ru.urfu.museumbot.jpa.models.Event;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static ru.urfu.museumbot.commands.Commands.*;
 
@@ -41,14 +42,14 @@ public class ButtonContent {
      * @param variants варианты выбора для пользователя
      * @return виджет последовательной разметки кнопками
      */
-    public InlineKeyboardMarkup getMarkupInline(String callbackData, List<Event> variants){
+    public InlineKeyboardMarkup getMarkupInline(String callbackData, Map<Long, String> variants){
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInline = new ArrayList<>();
-        for (Event event : variants) {
+       for(Map.Entry<Long, String> variant : variants.entrySet()){
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-            inlineKeyboardButton.setText(event.getTitle());
-            inlineKeyboardButton.setCallbackData(callbackData+ " " + event.getId());
+            inlineKeyboardButton.setText(variant.getValue());
+            inlineKeyboardButton.setCallbackData(callbackData+ " " + variant.getKey());
             rowInline.add(inlineKeyboardButton);
             rowsInline.add(rowInline);
         }
