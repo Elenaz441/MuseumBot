@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * класс, который хранит необходимое для создания разметки с кнопками
+ * класс для создания разметки с кнопками
  */
 public class MarkupButtonsTelegram extends MarkupButtons implements ConvertableMarkupInline {
 
@@ -16,6 +16,11 @@ public class MarkupButtonsTelegram extends MarkupButtons implements ConvertableM
         super(callbackData, variants);
     }
 
+    /**
+     * Создаёт пользовательский итерфейс регитсрации и отмены регистрации на мероприятия {@link MarkupButtonsTelegram#variants}
+     * Нажимая на одну из кнопок пользователь совержает выбранную опцию (регистрации/отмены) этого мероприятия
+     * @return разметку в виде кнопок с возможностью выбрать мероприятие
+     */
     @Override
     public InlineKeyboardMarkup getMarkupInline() {
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();

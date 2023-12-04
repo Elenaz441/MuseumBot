@@ -1,7 +1,7 @@
 package ru.urfu.museumbot.commands;
 
 /**
- * класс аргументов для {@link Command}
+ * класс контекста для выполнения {@link Command}
  */
 public class CommandArgs {
     /**

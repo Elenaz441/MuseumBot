@@ -9,6 +9,9 @@ import java.util.Optional;
 import static ru.urfu.museumbot.commands.Commands.*;
 import static ru.urfu.museumbot.commands.Commands.VIEW_MY_EVENTS;
 
+/**
+ * класс сообщения не привязанного к реализации платформы
+ */
 public class Message {
     /**
      * Отображение, которое содержит ключ:команда значение:описание
@@ -21,11 +24,27 @@ public class Message {
             new BotCommand(CANCEL, "Отменить запись на мероприятие"),
             new BotCommand(VIEW_MY_EVENTS, "Посмотреть на записанные мероприятия")
     );
+
+    /**
+     * содержит все реализованные команды для удобного пользования ботом
+     * @return команды и их описание для меню в боте
+     */
     public List<BotCommand> getMenuOfCommands() {
         return commands;
     }
+
+    /**
+     * текст сообщения
+     */
     private String text = "";
+    /**
+     * идентификатор пользователя, которому оно отправляется
+     */
     private Long chatId = null;
+    /**
+     * Некоторые сообщения отправляются с разметкой кнопок
+     * контекст для создания подобной разметки
+     */
     private Optional<MarkupButtonsTelegram> buttons = Optional.empty();
 
     public Long getChatId() {
