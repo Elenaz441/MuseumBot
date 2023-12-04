@@ -14,27 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class CommandContainer {
     private final Map<String, Command> commandMap;
-    private final Command unknownCommand;
+    private final NonCommand unknownCommand;
     @Autowired
     private final List<Command> commandList;
 
-    public CommandContainer(
-                            StartCommand startCommand,
-                            HelpCommand helpCommand,
-                            ViewUpcomingEventsCommand viewUpcomingEventsCommand,
-                            ViewMyEventsCommand viewMyEventsCommand,
-                            PreSignUpCommand preSignUpCommand,
-                            PreCancelCommand preCancelCommand,
-                            SignUpCommand signUpCommand,
-                            CancelCommand cancelCommand) {
-        commandList = List.of(startCommand,
-                helpCommand,
-                viewUpcomingEventsCommand,
-                viewMyEventsCommand,
-                preCancelCommand,
-                preSignUpCommand,
-                signUpCommand,
-                cancelCommand);
+    public CommandContainer(List<Command> commandList) {
+        this.commandList = commandList;
         this.commandMap = commandList.stream().collect(Collectors.toMap(Command::getCommandName, command -> command));
         unknownCommand = new NonCommand();
     }
