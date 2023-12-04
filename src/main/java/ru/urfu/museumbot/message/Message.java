@@ -1,6 +1,7 @@
 package ru.urfu.museumbot.message;
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import ru.urfu.museumbot.buttons.MarkupButtonsTelegram;
 
 import java.util.List;
 import java.util.Optional;

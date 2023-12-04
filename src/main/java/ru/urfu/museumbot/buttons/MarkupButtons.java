@@ -1,4 +1,4 @@
-package ru.urfu.museumbot.message;
+package ru.urfu.museumbot.buttons;
 
 import ru.urfu.museumbot.jpa.models.Event;
 

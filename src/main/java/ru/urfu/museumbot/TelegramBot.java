@@ -15,7 +15,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.urfu.museumbot.commands.CommandArgs;
 import ru.urfu.museumbot.commands.CommandContainer;
-import ru.urfu.museumbot.message.MarkupButtonsTelegram;
+import ru.urfu.museumbot.buttons.MarkupButtonsTelegram;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.List;

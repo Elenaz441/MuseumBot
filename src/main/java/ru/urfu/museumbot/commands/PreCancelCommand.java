@@ -2,9 +2,9 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.buttons.MarkupButtonsTelegram;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.UserService;
-import ru.urfu.museumbot.message.MarkupButtonsTelegram;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
