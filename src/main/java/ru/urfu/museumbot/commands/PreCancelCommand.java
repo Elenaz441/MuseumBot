@@ -2,12 +2,10 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import ru.urfu.museumbot.buttons.ButtonsContent;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.UserService;
+import ru.urfu.museumbot.message.MarkupButtonsTelegram;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
 
@@ -23,24 +21,20 @@ public class PreCancelCommand implements Command {
     static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите отменить запись:";
 
     private final UserService userService;
-    private final ButtonsContent buttonsContent;
     @Autowired
     public PreCancelCommand(UserService userService) {
         this.userService = userService;
-        this.buttonsContent = new ButtonsContent();
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public SendMessage getMessage(Update update) {
-        Long chatId = update.getMessage().getChatId();
-        InlineKeyboardMarkup markupInline = buttonsContent.getMarkupInline(CANCEL_EVENT, viewMyEvents(chatId));
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId.toString());
-        message.setText(CHOOSE_EVENT_MESSAGE);
-        message.setReplyMarkup(markupInline);
+    public Message getMessage(CommandArgs args) {
+        Long chatId = args.getChatId();
+        Message message = new Message(chatId, CHOOSE_EVENT_MESSAGE);
+
+        message.setButtons(new MarkupButtonsTelegram(CANCEL_EVENT, viewMyEvents(chatId)));
         return message;
     }
 

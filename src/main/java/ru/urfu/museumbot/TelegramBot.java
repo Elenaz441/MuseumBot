@@ -13,8 +13,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.urfu.museumbot.buttons.ButtonsContent;
+import ru.urfu.museumbot.commands.CommandArgs;
 import ru.urfu.museumbot.commands.CommandContainer;
+import ru.urfu.museumbot.message.MarkupButtonsTelegram;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         this.botToken = botToken;
         this.botName = botName;
         this.commandContainer = commandContainer;
-        List<BotCommand> listOfCommands = new ButtonsContent().getMenuOfCommands();
+        List<BotCommand> listOfCommands = new Message().getMenuOfCommands();
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
@@ -60,17 +62,22 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        SendMessage sendMessage = null;
+        Message message = null;
+        CommandArgs args = new CommandArgs();
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String message = update.getMessage().getText();
-            sendMessage = commandContainer.retrieveCommand(message).getMessage(update);
+            String messageText = update.getMessage().getText();
+            args.setChatId(update.getMessage().getChatId());
+            message = commandContainer.retrieveCommand(messageText).getMessage(args);
         }
         else if (update.hasCallbackQuery()) {
+            args.setChatId(update.getCallbackQuery().getMessage().getChatId());
+            args.setCallbackData(update.getCallbackQuery().getData());
             // при нажатии на кнопку в зависимости от текста, передаваемого кнопкой, обрабатывается соответсвующая команда
             String callbackData = update.getCallbackQuery().getData().split(" ")[0];
-            sendMessage = commandContainer.retrieveCommand(callbackData).getMessage(update);
+            message = commandContainer.retrieveCommand(callbackData).getMessage(args);
         }
-        sendMessage(sendMessage);
+        assert message != null;
+        sendMessage(message);
     }
 
     @EventListener(ContextRefreshedEvent.class)
@@ -87,9 +94,14 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
      * Метод для отправки сообщения
      */
     @Override
-    public void sendMessage(SendMessage message) {
+    public void sendMessage(Message message) {
+        SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getText());
+        if(message.getButtons().isPresent()){
+            MarkupButtonsTelegram markupBottons = message.getButtons().get();
+            sendMessage.setReplyMarkup(markupBottons.getMarkupInline());
+        }
         try {
-            this.execute(message);
+            this.execute(sendMessage);
         } catch (TelegramApiException e) {
             System.out.printf("Сообщение не отправилось! Причина: %s", e.getMessage());
         }

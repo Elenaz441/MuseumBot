@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.dataFormat.EventFormat;
 import ru.urfu.museumbot.jpa.service.UserService;
+import ru.urfu.museumbot.message.Message;
 
 import static ru.urfu.museumbot.commands.Commands.VIEW_MY_EVENTS;
 
@@ -27,16 +28,13 @@ public class ViewMyEventsCommand implements  Command {
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public SendMessage getMessage(Update update) {
-        Long chatId = update.getMessage().getChatId();
+    public Message getMessage(CommandArgs args) {
+        Long chatId = args.getChatId();
         String text = viewMyEvents(chatId);
         if (text.isEmpty()) {
             text = "Вы ещё не записаны ни на одно мероприятие";
         }
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId.toString());
-        message.setText(text);
-        return message;
+        return new Message(chatId, text);
     }
 
     @Override

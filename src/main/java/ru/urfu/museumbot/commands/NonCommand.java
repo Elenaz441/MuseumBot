@@ -3,6 +3,7 @@ package ru.urfu.museumbot.commands;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.urfu.museumbot.message.Message;
 
 /**
  * Команды, которые начинаются не со /
@@ -18,11 +19,8 @@ public class NonCommand implements Command {
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public SendMessage getMessage(Update update) {
-        SendMessage message = new SendMessage();
-        message.setChatId(update.getMessage().getChatId().toString());
-        message.setText(UNKNOWN_MESSAGE);
-        return message;
+    public Message getMessage(CommandArgs args) {
+        return new Message(args.getChatId(), UNKNOWN_MESSAGE);
     }
 
     @Override
