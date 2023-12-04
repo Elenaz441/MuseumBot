@@ -2,12 +2,12 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.*;
+import ru.urfu.museumbot.message.Message;
 
 import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
 
@@ -34,13 +34,10 @@ public class SignUpCommand implements Command {
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public SendMessage getMessage(Update update) {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        String callback = update.getCallbackQuery().getData();
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId.toString());
-        message.setText(signUp(callback, chatId));
-        return message;
+    public Message getMessage(CommandArgs args) {
+        Long chatId = args.getChatId();
+        String callback = args.getCallbackData();
+        return new Message(chatId, signUp(callback, chatId));
     }
 
     @Override

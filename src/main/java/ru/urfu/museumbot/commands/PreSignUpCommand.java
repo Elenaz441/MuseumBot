@@ -2,17 +2,14 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import ru.urfu.museumbot.buttons.ButtonsContent;
+import ru.urfu.museumbot.buttons.ButtonsContext;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
 
-import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
-import static ru.urfu.museumbot.commands.Commands.SIGN_UP_FOR_EVENT;
+import static ru.urfu.museumbot.commands.Commands.*;
 
 
 /**
@@ -25,23 +22,18 @@ public class PreSignUpCommand implements Command {
     public final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите записаться:";
 
     private final EventService eventService;
-    private final ButtonsContent buttonsContent;
     @Autowired
     public PreSignUpCommand(EventService eventService) {
         this.eventService = eventService;
-        this.buttonsContent = new ButtonsContent();
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public SendMessage getMessage(Update update) {
-        InlineKeyboardMarkup markupInline = buttonsContent.getMarkupInline(ADD_EVENT, getEvents());
-        SendMessage message = new SendMessage();
-        message.setChatId(update.getMessage().getChatId().toString());
-        message.setText(CHOOSE_EVENT_MESSAGE);
-        message.setReplyMarkup(markupInline);
+    public Message getMessage(CommandArgs args) {
+        Message message = new Message(args.getChatId(), CHOOSE_EVENT_MESSAGE);
+        message.setButtonsContext(new ButtonsContext(ADD_EVENT, getEvents()));
         return message;
     }
 
