@@ -13,9 +13,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.urfu.museumbot.buttons.ButtonsContent;
+import ru.urfu.museumbot.buttons.ButtonsContext;
 import ru.urfu.museumbot.commands.CommandArgs;
 import ru.urfu.museumbot.commands.CommandContainer;
-import ru.urfu.museumbot.buttons.MarkupButtonsTelegram;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
@@ -109,9 +110,9 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
      */
     private static SendMessage getSendMessage(Message message) {
         SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getText());
-        if(message.getButtons().isPresent()){
-            MarkupButtonsTelegram buttonsTelegram = message.getButtons().get();
-            sendMessage.setReplyMarkup(buttonsTelegram.getMarkupInline());
+        if(message.getButtonsContext().isPresent()){
+            ButtonsContext buttonsContext = message.getButtonsContext().get();
+            sendMessage.setReplyMarkup(new ButtonsContent().getMarkupInline(buttonsContext));
         }
         return sendMessage;
     }

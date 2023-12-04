@@ -2,7 +2,7 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.buttons.MarkupButtonsTelegram;
+import ru.urfu.museumbot.buttons.ButtonsContext;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.EventService;
 import ru.urfu.museumbot.message.Message;
@@ -33,7 +33,7 @@ public class PreSignUpCommand implements Command {
     @Override
     public Message getMessage(CommandArgs args) {
         Message message = new Message(args.getChatId(), CHOOSE_EVENT_MESSAGE);
-        message.setButtons(new MarkupButtonsTelegram(ADD_EVENT, getEvents()));
+        message.setButtonsContext(new ButtonsContext(ADD_EVENT, getEvents()));
         return message;
     }
 

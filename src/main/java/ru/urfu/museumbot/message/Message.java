@@ -1,7 +1,7 @@
 package ru.urfu.museumbot.message;
 
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
-import ru.urfu.museumbot.buttons.MarkupButtonsTelegram;
+import ru.urfu.museumbot.buttons.ButtonsContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +45,7 @@ public class Message {
      * Некоторые сообщения отправляются с разметкой кнопок
      * контекст для создания подобной разметки
      */
-    private Optional<MarkupButtonsTelegram> buttons = Optional.empty();
+    private Optional<ButtonsContext> buttonsContext = Optional.empty();
 
     public Long getChatId() {
         return chatId;
@@ -55,12 +55,12 @@ public class Message {
         return text;
     }
 
-    public Optional<MarkupButtonsTelegram> getButtons() {
-        return buttons;
+    public Optional<ButtonsContext> getButtonsContext() {
+        return buttonsContext;
     }
 
-    public void setButtons(MarkupButtonsTelegram buttons) {
-        this.buttons = Optional.of(buttons);
+    public void setButtonsContext(ButtonsContext buttons) {
+        this.buttonsContext = Optional.of(buttons);
     }
 
     public Message(Long chatId, String text) {
