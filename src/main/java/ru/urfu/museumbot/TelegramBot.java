@@ -15,6 +15,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.urfu.museumbot.buttons.ButtonContent;
 import ru.urfu.museumbot.buttons.ButtonsContext;
+import ru.urfu.museumbot.commands.Command;
 import ru.urfu.museumbot.commands.CommandArgs;
 import ru.urfu.museumbot.commands.CommandContainer;
 import ru.urfu.museumbot.message.Message;
@@ -69,15 +70,19 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         CommandArgs args = new CommandArgs();
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
-            args.setChatId(update.getMessage().getChatId());
-            message = commandContainer.retrieveCommand(messageText).getMessage(args);
+            args.setUserInput(messageText);
+            Long chatId = update.getMessage().getChatId();
+            args.setChatId(chatId);
+            message = commandContainer.retrieveCommand(chatId, messageText).getMessage(args);
         }
         else if (update.hasCallbackQuery()) {
-            args.setChatId(update.getCallbackQuery().getMessage().getChatId());
-            args.setCallbackData(update.getCallbackQuery().getData());
+            Long chatId = update.getCallbackQuery().getMessage().getChatId();
+            args.setChatId(chatId);
+            String callbackData = update.getCallbackQuery().getData();
+            args.setCallbackData(callbackData);
             // при нажатии на кнопку в зависимости от текста, передаваемого кнопкой, обрабатывается соответсвующая команда
-            String callbackData = update.getCallbackQuery().getData().split(" ")[0];
-            message = commandContainer.retrieveCommand(callbackData).getMessage(args);
+            String commandIdentifier = callbackData.split(" ")[0];
+            message = commandContainer.retrieveCommand(chatId, commandIdentifier).getMessage(args);
         }
         assert message != null;
         sendMessage(message);

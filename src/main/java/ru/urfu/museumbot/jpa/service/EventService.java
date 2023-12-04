@@ -3,6 +3,7 @@ package ru.urfu.museumbot.jpa.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Exhibit;
 import ru.urfu.museumbot.jpa.repository.EventRepository;
 import java.util.*;
 
@@ -47,4 +48,6 @@ public class EventService {
     public Event getEventById(Long id) {
         return eventRepository.getEventById(id);
     }
+
+
 }
