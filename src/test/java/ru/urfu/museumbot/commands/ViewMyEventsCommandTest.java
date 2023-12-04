@@ -3,15 +3,13 @@ package ru.urfu.museumbot.commands;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.UserService;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.*;
 
@@ -23,12 +21,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class ViewMyEventsCommandTest {
 
+    @InjectMocks
     ViewMyEventsCommand viewMyEventsCommand;
 
     @Mock
     UserService userService;
 
-    Update update;
+    CommandArgs commandArgs;
 
     List<Event> events;
 
@@ -62,13 +61,8 @@ class ViewMyEventsCommandTest {
      */
     @BeforeEach
     void setUp() {
-        viewMyEventsCommand = new ViewMyEventsCommand(userService);
-
-        Chat chat = new Chat(1L, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        update = new Update();
-        update.setMessage(message);
+        this.commandArgs = new CommandArgs();
+        commandArgs.setChatId(1L);
     }
 
     /**
@@ -79,7 +73,7 @@ class ViewMyEventsCommandTest {
         Mockito.doReturn(events)
                 .when(userService)
                 .getUserEvents(1L);
-        SendMessage message = viewMyEventsCommand.getMessage(update);
+        Message message = viewMyEventsCommand.getMessage(commandArgs);
         assertEquals("""
                 Event 1
                                 
@@ -109,7 +103,7 @@ class ViewMyEventsCommandTest {
         Mockito.doReturn(new ArrayList<>())
                 .when(userService)
                 .getUserEvents(1L);
-        SendMessage message = viewMyEventsCommand.getMessage(update);
+        Message message = viewMyEventsCommand.getMessage(commandArgs);
         assertEquals("Вы ещё не записаны ни на одно мероприятие", message.getText());
     }
 }

@@ -3,16 +3,13 @@ package ru.urfu.museumbot.commands;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class PreSignUpCommandTest {
 
+    @InjectMocks
     PreSignUpCommand preSignUpCommand;
 
     @Mock
@@ -34,7 +32,7 @@ class PreSignUpCommandTest {
 
     List<Event> events;
 
-    Update update;
+    CommandArgs commandArgs;
 
     /**
      * Подготовка данных для тестов
@@ -66,13 +64,8 @@ class PreSignUpCommandTest {
      */
     @BeforeEach
     void setUp() {
-        this.preSignUpCommand = new PreSignUpCommand(eventService);
-
-        Chat chat = new Chat(1L, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        update = new Update();
-        update.setMessage(message);
+        this.commandArgs = new CommandArgs();
+        commandArgs.setChatId(1L);
     }
 
     /**
@@ -83,17 +76,14 @@ class PreSignUpCommandTest {
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
-        SendMessage message = preSignUpCommand.getMessage(update);
+        Message message = preSignUpCommand.getMessage(commandArgs);
         assertEquals(
                 "Выберете мероприятие, на которое хотите записаться:",
                 message.getText());
-        assertEquals(InlineKeyboardMarkup.class, message.getReplyMarkup().getClass());
-
-        InlineKeyboardMarkup keyboard = (InlineKeyboardMarkup) message.getReplyMarkup();
-
-        assertEquals(2, keyboard.getKeyboard().size());
-        assertEquals(1, keyboard.getKeyboard().get(0).size());
-        assertEquals("Event 1", keyboard.getKeyboard().get(0).get(0).getText());
-        assertEquals("Event 2", keyboard.getKeyboard().get(1).get(0).getText());
+        assertTrue(message.getButtonsContext().isPresent());
+        assertEquals(2, message.getButtonsContext().get().getVariants().size());
+        assertEquals("AddEvent", message.getButtonsContext().get().getCallbackData());
+        assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(0).getTitle());
+        assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(1).getTitle());
     }
 }

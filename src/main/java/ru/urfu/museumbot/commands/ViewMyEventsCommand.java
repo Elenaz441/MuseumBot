@@ -2,8 +2,6 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.dataFormat.EventFormat;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
@@ -19,6 +17,7 @@ import java.util.stream.Collectors;
 public class ViewMyEventsCommand implements  Command {
 
     private final UserService userService;
+
     @Autowired
     public ViewMyEventsCommand(UserService userService) {
         this.userService = userService;

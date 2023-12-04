@@ -2,7 +2,6 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
@@ -21,6 +20,7 @@ public class SignUpCommand implements Command {
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
+
     @Autowired
     public SignUpCommand(EventService eventService,
                          ReviewService reviewService,

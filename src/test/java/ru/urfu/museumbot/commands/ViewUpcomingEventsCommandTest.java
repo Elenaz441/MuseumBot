@@ -3,15 +3,13 @@ package ru.urfu.museumbot.commands;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -26,12 +24,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class ViewUpcomingEventsCommandTest {
 
+    @InjectMocks
     ViewUpcomingEventsCommand viewUpcomingEventsCommand;
 
     @Mock
     EventService eventService;
 
-    Update update;
+    CommandArgs commandArgs;
 
     List<Event> events;
 
@@ -65,13 +64,8 @@ class ViewUpcomingEventsCommandTest {
      */
     @BeforeEach
     public void setUp() {
-        this.viewUpcomingEventsCommand = new ViewUpcomingEventsCommand(eventService);
-
-        Chat chat = new Chat(1L, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        update = new Update();
-        update.setMessage(message);
+        this.commandArgs = new CommandArgs();
+        commandArgs.setChatId(1L);
     }
 
     /**
@@ -82,7 +76,7 @@ class ViewUpcomingEventsCommandTest {
         Mockito.doReturn(events)
                 .when(eventService)
                 .getListEvents();
-        SendMessage message = viewUpcomingEventsCommand.getMessage(update);
+        Message message = viewUpcomingEventsCommand.getMessage(commandArgs);
         assertEquals("""
                 Event 1
                                 

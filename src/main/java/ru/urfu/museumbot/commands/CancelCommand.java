@@ -2,8 +2,6 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.service.*;
 import ru.urfu.museumbot.message.Message;
@@ -20,6 +18,7 @@ public class CancelCommand implements Command {
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
+
     @Autowired
     public CancelCommand(EventService eventService,
                          ReviewService reviewService,
