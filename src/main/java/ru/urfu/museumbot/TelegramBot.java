@@ -95,15 +95,24 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
      */
     @Override
     public void sendMessage(Message message) {
-        SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getText());
-        if(message.getButtons().isPresent()){
-            MarkupButtonsTelegram markupBottons = message.getButtons().get();
-            sendMessage.setReplyMarkup(markupBottons.getMarkupInline());
-        }
+        SendMessage sendMessage = getSendMessage(message);
         try {
             this.execute(sendMessage);
         } catch (TelegramApiException e) {
             System.out.printf("Сообщение не отправилось! Причина: %s", e.getMessage());
         }
+    }
+
+    /**
+     * @param message сообщение, которое должен отправить бот
+     * @return сообщение библиотеки telegrambots
+     */
+    private static SendMessage getSendMessage(Message message) {
+        SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getText());
+        if(message.getButtons().isPresent()){
+            MarkupButtonsTelegram buttonsTelegram = message.getButtons().get();
+            sendMessage.setReplyMarkup(buttonsTelegram.getMarkupInline());
+        }
+        return sendMessage;
     }
 }
