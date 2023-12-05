@@ -19,9 +19,10 @@ import static ru.urfu.museumbot.commands.Commands.*;
 @Service
 public class PreSignUpCommand implements Command {
 
-    public final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите записаться:";
+    static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите записаться:";
 
     private final EventService eventService;
+
     @Autowired
     public PreSignUpCommand(EventService eventService) {
         this.eventService = eventService;

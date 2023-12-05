@@ -13,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.urfu.museumbot.buttons.ButtonsContent;
+import ru.urfu.museumbot.buttons.ButtonContent;
 import ru.urfu.museumbot.buttons.ButtonsContext;
 import ru.urfu.museumbot.commands.CommandArgs;
 import ru.urfu.museumbot.commands.CommandContainer;
@@ -30,6 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
     private final String botName;
     private final String botToken;
     private final CommandContainer commandContainer;
+    private final ButtonContent buttonContent;
 
     public TelegramBot(@Value("${bot.name}") String botName,
                        @Value("${bot.token}") String botToken,
@@ -38,7 +39,8 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         this.botToken = botToken;
         this.botName = botName;
         this.commandContainer = commandContainer;
-        List<BotCommand> listOfCommands = new Message().getMenuOfCommands();
+        this.buttonContent = new ButtonContent();
+        List<BotCommand> listOfCommands = buttonContent.getMenuOfCommands();
         try{
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
@@ -87,7 +89,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
             TelegramBotsApi api = new TelegramBotsApi(DefaultBotSession.class);
             api.registerBot(this);
         } catch (TelegramApiException e) {
-            System.out.println("Не получилось запустить бота. Причина: " + e.getMessage());
+            throw new RuntimeException("Не получилось запустить бота. Причина: " + e.getMessage());
         }
     }
 
@@ -108,11 +110,13 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
      * @param message сообщение, которое должен отправить бот
      * @return сообщение библиотеки telegrambots
      */
-    private static SendMessage getSendMessage(Message message) {
+    private SendMessage getSendMessage(Message message) {
         SendMessage sendMessage = new SendMessage(message.getChatId().toString(), message.getText());
-        if(message.getButtonsContext().isPresent()){
+        if (message.getButtonsContext().isPresent()) {
             ButtonsContext buttonsContext = message.getButtonsContext().get();
-            sendMessage.setReplyMarkup(new ButtonsContent().getMarkupInline(buttonsContext));
+            sendMessage.setReplyMarkup(buttonContent.getMarkupInline(
+                    buttonsContext.getCallbackData(),
+                    buttonsContext.getVariants()));
         }
         return sendMessage;
     }

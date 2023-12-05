@@ -1,8 +1,6 @@
 package ru.urfu.museumbot.commands;
 
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.urfu.museumbot.message.Message;
 
 import static ru.urfu.museumbot.commands.Commands.START;
@@ -14,7 +12,7 @@ import static ru.urfu.museumbot.commands.Commands.START;
 @Service
 public class StartCommand implements Command {
 
-    public final String START_MESSAGE = "Здравствуйте! " +
+    static final String START_MESSAGE = "Здравствуйте! " +
             "Я бот, который поможет вам отслеживать предстоящие культурные мероприятия. " +
             "Используйте команду /help, чтобы узнать, что я могу";
 
