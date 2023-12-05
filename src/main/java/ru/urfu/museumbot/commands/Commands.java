@@ -1,5 +1,8 @@
 package ru.urfu.museumbot.commands;
 
+/**
+ * Класс для хранения команд в текстовом виде
+ */
 public class Commands {
     public static final String START = "/start";
     public static final String HELP = "/help";
