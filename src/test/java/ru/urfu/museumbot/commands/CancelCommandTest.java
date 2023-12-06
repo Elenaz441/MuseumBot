@@ -3,17 +3,13 @@ package ru.urfu.museumbot.commands;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.TelegramBot;
 import ru.urfu.museumbot.jpa.models.*;
 import ru.urfu.museumbot.jpa.service.*;
+import ru.urfu.museumbot.message.Message;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,13 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class CancelCommandTest {
 
+    @InjectMocks
     CancelCommand cancelCommand;
-
-    @Mock
-    TelegramBot telegramBot;
-
-    @Mock
-    ServiceContext serviceContext;
 
     @Mock
     EventService eventService;
@@ -40,31 +31,23 @@ class CancelCommandTest {
     @Mock
     ReviewService reviewService;
 
-    FakeSender fakeSender;
+    CommandArgs commandArgs;
 
     /**
      * Настройка данных перед каждым тестом
      */
     @BeforeEach
     void setUp() {
-        Mockito.doReturn(eventService)
-                .when(serviceContext)
-                .getEventService();
-        Mockito.doReturn(userService)
-                .when(serviceContext)
-                .getUserService();
-        Mockito.doReturn(reviewService)
-                .when(serviceContext)
-                .getReviewService();
-        fakeSender = new FakeSender(telegramBot);
-        this.cancelCommand = new CancelCommand(fakeSender, serviceContext);
+        this.commandArgs = new CommandArgs();
+        commandArgs.setChatId(1L);
+        commandArgs.setCallbackData("CancelEvent 1");
     }
 
     /**
      * Тест на отмену регистрации пользователя
      */
     @Test
-    void execute() {
+    void getMessage() {
         Long chatId = 1L;
         Event event = new Event();
         event.setId(1L);
@@ -80,21 +63,20 @@ class CancelCommandTest {
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
 
-        Chat chat = new Chat(chatId, "test");
-        Message message = new Message();
-        message.setChat(chat);
-        message.setMessageId(1);
-        CallbackQuery callbackQuery = new CallbackQuery();
-        callbackQuery.setMessage(message);
-        callbackQuery.setData("CancelEvent 1");
-        Update update = new Update();
-        update.setCallbackQuery(callbackQuery);
-
-        cancelCommand.execute(update);
-        assertEquals(1, fakeSender.getEditedMessages().size());
-
-        EditMessageText messageText = fakeSender.getEditedMessages().get(0);
-        assertEquals("Вы отменили свою запись на выбранное мероприятие", messageText.getText());
+        Message message = cancelCommand.getMessage(commandArgs);
+        assertEquals("Вы отменили свою запись на выбранное мероприятие", message.getText());
         Mockito.verify(reviewService, Mockito.times(1)).deleteReview(review);
+    }
+
+    /**
+     * Проверка случая,
+     * когда пользователь пытается отменить запись на мероприятие,
+     * на которое он не зарегистрирован
+     */
+    @Test
+    void getMessageIfNotSignedUp() {
+        Message message = cancelCommand.getMessage(commandArgs);
+        assertEquals("Вы не записаны на данное мероприятие", message.getText());
+        Mockito.verify(reviewService, Mockito.never()).deleteReview(Mockito.any(Review.class));
     }
 }

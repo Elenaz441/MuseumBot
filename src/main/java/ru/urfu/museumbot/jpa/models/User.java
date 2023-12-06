@@ -39,6 +39,15 @@ public class User {
     @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 
+    /**
+     * Состояние
+     */
+    private String state = "Init";
+    /**
+     * Индентификатор отзыва, который пользователь оставляет в данный момент времени
+     * Поле задаётся во время выполнения команды /leave_review
+     */
+    public Long reviewingEvent = null;
     public User() {
     }
 
@@ -96,6 +105,21 @@ public class User {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Long getReviewingEvent() {
+        return reviewingEvent;
+    }
+
+    public void setReviewingEvent(Long reviewingEvent) {
+        this.reviewingEvent = reviewingEvent;
     }
 
     /**

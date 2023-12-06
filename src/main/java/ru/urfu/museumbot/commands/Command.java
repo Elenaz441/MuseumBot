@@ -1,14 +1,16 @@
 package ru.urfu.museumbot.commands;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.message.Message;
+
+import static ru.urfu.museumbot.commands.State.INIT;
 
 /**
  * Интерфейс команды для обработки входящих сообщений
  */
-public interface Command {
-
+public interface Command extends Executable{
     /**
-     * Основной метод, который вызывает работу команды
+     * @return имя команды отвечающее за вызов пользователем
      */
-    void execute(Update update);
+    String getCommandName();
 }

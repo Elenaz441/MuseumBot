@@ -3,6 +3,7 @@ package ru.urfu.museumbot.jpa.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Exhibit;
 import ru.urfu.museumbot.jpa.repository.EventRepository;
 import java.util.*;
 
@@ -12,6 +13,11 @@ import java.util.*;
  */
 @Service
 public class EventService {
+
+    /**
+     * Количество ближайших дней, за которые хотим получить мероприятия
+     */
+    public final int NEXT_DAYS_COUNT = 7;
 
     private final EventRepository eventRepository;
 
@@ -31,7 +37,7 @@ public class EventService {
         Date now = new Date();
         Calendar cal = Calendar.getInstance();
         cal.setTime(now);
-        cal.add(Calendar.DATE, 7);
+        cal.add(Calendar.DATE, NEXT_DAYS_COUNT);
         Date dateTo = cal.getTime();
         return eventRepository.findAllByDateBetweenOrderByDate(now, dateTo);
     }
@@ -42,4 +48,6 @@ public class EventService {
     public Event getEventById(Long id) {
         return eventRepository.getEventById(id);
     }
+
+
 }

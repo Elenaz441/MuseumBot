@@ -1,30 +1,34 @@
 package ru.urfu.museumbot.commands;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.jpa.service.SendBotMessageService;
+import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.message.Message;
 
-import static ru.urfu.museumbot.commands.HelpCommand.HELP_MESSAGE;
+import static ru.urfu.museumbot.commands.Commands.START;
+
 
 /**
  * Start {@link Command}.
  */
+@Service
 public class StartCommand implements Command {
 
-    private final SendBotMessageService sendBotMessageService;
-
-    public final static String START_MESSAGE = "Здравствуйте! " +
+    static final String START_MESSAGE = "Здравствуйте! " +
             "Я бот, который поможет вам отслеживать предстоящие культурные мероприятия. " +
-            HELP_MESSAGE;
+            "Используйте команду /help, чтобы узнать, что я могу";
 
-    public StartCommand(SendBotMessageService sendBotMessageService) {
-        this.sendBotMessageService = sendBotMessageService;
+    public StartCommand() {
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public void execute(Update update) {
-        sendBotMessageService.sendMessage(update.getMessage().getChatId().toString(), START_MESSAGE);
+    public Message getMessage(CommandArgs args) {
+        return new Message(args.getChatId(), START_MESSAGE);
+    }
+
+    @Override
+    public String getCommandName() {
+        return START;
     }
 }

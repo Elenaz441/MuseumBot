@@ -1,46 +1,55 @@
 package ru.urfu.museumbot.commands;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.*;
+import ru.urfu.museumbot.message.Message;
 
 import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
 
 /**
  * Класс для команды регистрации пользователя на мероприятие
  */
+@Service
 public class SignUpCommand implements Command {
 
-    private final SendBotMessageService sendBotMessageService;
+    static final String MESSAGE_SUCCESS = "Вы записались на выбранное мероприятие";
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
 
-    public SignUpCommand(SendBotMessageService sendBotMessageService, ServiceContext serviceContext) {
-        this.sendBotMessageService = sendBotMessageService;
-        this.eventService = serviceContext.getEventService();
-        this.reviewService = serviceContext.getReviewService();
-        this.userService = serviceContext.getUserService();
+    @Autowired
+    public SignUpCommand(EventService eventService,
+                         ReviewService reviewService,
+                         UserService userService) {
+        this.eventService = eventService;
+        this.reviewService = reviewService;
+        this.userService = userService;
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public void execute(Update update) {
-        Long chatId = update.getCallbackQuery().getMessage().getChatId();
-        Integer messageId = update.getCallbackQuery().getMessage().getMessageId();
-        String callback = update.getCallbackQuery().getData();
-        sendBotMessageService.sendEditMessage(chatId.toString(), messageId, signUp(callback, chatId));
+    public Message getMessage(CommandArgs args) {
+        Long chatId = args.getChatId();
+        String callback = args.getCallbackData();
+        return new Message(chatId, signUp(callback, chatId));
+    }
+
+    @Override
+    public String getCommandName() {
+        return ADD_EVENT;
     }
 
     /**
      * Регистрация пользователя на выбранное мероприятие
      */
     private String signUp(String callbackData, Long chatId) {
-        String text = "Вы записались на выбранное мероприятие";
+        String text = MESSAGE_SUCCESS;
         Long eventId = Long.valueOf(callbackData.replace(ADD_EVENT + " ", ""));
         Review review = new Review();
         User user = userService.getUserByChatId(chatId);

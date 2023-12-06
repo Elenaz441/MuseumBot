@@ -1,40 +1,49 @@
 package ru.urfu.museumbot.commands;
 
-import ru.urfu.museumbot.jpa.service.SendBotMessageService;
-import ru.urfu.museumbot.jpa.service.ServiceContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.UserService;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import static ru.urfu.museumbot.commands.Commands.*;
+import java.util.stream.Collectors;
+
+import static ru.urfu.museumbot.commands.State.*;
+
 
 /**
  * Хранилище {@link Command}s, которое используется для обработки входящих сообщений.
  */
+@Service
 public class CommandContainer {
 
-    private final Map<String, Command> commandMap;
-    private final Command unknownCommand;
+    private final Map<String, Executable> commandMap;
+    private final Executable unknownCommand;
+    private final Map<State, Executable> nonCommandMap;
+    private final UserService userService;
 
-    public CommandContainer(SendBotMessageService sendBotMessageService, ServiceContext serviceContext) {
-        this.commandMap = new HashMap<>();
-        commandMap.put(START, new StartCommand(sendBotMessageService));
-        commandMap.put(HELP, new HelpCommand(sendBotMessageService));
-        commandMap.put(VIEW_UPCOMING_EVENTS, new ViewUpcomingEventsCommand(sendBotMessageService, serviceContext));
-        commandMap.put(VIEW_MY_EVENTS, new ViewMyEventsCommand(sendBotMessageService, serviceContext));
-        commandMap.put(SIGN_UP_FOR_EVENT, new PreSignUpCommand(sendBotMessageService, serviceContext));
-        commandMap.put(CANCEL, new PreCancelCommand(sendBotMessageService, serviceContext));
-        commandMap.put(ADD_EVENT, new SignUpCommand(sendBotMessageService, serviceContext));
-        commandMap.put(CANCEL_EVENT, new CancelCommand(sendBotMessageService, serviceContext));
-        unknownCommand = new NonCommand(sendBotMessageService);
+    @Autowired
+    public CommandContainer(UserService userService, List<ExecutableWithState> nonCommandList, List<Command> commandList) {
+        this.userService = userService;
+        this.commandMap = commandList.stream().collect(Collectors.toMap(Command::getCommandName, command -> command));
+        this.nonCommandMap = nonCommandList.stream().collect(Collectors.toMap(ExecutableWithState::getCommandState, command -> command));
+        unknownCommand = new UnknownCommand();
     }
 
     /**
      * Выбор нужного класса команды
+     * @param chatId Идентификатор чата пользователя с которым взаимодействует бот
      * @param commandIdentifier - идентификатор команды
      * @return - класс обработки команды
      */
-    public Command retrieveCommand(String commandIdentifier) {
-        return commandMap.getOrDefault(commandIdentifier, unknownCommand);
+    public Executable retrieveCommand(Long chatId, String commandIdentifier) {
+        User user = userService.getUserByChatId(chatId);
+        State userState = State.get(user.getState());
+        if(userState == State.INIT) {
+            return commandMap.getOrDefault(commandIdentifier, unknownCommand);
+        }
+        return nonCommandMap.getOrDefault(userState, unknownCommand);
     }
 
 }

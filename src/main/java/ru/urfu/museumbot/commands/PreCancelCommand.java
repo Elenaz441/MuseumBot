@@ -1,37 +1,50 @@
 package ru.urfu.museumbot.commands;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.buttons.ButtonsContext;
 import ru.urfu.museumbot.jpa.models.Event;
-import ru.urfu.museumbot.jpa.service.SendBotMessageService;
-import ru.urfu.museumbot.jpa.service.ServiceContext;
 import ru.urfu.museumbot.jpa.service.UserService;
+import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static ru.urfu.museumbot.commands.Commands.CANCEL;
 import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
 
 /**
  * Промежуточная команда перед отменой регистрации на мероприятие.
  * Здесь пользователю предоставляется список ближайших мероприятий, на которые он зарегистрирован.
  */
+@Service
 public class PreCancelCommand implements Command {
-    public final static String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите отменить запись:";
 
-    private final SendBotMessageService sendBotMessageService;
+    static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите отменить запись:";
+
     private final UserService userService;
 
-    public PreCancelCommand(SendBotMessageService sendBotMessageService, ServiceContext serviceContext) {
-        this.sendBotMessageService = sendBotMessageService;
-        this.userService = serviceContext.getUserService();
+    @Autowired
+    public PreCancelCommand(UserService userService) {
+        this.userService = userService;
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public void execute(Update update) {
-        Long chatId = update.getMessage().getChatId();
-        sendBotMessageService.sendMessageWithButtons(chatId.toString(), CHOOSE_EVENT_MESSAGE, CANCEL_EVENT, viewMyEvents(chatId));
+    public Message getMessage(CommandArgs args) {
+        Long chatId = args.getChatId();
+        Message message = new Message(chatId, CHOOSE_EVENT_MESSAGE);
+        Map<Long, String> variants = viewMyEvents(chatId).stream().collect(Collectors.toMap(Event::getId, Event::getTitle));
+        message.setButtonsContext(new ButtonsContext(CANCEL_EVENT, variants));
+        return message;
+    }
+
+    @Override
+    public String getCommandName() {
+        return CANCEL;
     }
 
     /**

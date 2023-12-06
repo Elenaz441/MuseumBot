@@ -1,16 +1,18 @@
 package ru.urfu.museumbot.commands;
 
-import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.urfu.museumbot.jpa.service.SendBotMessageService;
+import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.message.Message;
+
+import static ru.urfu.museumbot.commands.Commands.HELP;
+
 
 /**
  * Help {@link Command}.
  */
+@Service
 public class HelpCommand implements Command {
 
-    private final SendBotMessageService sendBotMessageService;
-
-    public static final String HELP_MESSAGE =  """
+    static final String HELP_MESSAGE =  """
             Доступны следующие команды:
             \t/help - Справка
             \t/view_upcoming_events - Посмотреть предстоящие мероприятия
@@ -19,15 +21,19 @@ public class HelpCommand implements Command {
             \t/view_my_events - Посмотреть список мероприятий, на которые вы записаны.
             """;
 
-    public HelpCommand(SendBotMessageService sendBotMessageService) {
-        this.sendBotMessageService = sendBotMessageService;
+    public HelpCommand() {
     }
 
     /**
      * Основной метод, который вызывает работу команды
      */
     @Override
-    public void execute(Update update) {
-        sendBotMessageService.sendMessage(update.getMessage().getChatId().toString(), HELP_MESSAGE);
+    public Message getMessage(CommandArgs args) {
+        return new Message(args.getChatId(), HELP_MESSAGE);
+    }
+
+    @Override
+    public String getCommandName() {
+        return HELP;
     }
 }
