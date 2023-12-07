@@ -1,0 +1,102 @@
+package ru.urfu.museumbot.jpa.models;
+
+import jakarta.persistence.*;
+
+import java.util.Objects;
+
+
+/**
+ * <p>Модель таблицы "Отзыв"</p>
+ * <p>{@link Review#id} уникальный индектификатор отзыва</p>
+ * <p>{@link Review#user} пользователь, который оставил отзыв</p>
+ * <p>{@link Review#event} мероприятие, о котором оставили отзыв</p>
+ * <p>о выставке {@link Review#event}</p>
+ * <p>{@link Review#rating} оценка</p>
+ * <p>{@link Review#review} текстовый отзыв/комментарии/обратная связь</p>
+ * 
+ */
+@Entity
+@Table(name = "review")
+public class Review {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "user_id"), name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "event_id"), name = "event_id")
+    private Event event;
+
+    private double rating = -1.0;
+
+    @Lob
+    @Column(columnDefinition = "text")
+    private String review = null;
+
+    public Review() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event eventId) {
+        this.event = eventId;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
+    }
+
+    @Override
+    public String toString() {
+        return "Мероприятие: " + event.getTitle() +
+                "\nОценка: " + rating +
+                "\nОтзыв: " + review;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return id.equals(review.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+}
