@@ -19,6 +19,10 @@ import java.util.stream.Collectors;
 
 import static ru.urfu.museumbot.commands.Commands.VIEW_EXHIBIT;
 
+/**
+ * Промежуточная команда перед просмотром информации об экспонате.
+ * Здесь пользователю предоставляется список экспонатов.
+ */
 @Service
 public class PreViewExhibitCommand implements Command{
     private final UserService userService;
@@ -38,7 +42,7 @@ public class PreViewExhibitCommand implements Command{
     @Override
     public Message getMessage(CommandArgs args) {
         List<Event> usersEvents = userService
-                .getUserEvents(args.getChatId())
+                .getUserEventsAfterNow(args.getChatId())
                 .stream().collect(Collectors.toList());
         boolean isUserAtEvent = isUserAtEvent(usersEvents);
         if(!isUserAtEvent){
@@ -55,6 +59,11 @@ public class PreViewExhibitCommand implements Command{
     public String getCommandName() {
         return VIEW_EXHIBIT;
     }
+
+    /**
+     * Проверка на то, находится ли сейчас пользователь на каком-либо мероприятии
+     * @param usersEvents - список мероприятий
+     */
     private boolean isUserAtEvent(List<Event> usersEvents) {
       Instant now = Instant.now();
         for(Event event: usersEvents){

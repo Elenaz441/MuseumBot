@@ -2,22 +2,20 @@ package ru.urfu.museumbot.commands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.customException.UserInputException;
-import ru.urfu.museumbot.jpa.models.Event;
-import ru.urfu.museumbot.jpa.models.Review;
-import ru.urfu.museumbot.jpa.models.User;
-import ru.urfu.museumbot.jpa.service.EventService;
 import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import java.util.Locale;
-
+/**
+ * Класс отвечающий за этап оценивания, где пользователь вводит оценку
+ */
 @Service
 public class RateEventNonCommand implements ExecutableWithState {
-    private final ReviewService reviewService;
+
     public static final String RATE_SUCCESS_MESSAGE = "Напишите, пожалуйста, небольшой отзыв." +
             " Что вам понравилось/запомнилось больше всего.";
-    public static final String RATE_FAILURE_MESSAGE = "Пожалуйста, введите число";
+    public static final String RATE_FAILURE_MESSAGE = "Пожалуйста, введите целое число от 0 до 10";
+    private final ReviewService reviewService;
     private final UserService userService;
 
     @Autowired
@@ -34,21 +32,25 @@ public class RateEventNonCommand implements ExecutableWithState {
             userService.updateUserState(chatId, State.RATE);
             return new Message(chatId, RATE_FAILURE_MESSAGE);
         }
-        double rating = Double.parseDouble(userInput);
+        int rating = Integer.parseInt(userInput);
         reviewService.rateEvent(chatId, rating);
         userService.updateUserState(chatId, State.COMMENT);
         return new Message(chatId, RATE_SUCCESS_MESSAGE);
     }
 
+    /**
+     * Проверить данные, которые ввёл пользователь, на валидность
+     * @param userInput - данные, которые ввёл пользователь
+     */
     private boolean validateUserInput(String userInput) {
         try{
-            double rating = Double.parseDouble(userInput);
-            if (!(rating > 0 && rating < 10)) {
-                throw new UserInputException("Оценивание происходит по деситибалльной шкале", userInput);
+            int rating = Integer.parseInt(userInput);
+            if (!(rating >= 0 && rating <= 10)) {
+                throw new UserInputException("Оценивание происходит по десятибалльной шкале, целыми числами", userInput);
             }
             return true;
-        }catch (NumberFormatException | UserInputException e){
-            System.out.printf("Оценка не поставилась! Причина: %s\n", e.getMessage());
+        } catch (NumberFormatException | UserInputException e){
+            System.out.println("Оценка не поставилась! Причина: " + e.getMessage());
         }
         return false;
     }

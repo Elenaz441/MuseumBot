@@ -11,6 +11,8 @@ import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.repository.UserRepository;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -70,9 +72,16 @@ class UserServiceTest {
      */
     @Test
     void getUserEvents() {
+        Date dt = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, 1);
+        dt = c.getTime();
+
         Event event = new Event();
         event.setId(1L);
         event.setTitle("Prov");
+        event.setDate(dt);
         User user = new User();
         user.setId(2L);
         user.setChatId(3L);

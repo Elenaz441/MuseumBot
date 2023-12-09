@@ -6,6 +6,9 @@ import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
+/**
+ * Второй этап оставления отзыва
+ */
 @Service
 public class PreRateNonCommand implements ExecutableWithState {
     private final UserService userService;
