@@ -86,7 +86,7 @@ public class ReviewService {
      * @param chatId чат пользователя, который оценивает
      * @param rating оценка от 0 до 10
      */
-    public void rateEvent(Long chatId, double rating) {
+    public void rateEvent(Long chatId, int rating) {
         User user = userRepository.getUserByChatId(chatId);
         Event event = eventRepository.getEventById(user.getReviewingEvent());
         Review review = getReview(user, event);

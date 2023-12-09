@@ -18,14 +18,15 @@ import static ru.urfu.museumbot.commands.Commands.LEAVE_REVIEW;
  */
 @Service
 public class LeaveReviewCommand implements Command {
+
     public static final String CALLBACK_DATA = "LeaveReview";
     public static final String MESSAGE_TEXT = "Выберите мероприятие:\n";
     private final UserService userService;
+
     @Autowired
     public LeaveReviewCommand(UserService userService) {
         this.userService = userService;
     }
-
 
     @Override
     public Message getMessage(CommandArgs args) {
@@ -41,7 +42,6 @@ public class LeaveReviewCommand implements Command {
     public String getCommandName() {
         return LEAVE_REVIEW;
     }
-
 
     /**
      * @param chatId идентификатор чата пользователя

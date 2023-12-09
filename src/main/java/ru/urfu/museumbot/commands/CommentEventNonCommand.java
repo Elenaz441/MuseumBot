@@ -10,16 +10,19 @@ import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
+/**
+ * Этап оставления отзыва, когда пользователь пишет непосредственно сам отзыв.
+ */
 @Service
 public class CommentEventNonCommand implements ExecutableWithState {
 
+    public static final String COMMENT_MESSAGE = "Спасибо, что оставили отзыв на мероприятие";
     private final EventService eventService;
     private final ReviewService reviewService;
-    public static final String COMMENT_MESSAGE = "Спасибо, что оставили отзыв на мероприятие";
     private final UserService userService;
     private Event commentedEvent;
 
-@Autowired
+    @Autowired
     public CommentEventNonCommand(UserService userService, EventService eventService, ReviewService reviewService) {
         this.eventService = eventService;
         this.reviewService = reviewService;
@@ -34,6 +37,7 @@ public class CommentEventNonCommand implements ExecutableWithState {
         leaveComment(chatId, userComment);
         return new Message(chatId, String.format("%s '%s'",COMMENT_MESSAGE, commentedEvent.getTitle()));
     }
+
     /**
      * Сохраняет комментарий оставленный пользователем
      * @param chatId чат пользователя

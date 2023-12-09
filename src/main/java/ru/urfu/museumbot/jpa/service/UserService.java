@@ -45,8 +45,25 @@ public class UserService {
      * @param chatId - id чата с пользователем
      */
     public List<Event> getUserEvents(Long chatId) {
+        Instant now = new Date().toInstant();
         User user = userRepository.getUserByChatId(chatId);
-        return user.getReviews().stream().map(Review::getEvent).toList();
+        return user.getReviews().stream()
+                .filter(review -> review.getEvent().getDate().toInstant().isAfter(now))
+                .map(Review::getEvent)
+                .toList();
+    }
+
+    /**
+     * Возвращает список мероприятий, которые прошли или проходят
+     * @param chatId - id чата с пользователем
+     */
+    public List<Event> getUserEventsAfterNow(Long chatId) {
+        Instant now = new Date().toInstant();
+        User user = userRepository.getUserByChatId(chatId);
+        return user.getReviews().stream()
+                .filter(review -> review.getEvent().getDate().toInstant().isBefore(now))
+                .map(Review::getEvent)
+                .toList();
     }
 
     /**

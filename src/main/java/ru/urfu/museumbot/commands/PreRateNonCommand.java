@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
+/**
+ * Второй этап оставления отзыва
+ */
 @Service
 public class PreRateNonCommand implements ExecutableWithState {
 

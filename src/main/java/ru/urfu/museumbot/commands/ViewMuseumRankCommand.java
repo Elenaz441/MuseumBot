@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 import static ru.urfu.museumbot.commands.Commands.GET_RANK;
 
+/**
+ * Команда для просмотра рейтинга и отзывов музея
+ */
 @Service
 public class ViewMuseumRankCommand implements Command {
 

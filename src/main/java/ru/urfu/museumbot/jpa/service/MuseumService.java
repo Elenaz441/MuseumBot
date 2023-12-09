@@ -45,7 +45,7 @@ public class MuseumService {
                 .stream()
                 .map(Event::getReviews)
                 .flatMap(List::stream)
-                .filter(review -> review.getRating() != 0)
+                .filter(review -> review.getRating() != -1)
                 .sorted(Comparator.comparing(review -> review.getEvent().getDate()))
                 .toList();
     }
@@ -57,7 +57,7 @@ public class MuseumService {
         List<Review> reviews = getMuseumReviews(id);
         Double rank = reviews.stream()
                 .map(Review::getRating)
-                .mapToInt(Double::intValue)
+                .mapToInt(r -> r)
                 .average()
                 .orElse(-1);
         String result = String.valueOf(rank);

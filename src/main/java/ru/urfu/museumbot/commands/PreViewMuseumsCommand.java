@@ -7,7 +7,6 @@ import ru.urfu.museumbot.jpa.models.Museum;
 import ru.urfu.museumbot.jpa.service.MuseumService;
 import ru.urfu.museumbot.message.Message;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,8 @@ public class PreViewMuseumsCommand implements Command {
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         Message message = new Message(chatId, CHOOSE_MUSEUM_MESSAGE);
-        Map<Long, String> variants = viewMuseums()
+        Map<Long, String> variants = museumService
+                .getMuseums()
                 .stream()
                 .collect(Collectors.toMap(Museum::getId, Museum::getTitle));
         message.setButtonsContext(new ButtonsContext(GET_MUSEUM, variants));
@@ -47,12 +47,5 @@ public class PreViewMuseumsCommand implements Command {
     @Override
     public String getCommandName() {
         return VIEW_MUSEUM;
-    }
-
-    /**
-     * <p>Посмотреть список музеев</p>
-     */
-    private List<Museum> viewMuseums() {
-        return museumService.getMuseums();
     }
 }
