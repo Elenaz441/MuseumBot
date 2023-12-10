@@ -22,9 +22,7 @@ public enum State {
     public static State get (String stateString) {
         return ENUM_MAP.get(stateString);
     }
-    //    SET_DELAY(stateString),
-//    NOTIFY(stateString);
-    private String stateString;
+    private final String stateString;
     State(String stateString) {
         this.stateString = stateString;
     }

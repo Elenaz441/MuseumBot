@@ -45,8 +45,10 @@ public class RateEventNonCommand implements ExecutableWithState {
     private boolean validateUserInput(String userInput) {
         try{
             int rating = Integer.parseInt(userInput);
+
             if (!(rating >= 0 && rating <= 10)) {
-                throw new UserInputException("Оценивание происходит по десятибалльной шкале, целыми числами", userInput);
+                throw new UserInputException(String.format("Оценивание происходит по десятибалльной шкале," +
+                        " целыми числами. userInput = %d", rating));
             }
             return true;
         } catch (NumberFormatException | UserInputException e){
