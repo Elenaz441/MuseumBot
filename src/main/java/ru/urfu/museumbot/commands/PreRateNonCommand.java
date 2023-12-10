@@ -2,20 +2,25 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
+/**
+ * Второй этап оставления отзыва
+ */
 @Service
 public class PreRateNonCommand implements ExecutableWithState {
+
+    public static final String RATE_PREV_MESSAGE = "Как вы оцениваете данное мероприятие от 0 до 10," +
+            " где 0 - это не понравилось совсем;" +
+            " 10 - очень понравилось?";
+
     private final UserService userService;
-@Autowired
+
+    @Autowired
     public PreRateNonCommand(UserService userService) {
         this.userService = userService;
     }
-    public static final String RATE_PREV_MESSAGE = "Как мы оцениваете данное мероприятие от 0 до 10," +
-            " где 0 - это не понравилось совсем;" +
-            " 10 - очень понравилось?";
 
     @Override
     public Message getMessage(CommandArgs args) {

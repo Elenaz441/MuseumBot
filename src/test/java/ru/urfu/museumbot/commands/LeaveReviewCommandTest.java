@@ -8,7 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.urfu.museumbot.jpa.models.Event;
-import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.Calendar;
@@ -19,25 +20,24 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Класс для тестирования класса {@link PreSignUpCommand}
+ * Класс для тестирования класса {@link LeaveReviewCommand}
  */
 @ExtendWith(MockitoExtension.class)
-class PreSignUpCommandTest {
+class LeaveReviewCommandTest {
 
     @InjectMocks
-    PreSignUpCommand preSignUpCommand;
+    LeaveReviewCommand leaveReviewCommand;
 
     @Mock
-    EventService eventService;
-
-    List<Event> events;
+    UserService userService;
 
     CommandArgs commandArgs;
 
-    /**
-     * Подготовка данных для тестов
-     */
-    public PreSignUpCommandTest() {
+    User user;
+
+    List<Event> events;
+
+    public LeaveReviewCommandTest() {
         Calendar calendar = new GregorianCalendar(2017, Calendar.NOVEMBER, 25, 12, 0);
         Date date = calendar.getTime();
         Event event1 = new Event();
@@ -59,31 +59,32 @@ class PreSignUpCommandTest {
         this.events = List.of(event1, event2);
     }
 
-    /**
-     * Настройка данных перед каждым тестом
-     */
     @BeforeEach
     void setUp() {
         this.commandArgs = new CommandArgs();
         commandArgs.setChatId(1L);
+
+        this.user = new User();
+        user.setId(1L);
+        user.setChatId(1L);
+        user.setReviewingEvent(1L);
     }
 
     /**
-     * Тест на вывод предстоящих мероприятий с помощью кнопок
+     * Тест на начало команды /leave_review
      */
     @Test
     void getMessage() {
-        Mockito.doReturn(events)
-                .when(eventService)
-                .getListEvents();
-        Message message = preSignUpCommand.getMessage(commandArgs);
-        assertEquals(
-                "Выберете мероприятие, на которое хотите записаться:",
-                message.getText());
+        Mockito.doReturn(events).when(userService).getAllVisitedEvents(1L);
+
+        Message message = leaveReviewCommand.getMessage(commandArgs);
+
+        assertEquals("Выберите мероприятие:\n", message.getText());
         assertTrue(message.getButtonsContext().isPresent());
         assertEquals(2, message.getButtonsContext().get().getVariants().size());
-        assertEquals("AddEvent", message.getButtonsContext().get().getCallbackData());
+        assertEquals("LeaveReview", message.getButtonsContext().get().getCallbackData());
         assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(1L));
         assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(2L));
+        Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.RATE_PREV);
     }
 }

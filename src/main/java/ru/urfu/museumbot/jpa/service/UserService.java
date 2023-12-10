@@ -45,8 +45,25 @@ public class UserService {
      * @param chatId - id чата с пользователем
      */
     public List<Event> getUserEvents(Long chatId) {
+        Instant now = new Date().toInstant();
         User user = userRepository.getUserByChatId(chatId);
-        return user.getReviews().stream().map(Review::getEvent).toList();
+        return user.getReviews().stream()
+                .filter(review -> review.getEvent().getDate().toInstant().isAfter(now))
+                .map(Review::getEvent)
+                .toList();
+    }
+
+    /**
+     * Возвращает список мероприятий, которые прошли или проходят
+     * @param chatId - id чата с пользователем
+     */
+    public List<Event> getUserEventsAfterNow(Long chatId) {
+        Instant now = new Date().toInstant();
+        User user = userRepository.getUserByChatId(chatId);
+        return user.getReviews().stream()
+                .filter(review -> review.getEvent().getDate().toInstant().isBefore(now))
+                .map(Review::getEvent)
+                .toList();
     }
 
     /**
@@ -60,7 +77,8 @@ public class UserService {
     public List<Event> getAllVisitedEvents(Long chatId) {
         Instant now = new Date().toInstant();
         return userRepository.getUserByChatId(chatId)
-                .getReviews().stream().filter(review -> review.getEvent().getDate().
+                .getReviews().stream()
+                .filter(review -> review.getEvent().getDate().
                         toInstant().isBefore(now))
                 .map(Review::getEvent)
                 .collect(Collectors.toList());
@@ -80,7 +98,7 @@ public class UserService {
     /**
      * Устанавливает идентификатор мероприятия, на которое пользователь оставляет отзыв в данный момент
      * @param chatId чат пользователя
-     * @param eventId
+     * @param eventId - id мероприятия
      */
     public void setReviewingEvent(Long chatId, Long eventId){
         User user = getUserByChatId(chatId);

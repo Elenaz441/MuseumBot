@@ -43,11 +43,13 @@ public class User {
      * Состояние
      */
     private String state = "Init";
+
     /**
-     * Индентификатор отзыва, который пользователь оставляет в данный момент времени
+     * Идентификатор отзыва, который пользователь оставляет в данный момент времени
      * Поле задаётся во время выполнения команды /leave_review
      */
     public Long reviewingEvent = null;
+
     public User() {
     }
 
@@ -123,6 +125,15 @@ public class User {
     }
 
     /**
+     * добавляет отзыв в список
+     * @param review отзыв, который нужно добавить
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
+    }
+
+    /**
      * <p>Удалить отзыв из списка</p>
      * @param review - отзыв, который нужно удалить
      */
@@ -152,14 +163,5 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    /**
-     * добавляет отзыв в список
-     * @param review отзыв, который нужно добавить
-     */
-    public void addReview(Review review) {
-        reviews.add(review);
-        review.setUser(this);
     }
 }

@@ -2,17 +2,10 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.commands.Command;
-import ru.urfu.museumbot.commands.CommandArgs;
-import ru.urfu.museumbot.commands.State;
 import ru.urfu.museumbot.dataFormat.ExhibitFormat;
-import ru.urfu.museumbot.jpa.models.Event;
-import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
-import java.util.Map;
-import java.util.stream.Collectors;
 @Service
 public class ViewExhibitCommand implements Command {
     private final ExhibitService exhibitService;
