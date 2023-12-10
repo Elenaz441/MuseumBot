@@ -9,6 +9,7 @@ import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.repository.UserRepository;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,14 +55,18 @@ public class UserService {
     }
 
     /**
-     * Возвращает список мероприятий, которые прошли или проходят
+     * Возвращает список мероприятий,
+     * на которых пользователь находится в данный момент времени
      * @param chatId - id чата с пользователем
+     * @return спсиок мероприятий которые уже начались, но пока не закончились
      */
     public List<Event> getUserEventsAfterNow(Long chatId) {
         Instant now = new Date().toInstant();
         User user = userRepository.getUserByChatId(chatId);
         return user.getReviews().stream()
-                .filter(review -> review.getEvent().getDate().toInstant().isBefore(now))
+                .filter(review -> review.getEvent().getDate().toInstant().isBefore(now)
+                        && review.getEvent().getDate().toInstant()
+                            .plus(review.getEvent().getDuration(), ChronoUnit.MINUTES).isAfter(now))
                 .map(Review::getEvent)
                 .toList();
     }
@@ -105,10 +110,4 @@ public class UserService {
         user.setReviewingEvent(eventId);
         userRepository.save(user);
     }
-
-//    public void updateUserState(User user, Long reviewingEvent){
-//        User updateEntity = userRepository.getUserByChatId(user.getChatId());
-//        updateEntity.setReviewingEvent(reviewingEvent);
-//        userRepository.save(updateEntity);
-//    }
 }
