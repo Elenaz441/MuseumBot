@@ -45,7 +45,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
             this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
         }
         catch (TelegramApiException e){
-            System.out.println(e.getMessage());
+            System.out.println("Не получилось установить меню с командами. Причина: " + e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class TelegramBot extends TelegramLongPollingBot implements Bot {
         try {
             this.execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.printf("Сообщение не отправилось! Причина: %s", e.getMessage());
+            System.out.println("Сообщение не отправилось! Причина: %s" + e.getMessage());
         }
     }
 
