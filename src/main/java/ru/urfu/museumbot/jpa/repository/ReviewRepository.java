@@ -18,6 +18,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Review getReviewByUserAndEvent(User user, Event event);
 
-    @Query(value = "SELECT * FROM review WHERE user_id = :user", nativeQuery = true)
-    List<Review> getAllByUser(Long user);
 }

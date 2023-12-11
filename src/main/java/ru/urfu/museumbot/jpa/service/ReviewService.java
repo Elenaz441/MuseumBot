@@ -77,10 +77,6 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
-    public List<Review> getAllByUser(Long user){
-        return reviewRepository.getAllByUser(user);
-    }
-
     /**
      * Оставить оценку посещённого мероприятию
      * @param chatId чат пользователя, который оценивает
