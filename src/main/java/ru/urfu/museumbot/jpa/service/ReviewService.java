@@ -76,9 +76,6 @@ public class ReviewService {
     public void updateReview(Review review) {
         reviewRepository.save(review);
     }
-    public List<Review> getAllByUser(Long user){
-        return reviewRepository.getAllByUser(user);
-    }
 
     /**
      * Оставить оценку посещённого мероприятию
