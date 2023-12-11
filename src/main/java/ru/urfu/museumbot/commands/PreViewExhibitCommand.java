@@ -9,8 +9,6 @@ import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,12 +22,12 @@ import static ru.urfu.museumbot.commands.Commands.VIEW_EXHIBIT;
 @Service
 public class PreViewExhibitCommand implements Command{
     private final UserService userService;
-
-    private final String EXHIBIT_NOT_AVAILABLE = "Выставка ещё не началась. Эта команда недоступна";
-    private final String CALLBACK_DATA = "ViewExhibit";
-    private final String EXHIBIT_IS_AVAILABLE = "Выберите экспонат:";
+    static final String EXHIBIT_NOT_AVAILABLE = "Выставка ещё не началась. Эта команда недоступна";
+    static final String CALLBACK_DATA = "ViewExhibit";
+    static final String EXHIBIT_IS_AVAILABLE = "Выберите экспонат:";
+    static  final String IF_NO_EXHIBIT_BY_MUSEUM = "Извините," +
+            " в базе данных отсутствует информация об экспонатах данного музея";
     private final ExhibitService exhibitService;
-    private Event currentEvent;
 
     @Autowired
     public PreViewExhibitCommand(UserService userService, ExhibitService exhibitService) {
@@ -39,16 +37,19 @@ public class PreViewExhibitCommand implements Command{
 
     @Override
     public Message getMessage(CommandArgs args) {
-        List<Event> usersEvents = userService
-                .getUserEventsAfterNow(args.getChatId())
-                .stream().collect(Collectors.toList());
-        boolean isUserAtEvent = isUserAtEvent(usersEvents);
-        if(!isUserAtEvent){
-            return new Message(args.getChatId(), EXHIBIT_NOT_AVAILABLE);
+        Long chatId = args.getChatId();
+
+        List<Event> currentEvent = userService.getUserEventsAfterNow(chatId);
+        if(currentEvent.isEmpty()){
+            return new Message(chatId, EXHIBIT_NOT_AVAILABLE);
         }
-        Map<Long, String> variants = exhibitService.getMuseumExhibits(currentEvent.getId())
+        List<Exhibit> exhibits = exhibitService.getMuseumExhibits(currentEvent.get(0).getId());
+        if (exhibits.isEmpty()){
+            return new Message(chatId, IF_NO_EXHIBIT_BY_MUSEUM);
+        }
+        Map<Long, String> variants = exhibits
                 .stream().collect(Collectors.toMap(Exhibit::getId, Exhibit::getTitle));
-        Message message = new Message(args.getChatId(), EXHIBIT_IS_AVAILABLE);
+        Message message = new Message(chatId, EXHIBIT_IS_AVAILABLE);
         message.setButtonsContext(new ButtonsContext(CALLBACK_DATA, variants));
         return message;
     }
@@ -58,19 +59,4 @@ public class PreViewExhibitCommand implements Command{
         return VIEW_EXHIBIT;
     }
 
-    /**
-     * Проверка на то, находится ли сейчас пользователь на каком-либо мероприятии
-     * @param usersEvents - список мероприятий
-     */
-    private boolean isUserAtEvent(List<Event> usersEvents) {
-      Instant now = Instant.now();
-        for(Event event: usersEvents){
-            Instant eventDate = event.getDate().toInstant();
-            if(now.isAfter(eventDate) && eventDate.plus(event.getDuration(), ChronoUnit.MINUTES).isAfter(now)) {
-                this.currentEvent = event;
-                return true;
-            }
-        }
-        return false;
-    }
 }
