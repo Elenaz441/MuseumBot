@@ -12,7 +12,7 @@ public enum State {
     private static final Map<String, State> ENUM_MAP;
 
     static {
-        Map<String,State> map = new HashMap<String, State>();
+        Map<String,State> map = new HashMap<>();
         for (State instance : State.values()) {
             map.put(instance.getStateString(),instance);
         }

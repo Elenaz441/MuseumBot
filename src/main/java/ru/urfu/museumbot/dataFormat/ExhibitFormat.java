@@ -3,7 +3,6 @@ import ru.urfu.museumbot.jpa.models.Exhibit;
 
 public class ExhibitFormat {
 
-
     /**
      * Метод для преобразования Exhibit в строку
      */

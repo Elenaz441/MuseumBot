@@ -92,12 +92,9 @@ public class Museum {
 
     @Override
     public String toString() {
-        return "Museum{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", address='" + address + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return "Название: " + title +
+                "\nАдрес: " + address +
+                "\nОписание: " + description;
     }
 
     @Override

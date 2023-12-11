@@ -83,7 +83,7 @@ class PreSignUpCommandTest {
         assertTrue(message.getButtonsContext().isPresent());
         assertEquals(2, message.getButtonsContext().get().getVariants().size());
         assertEquals("AddEvent", message.getButtonsContext().get().getCallbackData());
-        assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(0).getTitle());
-        assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(1).getTitle());
+        assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(1L));
+        assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(2L));
     }
 }

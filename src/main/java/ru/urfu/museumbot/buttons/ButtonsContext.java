@@ -1,8 +1,5 @@
 package ru.urfu.museumbot.buttons;
 
-import ru.urfu.museumbot.jpa.models.Event;
-
-import java.util.List;
 import java.util.Map;
 
 /**
