@@ -105,7 +105,9 @@ class UserServiceTest {
     }
 
     /**
-     *
+     * Тестирвоание метода, который возвращает
+     * мероприятия на которых пользователь находится в данный момент времени
+     * (Вытсавка происходит сейчас)
      */
     @Test
     void getUserEventsAfterNow(){
@@ -142,6 +144,7 @@ class UserServiceTest {
         List<Event> res = userService.getUserEventsAfterNow(1L);
         Assertions.assertEquals(1L, res.get(0).getId());
         Instant now = new Date().toInstant();
+        Assertions.assertEquals(1, res.size());
         Assertions.assertTrue(res.get(0).getDate().toInstant().isBefore(now));
         Assertions.assertTrue(res.get(0).getDate().toInstant().plus(res.get(0).getDuration(), ChronoUnit.MINUTES).isAfter(now));
     }
