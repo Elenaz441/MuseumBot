@@ -71,7 +71,7 @@ class LeaveReviewCommandTest {
     }
 
     /**
-     * Тест на начало команды /leave_review
+     * Тест на начало команды /leave_review, когда есть мероприятия, которые нужно оценить
      */
     @Test
     void getMessage() {
@@ -86,5 +86,17 @@ class LeaveReviewCommandTest {
         assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(1L));
         assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(2L));
         Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.RATE_PREV);
+    }
+
+    /**
+     * Проверка работы команды /leave_review, если нет мероприятий, которые можно оценить
+     */
+    @Test
+    void getMessageIfNoEvents() {
+        Mockito.doReturn(List.of()).when(userService).getAllVisitedEvents(1L);
+        Message message = leaveReviewCommand.getMessage(commandArgs);
+        assertEquals("У вас нет мероприятий, которые можно оценить.", message.getText());
+        assertFalse(message.getButtonsContext().isPresent());
+        Mockito.verify(userService, Mockito.never()).updateUserState(1L, State.RATE_PREV);
     }
 }

@@ -26,6 +26,7 @@ public class LeaveReviewCommand implements Command {
     public static final String CALLBACK_DATA = "LeaveReview";
     public static final String MESSAGE_TEXT = "Выберите мероприятие:\n";
     private final UserService userService;
+    static final String NO_EVENT = "У вас нет мероприятий, которые можно оценить.";
 
     @Autowired
     public LeaveReviewCommand(UserService userService) {
@@ -34,10 +35,14 @@ public class LeaveReviewCommand implements Command {
 
     @Override
     public Message getMessage(CommandArgs args) {
-        Message message = new Message(args.getChatId(), MESSAGE_TEXT);
         Long chatId = args.getChatId();
+        List<Event> userEvents = getUserEvents(chatId);
+        if(userEvents.isEmpty()){
+            return new Message(chatId, NO_EVENT);
+        }
+        Message message = new Message(chatId, MESSAGE_TEXT);
         userService.updateUserState(chatId, State.RATE_PREV);
-        Map<Long, String> variants = getUserEvents(chatId).stream().collect(Collectors.toMap(Event::getId, Event::getTitle));
+        Map<Long, String> variants = userEvents.stream().collect(Collectors.toMap(Event::getId, Event::getTitle));
         message.setButtonsContext(new ButtonsContext(CALLBACK_DATA, variants));
         return message;
     }
