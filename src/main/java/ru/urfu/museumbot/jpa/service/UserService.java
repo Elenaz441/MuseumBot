@@ -78,6 +78,10 @@ public class UserService {
         return userRepository.getUserByChatId(chatId);
     }
 
+    /**
+     * Получить список мероприятий пользователя по идентификатору чата
+     * @param chatId идентификатор чата пользователя
+     */
     public List<Event> getAllVisitedEvents(Long chatId) {
         Instant now = Instant.now();
         return userRepository.getUserByChatId(chatId)
