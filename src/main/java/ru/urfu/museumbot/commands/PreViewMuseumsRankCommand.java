@@ -7,12 +7,11 @@ import ru.urfu.museumbot.jpa.models.Museum;
 import ru.urfu.museumbot.jpa.service.MuseumService;
 import ru.urfu.museumbot.message.Message;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.urfu.museumbot.commands.Commands.VIEW_MUSEUM_RANK;
 import static ru.urfu.museumbot.commands.Commands.GET_RANK;
+import static ru.urfu.museumbot.commands.Commands.VIEW_MUSEUM_RANK;
 
 /**
  * Промежуточная команда перед просмотром рейтинга и отзывов о музее.
@@ -20,8 +19,7 @@ import static ru.urfu.museumbot.commands.Commands.GET_RANK;
  */
 @Service
 public class PreViewMuseumsRankCommand implements Command {
-
-    static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
+    private static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
 
     private final MuseumService museumService;
 
@@ -37,7 +35,7 @@ public class PreViewMuseumsRankCommand implements Command {
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         Message message = new Message(chatId, CHOOSE_MUSEUM_MESSAGE);
-        Map<Long, String> variants = viewMuseums()
+        Map<Long, String> variants = museumService.getMuseums()
                 .stream()
                 .collect(Collectors.toMap(Museum::getId, Museum::getTitle));
         message.setButtonsContext(new ButtonsContext(GET_RANK, variants));
@@ -47,12 +45,5 @@ public class PreViewMuseumsRankCommand implements Command {
     @Override
     public String getCommandName() {
         return VIEW_MUSEUM_RANK;
-    }
-
-    /**
-     * <p>Посмотреть список музеев</p>
-     */
-    private List<Museum> viewMuseums() {
-        return museumService.getMuseums();
     }
 }

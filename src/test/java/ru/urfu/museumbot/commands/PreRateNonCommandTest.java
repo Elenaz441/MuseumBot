@@ -11,7 +11,7 @@ import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link PreRateNonCommand}
@@ -25,27 +25,26 @@ class PreRateNonCommandTest {
     @Mock
     UserService userService;
 
-    CommandArgs commandArgs;
-
-    User user;
+    private CommandArgs commandArgs;
 
     @BeforeEach
     void setUp() {
         this.commandArgs = new CommandArgs();
         commandArgs.setChatId(1L);
-        commandArgs.setCallbackData("LeaveReview 1");
 
-        this.user = new User();
+        User user = new User();
         user.setId(1L);
         user.setChatId(1L);
-        user.setReviewingEvent(1L);
     }
 
     /**
      * Проверка второго этапа оценивания мероприятия
+     * Когда вместе с CallbackData передаётся число - Event.id
      */
     @Test
     void getMessage() {
+        commandArgs.setCallbackData("LeaveReview 1");
+
         Message message = preRateNonCommand.getMessage(commandArgs);
 
         assertEquals(
@@ -53,5 +52,20 @@ class PreRateNonCommandTest {
                 message.getText());
         Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.RATE);
         Mockito.verify(userService, Mockito.times(1)).setReviewingEvent(1L, 1L);
+    }
+
+    /**
+     * Проверка второго этапа оценивания мероприятия
+     * Когда CallbackData содержит некорректный Event.id
+     */
+    @Test
+    void getMessageIfNotANumber() {
+        commandArgs.setCallbackData("LeaveReview п");
+        Message message = preRateNonCommand.getMessage(commandArgs);
+        assertEquals(
+                "Извините, не смог найти событие.",
+                message.getText());
+        Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.INIT);
+        Mockito.verify(userService, Mockito.never()).setReviewingEvent(1L, 1L);
     }
 }

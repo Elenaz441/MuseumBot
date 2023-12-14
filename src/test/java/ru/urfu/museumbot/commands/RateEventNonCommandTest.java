@@ -12,7 +12,7 @@ import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link RateEventNonCommand}
@@ -29,17 +29,14 @@ class RateEventNonCommandTest {
     @Mock
     ReviewService reviewService;
 
-    CommandArgs commandArgs;
-
-    User user;
-
+    private CommandArgs commandArgs;
 
     @BeforeEach
     void setUp() {
         this.commandArgs = new CommandArgs();
         commandArgs.setChatId(1L);
 
-        this.user = new User();
+        User user = new User();
         user.setId(1L);
         user.setChatId(1L);
         user.setReviewingEvent(1L);

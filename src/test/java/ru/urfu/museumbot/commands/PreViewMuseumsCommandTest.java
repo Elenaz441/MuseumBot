@@ -12,7 +12,8 @@ import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Класс для тестирования класса {@link PreViewMuseumsCommand}
@@ -26,9 +27,9 @@ class PreViewMuseumsCommandTest {
     @Mock
     MuseumService museumService;
 
-    CommandArgs commandArgs;
+    private final CommandArgs commandArgs;
 
-    List<Museum> museums;
+    private final List<Museum> museums;
 
     /**
      * Подготовка данных для тестов

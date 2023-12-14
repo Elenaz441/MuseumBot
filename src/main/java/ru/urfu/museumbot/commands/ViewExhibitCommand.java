@@ -2,15 +2,17 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.dataFormat.ExhibitFormat;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
+/**
+ * Класс для просмотра названий всех экспонатов музея
+ */
 @Service
 public class ViewExhibitCommand implements Command {
     private final ExhibitService exhibitService;
 
-    static final String COMMAND_NAME = "ViewExhibit";
+    private static final String COMMAND_NAME = "ViewExhibit";
 
     @Autowired
     public ViewExhibitCommand(ExhibitService exhibitService) {
@@ -26,7 +28,7 @@ public class ViewExhibitCommand implements Command {
     }
 
     private String viewExhibit(Long exhibitId) {
-        return new ExhibitFormat().toFormattedString(exhibitService.getExhibitById(exhibitId));
+        return exhibitService.getFormattedString(exhibitService.getExhibitById(exhibitId));
     }
 
     @Override

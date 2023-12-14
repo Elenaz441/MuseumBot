@@ -12,14 +12,13 @@ import ru.urfu.museumbot.jpa.models.Exhibit;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class ViewExhibitCommandTest {
     private final CommandArgs args;
     @InjectMocks
-    ViewExhibitCommand viewExhibitCommand;
+    private ViewExhibitCommand viewExhibitCommand;
     @Mock
-    ExhibitService exhibitService;
+    private ExhibitService exhibitService;
     private Exhibit exhibit;
 
     public ViewExhibitCommandTest() {
@@ -29,8 +28,9 @@ class ViewExhibitCommandTest {
 
 
     }
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         exhibit = new Exhibit();
         exhibit.setId(1L);
         exhibit.setTitle("Test exhibit");
@@ -40,6 +40,8 @@ class ViewExhibitCommandTest {
     @Test
     void getMessage() {
         Mockito.doReturn(exhibit).when(exhibitService).getExhibitById(1L);
+        Mockito.doReturn("Название: Test exhibit\n\nОписание: Test description")
+                .when(exhibitService).getFormattedString(exhibit);
         Message res = viewExhibitCommand.getMessage(args);
         Assertions.assertEquals("Название: Test exhibit\n\nОписание: Test description", res.getText());
     }

@@ -10,7 +10,6 @@ import ru.urfu.museumbot.jpa.repository.UserRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public class UserService {
      * @param chatId - id чата с пользователем
      */
     public List<Event> getUserEvents(Long chatId) {
-        Instant now = new Date().toInstant();
+        Instant now =  Instant.now();
         User user = userRepository.getUserByChatId(chatId);
         return user.getReviews().stream()
                 .filter(review -> review.getEvent().getDate().toInstant().isAfter(now))
@@ -61,7 +60,7 @@ public class UserService {
      * @return спсиок мероприятий которые уже начались, но пока не закончились
      */
     public List<Event> getUserEventsAfterNow(Long chatId) {
-        Instant now = new Date().toInstant();
+        Instant now = Instant.now();
         User user = userRepository.getUserByChatId(chatId);
         return user.getReviews().stream()
                 .filter(review -> review.getEvent().getDate().toInstant().isBefore(now)
@@ -79,8 +78,12 @@ public class UserService {
         return userRepository.getUserByChatId(chatId);
     }
 
+    /**
+     * Получить список мероприятий пользователя по идентификатору чата
+     * @param chatId идентификатор чата пользователя
+     */
     public List<Event> getAllVisitedEvents(Long chatId) {
-        Instant now = new Date().toInstant();
+        Instant now = Instant.now();
         return userRepository.getUserByChatId(chatId)
                 .getReviews().stream()
                 .filter(review -> review.getEvent().getDate().

@@ -26,9 +26,9 @@ class PreViewMuseumsRankCommandTest {
     @Mock
     MuseumService museumService;
 
-    CommandArgs commandArgs;
+    private final CommandArgs commandArgs;
 
-    List<Museum> museums;
+    private final List<Museum> museums;
 
     /**
      * Подготовка данных для тестов

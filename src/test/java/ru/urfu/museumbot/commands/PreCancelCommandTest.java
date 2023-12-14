@@ -30,9 +30,9 @@ class PreCancelCommandTest {
     @Mock
     UserService userService;
 
-    List<Event> events;
+    private final List<Event> events;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
     /**
      * Подготовка данных для тестов

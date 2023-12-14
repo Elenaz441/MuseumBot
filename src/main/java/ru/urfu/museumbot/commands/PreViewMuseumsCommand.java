@@ -20,7 +20,7 @@ import static ru.urfu.museumbot.commands.Commands.VIEW_MUSEUM;
 @Service
 public class PreViewMuseumsCommand implements Command {
 
-    static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
+    private static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
 
     private final MuseumService museumService;
 

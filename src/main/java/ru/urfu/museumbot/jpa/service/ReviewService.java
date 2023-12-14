@@ -73,6 +73,9 @@ public class ReviewService {
         reviewRepository.save(review);
     }
 
+    /**
+     * обновить отзыв
+     */
     public void updateReview(Review review) {
         reviewRepository.save(review);
     }

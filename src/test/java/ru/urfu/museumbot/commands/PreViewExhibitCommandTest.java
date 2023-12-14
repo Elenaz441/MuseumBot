@@ -21,16 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PreViewExhibitCommandTest {
-    Event event1;
+    private final Event event1;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
     @InjectMocks
     PreViewExhibitCommand preViewExhibitCommand;
     @Mock
     ExhibitService exhibitService;
     @Mock
     UserService userService;
-    List<Exhibit> exhibits;
+    private final List<Exhibit> exhibits;
 
     public PreViewExhibitCommandTest() {
         Museum museum = new Museum();
