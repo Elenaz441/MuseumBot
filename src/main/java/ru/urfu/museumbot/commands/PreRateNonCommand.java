@@ -10,13 +10,13 @@ import ru.urfu.museumbot.message.Message;
  */
 @Service
 public class PreRateNonCommand implements ExecutableWithState {
+    private final UserService userService;
 
     private static final String RATE_PREV_MESSAGE = "Как вы оцениваете данное мероприятие от 0 до 10," +
             " где 0 - это не понравилось совсем;" +
             " 10 - очень понравилось?";
 
     private static final String NUMBER_FORMAT_EXCEPTION_TEXT = "Извините, не смог найти событие.";
-    private final UserService userService;
 
     @Autowired
     public PreRateNonCommand(UserService userService) {
@@ -33,7 +33,7 @@ public class PreRateNonCommand implements ExecutableWithState {
             userService.setReviewingEvent(chatId, eventId);
             return new Message(chatId, RATE_PREV_MESSAGE);
         } catch (NumberFormatException e) {
-            System.out.println(String.format("Не удалось привести СallBackData к числу %s", e.getMessage()));
+            System.out.println(String.format("Не удалось привести CallBackData к числу %s", e.getMessage()));
         }
         userService.updateUserState(chatId, State.INIT);
         return new Message(chatId, NUMBER_FORMAT_EXCEPTION_TEXT);

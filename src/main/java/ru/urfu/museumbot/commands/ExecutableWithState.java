@@ -8,7 +8,7 @@ public interface ExecutableWithState extends Executable {
     /**
      * Состояние - главное, что отличает {@link ru.urfu.museumbot.commands.Command}
      * от {@link ru.urfu.museumbot.commands.ExecutableWithState}
-     * этот метод возвращает индентификатор для определения команды
+     * этот метод возвращает идентификатор для определения команды
      * @return состояние
      */
     State getCommandState();

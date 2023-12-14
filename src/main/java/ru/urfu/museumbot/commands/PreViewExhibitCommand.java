@@ -22,12 +22,13 @@ import static ru.urfu.museumbot.commands.Commands.VIEW_EXHIBIT;
 @Service
 public class PreViewExhibitCommand implements Command {
     private final UserService userService;
+    private final ExhibitService exhibitService;
+
     private static final String EXHIBIT_NOT_AVAILABLE = "Выставка ещё не началась. Эта команда недоступна";
     private static final String CALLBACK_DATA = "ViewExhibit";
     private static final String EXHIBIT_IS_AVAILABLE = "Выберите экспонат:";
     private static final String IF_NO_EXHIBIT_BY_MUSEUM = "Извините," +
             " в базе данных отсутствует информация об экспонатах данного музея";
-    private final ExhibitService exhibitService;
 
     @Autowired
     public PreViewExhibitCommand(UserService userService, ExhibitService exhibitService) {
