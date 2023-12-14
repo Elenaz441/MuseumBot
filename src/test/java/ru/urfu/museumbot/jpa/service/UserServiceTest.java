@@ -143,7 +143,7 @@ class UserServiceTest {
         Mockito.when(userRepository.getUserByChatId(1L)).thenReturn(user);
         List<Event> res = userService.getUserEventsAfterNow(1L);
         Assertions.assertEquals(1L, res.get(0).getId());
-        Instant now = new Date().toInstant();
+        Instant now =  Instant.now();
         Assertions.assertEquals(1, res.size());
         Assertions.assertTrue(res.get(0).getDate().toInstant().isBefore(now));
         Assertions.assertTrue(res.get(0).getDate().toInstant().plus(res.get(0).getDuration(), ChronoUnit.MINUTES).isAfter(now));
