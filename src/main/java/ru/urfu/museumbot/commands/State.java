@@ -1,4 +1,8 @@
 package ru.urfu.museumbot.commands;
+
+/**
+ * Класс состояния пользователя или команды
+ */
 public enum State {
     INIT("Init"),
     RATE("Rate"),
