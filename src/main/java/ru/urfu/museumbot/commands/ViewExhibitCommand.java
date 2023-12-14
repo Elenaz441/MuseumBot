@@ -2,7 +2,6 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.dataFormat.ExhibitFormat;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
@@ -26,7 +25,7 @@ public class ViewExhibitCommand implements Command {
     }
 
     private String viewExhibit(Long exhibitId) {
-        return new ExhibitFormat().toFormattedString(exhibitService.getExhibitById(exhibitId));
+        return exhibitService.getFormattedString(exhibitService.getExhibitById(exhibitId));
     }
 
     @Override
