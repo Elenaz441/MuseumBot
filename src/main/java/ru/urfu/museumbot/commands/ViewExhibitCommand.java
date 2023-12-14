@@ -2,6 +2,7 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.jpa.models.Exhibit;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
