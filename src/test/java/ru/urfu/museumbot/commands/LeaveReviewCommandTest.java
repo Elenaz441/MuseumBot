@@ -97,6 +97,6 @@ class LeaveReviewCommandTest {
         Message message = leaveReviewCommand.getMessage(commandArgs);
         assertEquals("У вас нет мероприятий, которые можно оценить.", message.getText());
         assertFalse(message.getButtonsContext().isPresent());
-        Mockito.verify(userService, Mockito.never()).updateUserState(1L, State.RATE_PREV);
+        Mockito.verify(userService, Mockito.never()).updateUserState(Mockito.any(Long.class), Mockito.any(State.class));
     }
 }
