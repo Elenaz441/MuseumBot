@@ -3,7 +3,6 @@ package ru.urfu.museumbot.commands;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,7 +18,7 @@ class CommandContainerTest {
     private final Command command;
     @Mock
     UserService userService;
-    CommandContainer commandContainer;
+    private CommandContainer commandContainer;
 
     public CommandContainerTest() {
         nonCommand = new ExecutableWithState() {
@@ -52,11 +51,11 @@ class CommandContainerTest {
      * {@link ru.urfu.museumbot.commands.Command}
      */
     @Test
-    void retrieveCommandTestCommandClass(){
+    void retrieveCommandTestCommandClass() {
         User user = new User();
         user.setChatId(1L);
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
-        commandContainer = new CommandContainer(userService, List.of(),  List.of(command));
+        commandContainer = new CommandContainer(userService, List.of(), List.of(command));
 
         Executable res = commandContainer.retrieveCommand(1L, "/test");
         CommandArgs args = new CommandArgs();
@@ -73,13 +72,13 @@ class CommandContainerTest {
      * {@link ru.urfu.museumbot.commands.ExecutableWithState}
      */
     @Test
-    void retrieveCommandTestNonCommandClass(){
+    void retrieveCommandTestNonCommandClass() {
         User user = new User();
         user.setChatId(1L);
         user.setState(State.RATE.getStateString());
 
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
-        commandContainer = new CommandContainer(userService, List.of(nonCommand),  List.of());
+        commandContainer = new CommandContainer(userService, List.of(nonCommand), List.of());
 
         Executable res = commandContainer.retrieveCommand(1L, "Test");
         CommandArgs args = new CommandArgs();
@@ -96,13 +95,13 @@ class CommandContainerTest {
      * если команда не распознана
      */
     @Test
-    void retrieveCommandTestUnknownCommand(){
+    void retrieveCommandTestUnknownCommand() {
         User user = new User();
         user.setChatId(1L);
         user.setState(State.RATE_PREV.getStateString());
 
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
-        commandContainer = new CommandContainer(userService, List.of(),  List.of());
+        commandContainer = new CommandContainer(userService, List.of(), List.of());
 
         Executable res = commandContainer.retrieveCommand(1L, "/new_command");
         CommandArgs args = new CommandArgs();

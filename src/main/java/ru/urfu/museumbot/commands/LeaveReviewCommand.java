@@ -18,11 +18,10 @@ import static ru.urfu.museumbot.commands.Commands.LEAVE_REVIEW;
  */
 @Service
 public class LeaveReviewCommand implements Command {
-
-    public static final String CALLBACK_DATA = "LeaveReview";
-    public static final String MESSAGE_TEXT = "Выберите мероприятие:\n";
+    private static final String CALLBACK_DATA = "LeaveReview";
+    private static final String MESSAGE_TEXT = "Выберите мероприятие:\n";
+    private static final String NO_EVENT = "У вас нет мероприятий, которые можно оценить.";
     private final UserService userService;
-    static final String NO_EVENT = "У вас нет мероприятий, которые можно оценить.";
 
     @Autowired
     public LeaveReviewCommand(UserService userService) {
@@ -33,7 +32,7 @@ public class LeaveReviewCommand implements Command {
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         List<Event> userEvents = getUserEvents(chatId);
-        if(userEvents.isEmpty()){
+        if (userEvents.isEmpty()) {
             return new Message(chatId, NO_EVENT);
         }
         Message message = new Message(chatId, MESSAGE_TEXT);

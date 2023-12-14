@@ -13,7 +13,7 @@ import ru.urfu.museumbot.message.Message;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link ViewMyEventsCommand}
@@ -27,9 +27,9 @@ class ViewMyEventsCommandTest {
     @Mock
     UserService userService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
-    List<Event> events;
+    private final List<Event> events;
 
     /**
      * Подготовка данных для тестов
@@ -75,23 +75,23 @@ class ViewMyEventsCommandTest {
                 .getUserEvents(1L);
         Message message = viewMyEventsCommand.getMessage(commandArgs);
         assertEquals("""
-                Event 1
-                                
-                Descript
-                                
-                Дата: суббота, 25 ноября 2017, 12:00
-                Длительность: 60 минут
-                Адрес: Ленина, 51
-                                
-                ===============================
-                                
-                Event 2
-                                
-                Descript
-                                
-                Дата: суббота, 25 ноября 2017, 12:00
-                Длительность: 60 минут
-                Адрес: Ленина, 52""",
+                        Event 1
+                                        
+                        Descript
+                                        
+                        Дата: суббота, 25 ноября 2017, 12:00
+                        Длительность: 60 минут
+                        Адрес: Ленина, 51
+                                        
+                        ===============================
+                                        
+                        Event 2
+                                        
+                        Descript
+                                        
+                        Дата: суббота, 25 ноября 2017, 12:00
+                        Длительность: 60 минут
+                        Адрес: Ленина, 52""",
                 message.getText());
     }
 

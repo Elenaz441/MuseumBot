@@ -13,8 +13,7 @@ import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
  */
 @Service
 public class CancelCommand implements Command {
-
-    static final String MESSAGE_SUCCESS = "Вы отменили свою запись на выбранное мероприятие";
+    private static final String MESSAGE_SUCCESS = "Вы отменили свою запись на выбранное мероприятие";
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;

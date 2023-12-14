@@ -31,11 +31,9 @@ class LeaveReviewCommandTest {
     @Mock
     UserService userService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
-    User user;
-
-    List<Event> events;
+    private final List<Event> events;
 
     public LeaveReviewCommandTest() {
         Calendar calendar = new GregorianCalendar(2017, Calendar.NOVEMBER, 25, 12, 0);
@@ -64,7 +62,7 @@ class LeaveReviewCommandTest {
         this.commandArgs = new CommandArgs();
         commandArgs.setChatId(1L);
 
-        this.user = new User();
+        User user = new User();
         user.setId(1L);
         user.setChatId(1L);
         user.setReviewingEvent(1L);

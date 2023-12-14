@@ -31,7 +31,7 @@ class CancelCommandTest {
     @Mock
     ReviewService reviewService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
     /**
      * Настройка данных перед каждым тестом

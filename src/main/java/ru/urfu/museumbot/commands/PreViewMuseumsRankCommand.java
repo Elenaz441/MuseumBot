@@ -7,12 +7,11 @@ import ru.urfu.museumbot.jpa.models.Museum;
 import ru.urfu.museumbot.jpa.service.MuseumService;
 import ru.urfu.museumbot.message.Message;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ru.urfu.museumbot.commands.Commands.VIEW_MUSEUM_RANK;
 import static ru.urfu.museumbot.commands.Commands.GET_RANK;
+import static ru.urfu.museumbot.commands.Commands.VIEW_MUSEUM_RANK;
 
 /**
  * Промежуточная команда перед просмотром рейтинга и отзывов о музее.
@@ -20,8 +19,7 @@ import static ru.urfu.museumbot.commands.Commands.GET_RANK;
  */
 @Service
 public class PreViewMuseumsRankCommand implements Command {
-
-    static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
+    private static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
 
     private final MuseumService museumService;
 

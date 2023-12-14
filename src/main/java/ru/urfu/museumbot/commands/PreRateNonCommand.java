@@ -15,7 +15,7 @@ public class PreRateNonCommand implements ExecutableWithState {
             " где 0 - это не понравилось совсем;" +
             " 10 - очень понравилось?";
 
-    private static final String NUMBER_FORMAT_EXCEPTION_TEXT =  "Извините, не смог найти событие.";
+    private static final String NUMBER_FORMAT_EXCEPTION_TEXT = "Извините, не смог найти событие.";
     private final UserService userService;
 
     @Autowired
@@ -27,12 +27,12 @@ public class PreRateNonCommand implements ExecutableWithState {
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         String valueEventId = args.getCallbackData().split(" ")[1];
-        try{
+        try {
             Long eventId = Long.parseLong(valueEventId);
             userService.updateUserState(chatId, State.RATE);
             userService.setReviewingEvent(chatId, eventId);
             return new Message(chatId, RATE_PREV_MESSAGE);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println(String.format("Не удалось привести СallBackData к числу %s", e.getMessage()));
         }
         userService.updateUserState(chatId, State.INIT);

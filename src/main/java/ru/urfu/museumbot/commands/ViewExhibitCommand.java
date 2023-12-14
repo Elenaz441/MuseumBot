@@ -2,7 +2,6 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.jpa.models.Exhibit;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
@@ -10,7 +9,7 @@ import ru.urfu.museumbot.message.Message;
 public class ViewExhibitCommand implements Command {
     private final ExhibitService exhibitService;
 
-    static final String COMMAND_NAME = "ViewExhibit";
+    private static final String COMMAND_NAME = "ViewExhibit";
 
     @Autowired
     public ViewExhibitCommand(ExhibitService exhibitService) {

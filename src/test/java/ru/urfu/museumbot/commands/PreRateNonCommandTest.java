@@ -1,6 +1,5 @@
 package ru.urfu.museumbot.commands;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,7 @@ import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link PreRateNonCommand}
@@ -26,16 +25,14 @@ class PreRateNonCommandTest {
     @Mock
     UserService userService;
 
-    CommandArgs commandArgs;
-
-    User user;
+    private CommandArgs commandArgs;
 
     @BeforeEach
     void setUp() {
         this.commandArgs = new CommandArgs();
         commandArgs.setChatId(1L);
 
-        this.user = new User();
+        User user = new User();
         user.setId(1L);
         user.setChatId(1L);
     }

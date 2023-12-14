@@ -10,7 +10,7 @@ import ru.urfu.museumbot.jpa.models.Museum;
 import ru.urfu.museumbot.jpa.service.MuseumService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link ViewMuseumCommand}
@@ -24,9 +24,9 @@ class ViewMuseumCommandTest {
     @Mock
     MuseumService museumService;
 
-    CommandArgs commandArgs;
+    private final CommandArgs commandArgs;
 
-    Museum museum;
+    private final Museum museum;
 
     ViewMuseumCommandTest() {
         this.commandArgs = new CommandArgs();
@@ -47,9 +47,9 @@ class ViewMuseumCommandTest {
         Message message = viewMuseumCommand.getMessage(commandArgs);
 
         assertEquals("""
-                Название: Museum 1
-                Адрес: Ленина, 51
-                Описание: Description 1""",
+                        Название: Museum 1
+                        Адрес: Ленина, 51
+                        Описание: Description 1""",
                 message.getText());
     }
 }

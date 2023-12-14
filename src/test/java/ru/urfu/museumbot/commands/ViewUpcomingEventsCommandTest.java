@@ -30,9 +30,9 @@ class ViewUpcomingEventsCommandTest {
     @Mock
     EventService eventService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
-    List<Event> events;
+    private final List<Event> events;
 
     /**
      * Подготовка данных для тестов

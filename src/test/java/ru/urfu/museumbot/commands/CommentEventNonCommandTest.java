@@ -15,7 +15,7 @@ import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link CommentEventNonCommand}
@@ -35,13 +35,13 @@ class CommentEventNonCommandTest {
     @Mock
     UserService userService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
-    Event event;
+    private Event event;
 
-    User user;
+    private User user;
 
-    Review review;
+    private Review review;
 
     @BeforeEach
     void setUp() {

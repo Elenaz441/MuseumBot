@@ -7,6 +7,8 @@ public enum State {
     RATE_PREV("Rate_prev"),
     COMMENT("Comment");
 
+    private final String stateString;
+
     /**
      * Получить состояние по идентификатору
      */
@@ -16,8 +18,6 @@ public enum State {
                 .filter(state -> state.getStateString().equals(stateString))
                 .findFirst().orElse(INIT);
     }
-
-    private final String stateString;
     State(String stateString) {
         this.stateString = stateString;
     }

@@ -28,8 +28,9 @@ class ViewExhibitCommandTest {
 
 
     }
+
     @BeforeEach
-    void setUp(){
+    void setUp() {
         exhibit = new Exhibit();
         exhibit.setId(1L);
         exhibit.setTitle("Test exhibit");

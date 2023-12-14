@@ -28,9 +28,9 @@ class ViewMuseumRankCommandTest {
     @Mock
     MuseumService museumService;
 
-    CommandArgs commandArgs;
+    private final CommandArgs commandArgs;
 
-    List<Review> reviews;
+    private final List<Review> reviews;
 
     /**
      * Подготовка данных для тестов

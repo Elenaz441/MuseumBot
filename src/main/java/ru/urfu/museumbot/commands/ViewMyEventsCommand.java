@@ -6,15 +6,15 @@ import ru.urfu.museumbot.dataFormat.EventFormat;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import static ru.urfu.museumbot.commands.Commands.VIEW_MY_EVENTS;
-
 import java.util.stream.Collectors;
+
+import static ru.urfu.museumbot.commands.Commands.VIEW_MY_EVENTS;
 
 /**
  * Класс для обработки команды просмотра мероприятий, на которые зарегистрирован пользователь
  */
 @Service
-public class ViewMyEventsCommand implements  Command {
+public class ViewMyEventsCommand implements Command {
 
     private final UserService userService;
 
