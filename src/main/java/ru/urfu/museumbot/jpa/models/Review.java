@@ -81,13 +81,6 @@ public class Review {
     }
 
     @Override
-    public String toString() {
-        return "Мероприятие: " + event.getTitle() +
-                "\nОценка: " + rating +
-                "\nОтзыв: " + review;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

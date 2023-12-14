@@ -29,7 +29,7 @@ public class Museum {
 
     private String address;
     @Lob
-    @Column(name="description", columnDefinition = "text")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "museum", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -88,13 +88,6 @@ public class Museum {
 
     public void setEvents(List<Event> events) {
         this.events = events;
-    }
-
-    @Override
-    public String toString() {
-        return "Название: " + title +
-                "\nАдрес: " + address +
-                "\nОписание: " + description;
     }
 
     @Override
