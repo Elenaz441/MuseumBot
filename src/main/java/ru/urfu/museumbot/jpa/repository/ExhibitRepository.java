@@ -10,5 +10,9 @@ import ru.urfu.museumbot.jpa.models.Exhibit;
  */
 @Repository
 public interface ExhibitRepository extends JpaRepository<Exhibit, Long> {
+    /**
+     * @param id идентификатор экспоната
+     * @return экспонат c идентификатором id
+     */
     Exhibit getExhibitById(Long id);
 }
