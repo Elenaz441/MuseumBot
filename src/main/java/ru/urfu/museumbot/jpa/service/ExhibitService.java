@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Service
 public class ExhibitService {
+
     private final ExhibitRepository exhibitRepository;
     private final EventRepository eventRepository;
 

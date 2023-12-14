@@ -10,9 +10,10 @@ import ru.urfu.museumbot.message.Message;
  */
 @Service
 public class ViewExhibitCommand implements Command {
-    private final ExhibitService exhibitService;
 
     private static final String COMMAND_NAME = "ViewExhibit";
+
+    private final ExhibitService exhibitService;
 
     @Autowired
     public ViewExhibitCommand(ExhibitService exhibitService) {

@@ -19,6 +19,7 @@ import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
 public class SignUpCommand implements Command {
 
     private static final String MESSAGE_SUCCESS = "Вы записались на выбранное мероприятие";
+
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;

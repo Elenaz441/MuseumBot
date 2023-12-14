@@ -17,9 +17,11 @@ import ru.urfu.museumbot.message.Message;
 public class CommentEventNonCommand implements ExecutableWithState {
 
     public static final String COMMENT_MESSAGE = "Спасибо, что оставили отзыв на мероприятие";
+
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
+
     private Event commentedEvent;
 
     @Autowired

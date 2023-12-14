@@ -1,4 +1,5 @@
 package ru.urfu.museumbot.commands;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.customException.UserInputException;
@@ -11,9 +12,11 @@ import ru.urfu.museumbot.message.Message;
  */
 @Service
 public class RateEventNonCommand implements ExecutableWithState {
+
     public static final String RATE_SUCCESS_MESSAGE = "Напишите, пожалуйста, небольшой отзыв." +
             " Что вам понравилось/запомнилось больше всего.";
     public static final String RATE_FAILURE_MESSAGE = "Пожалуйста, введите целое число от 0 до 10";
+
     private final ReviewService reviewService;
     private final UserService userService;
 

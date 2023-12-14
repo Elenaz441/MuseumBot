@@ -3,7 +3,7 @@ package ru.urfu.museumbot.jpa.models;
 import jakarta.persistence.*;
 
 import java.util.Objects;
-import ru.urfu.museumbot.jpa.models.Museum;
+
 /**
  * <p>Модель таблицы "Экспонаты"</p>
  * <p>{@link Exhibit#id} уникальный идентификатор экспоната </p>

@@ -1,11 +1,14 @@
 package ru.urfu.museumbot.commands;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
@@ -13,36 +16,33 @@ import ru.urfu.museumbot.message.Message;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class CommandContainerTest {
-    private final ExecutableWithState nonCommand;
-    private final Command command;
+
+    @Mock
+    ExecutableWithState nonCommand;
+
+    @Mock
+    Command command;
+
     @Mock
     UserService userService;
+
     private CommandContainer commandContainer;
 
-    public CommandContainerTest() {
-        nonCommand = new ExecutableWithState() {
-            @Override
-            public State getCommandState() {
-                return State.RATE;
-            }
+    /**
+     * Настройка данных перед каждым тестом
+     */
+    @BeforeEach
+    void setUp() {
+        Message message1 = new Message(1L, "Testing CommandContainer return Command");
+        Message message2 = new Message(1L, "Testing CommandContainer return CommandWithState");
+        Mockito.doReturn("/test").when(command).getCommandName();
+        Mockito.doReturn(message1).when(command).getMessage(Mockito.any(CommandArgs.class));
+        Mockito.doReturn(State.RATE).when(nonCommand).getCommandState();
+        Mockito.doReturn(message2).when(nonCommand).getMessage(Mockito.any(CommandArgs.class));
 
-            @Override
-            public Message getMessage(CommandArgs args) {
-                return new Message(1L, "Testing CommandContainer return CommandWithState");
-            }
-        };
-        command = new Command() {
-            @Override
-            public String getCommandName() {
-                return "/test";
-            }
-
-            @Override
-            public Message getMessage(CommandArgs args) {
-                return new Message(args.getChatId(), "Testing CommandContainer return Commnad");
-            }
-        };
+        commandContainer = new CommandContainer(List.of(nonCommand), List.of(command), userService);
     }
 
     /**
@@ -52,17 +52,20 @@ class CommandContainerTest {
      */
     @Test
     void retrieveCommandTestCommandClass() {
+        Message message1 = new Message(1L, "Testing CommandContainer return Command");
+        Mockito.doReturn("/test").when(command).getCommandName();
+        Mockito.doReturn(message1).when(command).getMessage(Mockito.any(CommandArgs.class));
         User user = new User();
         user.setChatId(1L);
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
-        commandContainer = new CommandContainer(userService, List.of(), List.of(command));
 
         Executable res = commandContainer.retrieveCommand(1L, "/test");
         CommandArgs args = new CommandArgs();
         args.setChatId(1L);
         Message mess = res.getMessage(args);
+
         Assertions.assertEquals(State.INIT.getStateString(), user.getState());
-        Assertions.assertEquals("Testing CommandContainer return Commnad", mess.getText());
+        Assertions.assertEquals("Testing CommandContainer return Command", mess.getText());
         Assertions.assertEquals(1L, mess.getChatId());
     }
 
@@ -73,12 +76,13 @@ class CommandContainerTest {
      */
     @Test
     void retrieveCommandTestNonCommandClass() {
+        Message message2 = new Message(1L, "Testing CommandContainer return CommandWithState");
+        Mockito.doReturn(State.RATE).when(nonCommand).getCommandState();
+        Mockito.doReturn(message2).when(nonCommand).getMessage(Mockito.any(CommandArgs.class));
         User user = new User();
         user.setChatId(1L);
         user.setState(State.RATE.getStateString());
-
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
-        commandContainer = new CommandContainer(userService, List.of(nonCommand), List.of());
 
         Executable res = commandContainer.retrieveCommand(1L, "Test");
         CommandArgs args = new CommandArgs();
@@ -99,15 +103,16 @@ class CommandContainerTest {
         User user = new User();
         user.setChatId(1L);
         user.setState(State.RATE_PREV.getStateString());
-
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
-        commandContainer = new CommandContainer(userService, List.of(), List.of());
 
         Executable res = commandContainer.retrieveCommand(1L, "/new_command");
         CommandArgs args = new CommandArgs();
         args.setChatId(1L);
         Message mess = res.getMessage(args);
-        Assertions.assertEquals("Извините, команда не распознана, напишите /help чтобы узнать что я умею.", mess.getText());
+
+        Assertions.assertEquals(
+                "Извините, команда не распознана, напишите /help чтобы узнать что я умею.",
+                mess.getText());
         Assertions.assertEquals(1L, mess.getChatId());
     }
 

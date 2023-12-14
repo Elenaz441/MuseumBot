@@ -20,6 +20,7 @@ import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
  */
 @Service
 public class PreCancelCommand implements Command {
+
     private static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите отменить запись:";
 
     private final UserService userService;
