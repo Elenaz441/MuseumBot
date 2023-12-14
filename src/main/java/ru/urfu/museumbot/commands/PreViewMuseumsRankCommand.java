@@ -37,7 +37,7 @@ public class PreViewMuseumsRankCommand implements Command {
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         Message message = new Message(chatId, CHOOSE_MUSEUM_MESSAGE);
-        Map<Long, String> variants = viewMuseums()
+        Map<Long, String> variants = museumService.getMuseums()
                 .stream()
                 .collect(Collectors.toMap(Museum::getId, Museum::getTitle));
         message.setButtonsContext(new ButtonsContext(GET_RANK, variants));
@@ -47,12 +47,5 @@ public class PreViewMuseumsRankCommand implements Command {
     @Override
     public String getCommandName() {
         return VIEW_MUSEUM_RANK;
-    }
-
-    /**
-     * <p>Посмотреть список музеев</p>
-     */
-    private List<Museum> viewMuseums() {
-        return museumService.getMuseums();
     }
 }
