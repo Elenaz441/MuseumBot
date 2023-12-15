@@ -52,7 +52,7 @@ public class ButtonContent {
             List<InlineKeyboardButton> rowInline = new ArrayList<>();
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
             inlineKeyboardButton.setText(variant.getValue());
-            inlineKeyboardButton.setCallbackData(callbackData+ " " + variant.getKey());
+            inlineKeyboardButton.setCallbackData(callbackData + " " + variant.getKey());
             rowInline.add(inlineKeyboardButton);
             rowsInline.add(rowInline);
         }

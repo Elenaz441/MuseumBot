@@ -17,12 +17,14 @@ import java.util.stream.Collectors;
 public class CommandContainer {
 
     private final Map<String, Executable> commandMap;
-    private final Executable unknownCommand;
     private final Map<State, Executable> nonCommandMap;
+    private final Executable unknownCommand;
     private final UserService userService;
 
     @Autowired
-    public CommandContainer(UserService userService, List<ExecutableWithState> nonCommandList, List<Command> commandList) {
+    public CommandContainer(List<ExecutableWithState> nonCommandList,
+                            List<Command> commandList,
+                            UserService userService) {
         this.userService = userService;
         this.commandMap = commandList.stream().collect(Collectors.toMap(Command::getCommandName, command -> command));
         this.nonCommandMap = nonCommandList.stream().collect(Collectors.toMap(ExecutableWithState::getCommandState, command -> command));
@@ -37,8 +39,8 @@ public class CommandContainer {
      */
     public Executable retrieveCommand(Long chatId, String commandIdentifier) {
         User user = userService.getUserByChatId(chatId);
-        State userState = State.get(user.getState());
-        if(userState == State.INIT) {
+        State userState = State.valueOf(user.getState().toUpperCase());
+        if (userState == State.INIT) {
             return commandMap.getOrDefault(commandIdentifier, unknownCommand);
         }
         return nonCommandMap.getOrDefault(userState, unknownCommand);

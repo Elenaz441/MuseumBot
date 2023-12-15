@@ -14,7 +14,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     /**
      * @param id идентификатор мероприятия
-     * @return мепориятие по идентификатору
+     * @return мероприятие по идентификатору
      */
     Event getEventById(Long id);
 

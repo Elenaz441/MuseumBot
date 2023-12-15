@@ -1,5 +1,4 @@
 package ru.urfu.museumbot.commands;
-import java.util.Arrays;
 
 /**
  * Класс состояния пользователя
@@ -12,18 +11,10 @@ public enum State {
 
     private final String stateString;
 
-    /**
-     * Получить состояние по идентификатору
-     */
-    public static State get(String stateString) {
-        return Arrays.stream(State.values())
-               .filter(state -> state.getStateString().equals(stateString))
-                .findFirst().orElse(INIT);
-    }
-
     State(String stateString) {
         this.stateString = stateString;
     }
+
     public String getStateString() {
         return stateString;
     }

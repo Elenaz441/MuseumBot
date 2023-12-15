@@ -19,6 +19,7 @@ import static ru.urfu.museumbot.commands.Commands.VIEW_MUSEUM_RANK;
  */
 @Service
 public class PreViewMuseumsRankCommand implements Command {
+
     private static final String CHOOSE_MUSEUM_MESSAGE = "Выберете музей:";
 
     private final MuseumService museumService;
