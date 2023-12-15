@@ -46,16 +46,20 @@ public class ViewMuseumRankCommand implements Command {
     private String viewMuseumRank(String callbackData) {
         ReviewFormat reviewFormat = new ReviewFormat();
         String text = "Средняя оценка от пользователей: ";
+        String textPreReview = ". Ниже несколько последних отзывов: \n";
         Long museumId = Long.valueOf(callbackData.replace(GET_RANK + " ", ""));
         List<Review> reviews = museumService.getMuseumReviews(museumId);
         String rank = museumService.getMuseumRank(museumId);
         if (reviews.size() > 10) {
             reviews = reviews.subList(reviews.size() - 11, reviews.size() - 1);
         }
+        if (reviews.size() == 0) {
+            textPreReview = "";
+        }
         String textReviews = reviews
                 .stream()
                 .map(reviewFormat::toFormattedString)
                 .collect(Collectors.joining("\n\n===============================\n\n"));
-        return text + rank + ". Ниже несколько последних отзывов: \n" + textReviews;
+        return text + rank + textPreReview + textReviews;
     }
 }
