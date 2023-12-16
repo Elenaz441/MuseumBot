@@ -24,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SignUpCommandTest {
 
     @InjectMocks
-    SignUpCommand signUpCommand;
+    private SignUpCommand signUpCommand;
 
     @Mock
-    EventService eventService;
+    private EventService eventService;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     @Mock
-    ReviewService reviewService;
+    private ReviewService reviewService;
 
     private CommandArgs commandArgs;
 

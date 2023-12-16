@@ -12,21 +12,26 @@ import ru.urfu.museumbot.jpa.models.Exhibit;
 import ru.urfu.museumbot.jpa.service.ExhibitService;
 import ru.urfu.museumbot.message.Message;
 
+/**
+ * Класс для тестирования класса {@link ViewExhibitCommand}
+ */
 @ExtendWith(MockitoExtension.class)
 class ViewExhibitCommandTest {
-    private final CommandArgs args;
+
     @InjectMocks
     private ViewExhibitCommand viewExhibitCommand;
+
     @Mock
     private ExhibitService exhibitService;
+
+    private final CommandArgs args;
+
     private Exhibit exhibit;
 
     public ViewExhibitCommandTest() {
         args = new CommandArgs();
         args.setChatId(1L);
         args.setCallbackData("ViewExhibit 1");
-
-
     }
 
     @BeforeEach

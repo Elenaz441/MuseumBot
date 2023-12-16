@@ -2,7 +2,7 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.customException.UserInputException;
+import ru.urfu.museumbot.customException.IncorrectUserInputException;
 import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
@@ -49,11 +49,11 @@ public class RateEventNonCommand implements ExecutableWithState {
             int rating = Integer.parseInt(userInput);
 
             if (!(rating >= 0 && rating <= 10)) {
-                throw new UserInputException(String.format("Оценивание происходит по десятибалльной шкале," +
+                throw new IncorrectUserInputException(String.format("Оценивание происходит по десятибалльной шкале," +
                         " целыми числами. userInput = %d", rating));
             }
             return true;
-        } catch (NumberFormatException | UserInputException e){
+        } catch (NumberFormatException | IncorrectUserInputException e){
             System.out.println("Оценка не поставилась! Причина: " + e.getMessage());
         }
         return false;

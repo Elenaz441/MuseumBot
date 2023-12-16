@@ -53,7 +53,7 @@ public class ViewMuseumRankCommand implements Command {
         if (reviews.size() > 10) {
             reviews = reviews.subList(reviews.size() - 11, reviews.size() - 1);
         }
-        if (reviews.size() == 0) {
+        if (reviews.isEmpty()) {
             textPreReview = "";
         }
         String textReviews = reviews

@@ -14,7 +14,8 @@ public class PreRateNonCommand implements ExecutableWithState {
     private static final String RATE_PREV_MESSAGE = "Как вы оцениваете данное мероприятие от 0 до 10," +
             " где 0 - это не понравилось совсем;" +
             " 10 - очень понравилось?";
-    private static final String NUMBER_FORMAT_EXCEPTION_TEXT = "Извините, не смог найти событие.";
+    private static final String NOT_FOUND_EXCEPTION_TEXT = "Извините, не смог найти данное событие. " +
+            "Пожалуйста, воспользуйтесь данной функцией позже";
 
     private final UserService userService;
 
@@ -36,7 +37,7 @@ public class PreRateNonCommand implements ExecutableWithState {
             System.out.println(String.format("Не удалось привести CallBackData к числу %s", e.getMessage()));
         }
         userService.updateUserState(chatId, State.INIT);
-        return new Message(chatId, NUMBER_FORMAT_EXCEPTION_TEXT);
+        return new Message(chatId, NOT_FOUND_EXCEPTION_TEXT);
     }
 
     @Override

@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RateEventNonCommandTest {
 
     @InjectMocks
-    RateEventNonCommand rateEventNonCommand;
+    private RateEventNonCommand rateEventNonCommand;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     @Mock
-    ReviewService reviewService;
+    private ReviewService reviewService;
 
     private CommandArgs commandArgs;
 

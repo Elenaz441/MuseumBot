@@ -19,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ViewMuseumCommandTest {
 
     @InjectMocks
-    ViewMuseumCommand viewMuseumCommand;
+    private ViewMuseumCommand viewMuseumCommand;
 
     @Mock
-    MuseumService museumService;
+    private MuseumService museumService;
 
     private final CommandArgs commandArgs;
 

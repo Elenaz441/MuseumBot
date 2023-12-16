@@ -26,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class LeaveReviewCommandTest {
 
     @InjectMocks
-    LeaveReviewCommand leaveReviewCommand;
+    private LeaveReviewCommand leaveReviewCommand;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     private CommandArgs commandArgs;
 

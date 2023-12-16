@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ViewMyEventsCommandTest {
 
     @InjectMocks
-    ViewMyEventsCommand viewMyEventsCommand;
+    private ViewMyEventsCommand viewMyEventsCommand;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     private CommandArgs commandArgs;
 

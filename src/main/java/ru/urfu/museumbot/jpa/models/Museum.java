@@ -91,6 +91,18 @@ public class Museum {
     }
 
     @Override
+    public String toString() {
+        return "Museum{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", address='" + address + '\'' +
+                ", description='" + description + '\'' +
+                ", exhibits=" + exhibits +
+                ", events=" + events +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

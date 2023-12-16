@@ -19,17 +19,25 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Класс для тестирования класса {@link PreViewExhibitCommand}
+ */
 @ExtendWith(MockitoExtension.class)
 class PreViewExhibitCommandTest {
+
+    @InjectMocks
+    private PreViewExhibitCommand preViewExhibitCommand;
+
+    @Mock
+    private ExhibitService exhibitService;
+
+    @Mock
+    private UserService userService;
+
     private final Event event1;
 
     private CommandArgs commandArgs;
-    @InjectMocks
-    PreViewExhibitCommand preViewExhibitCommand;
-    @Mock
-    ExhibitService exhibitService;
-    @Mock
-    UserService userService;
+
     private final List<Exhibit> exhibits;
 
     public PreViewExhibitCommandTest() {
@@ -63,6 +71,7 @@ class PreViewExhibitCommandTest {
 
         museum.setExhibits(exhibits);
     }
+
     @BeforeEach
     void setUp(){
         this.commandArgs = new CommandArgs();

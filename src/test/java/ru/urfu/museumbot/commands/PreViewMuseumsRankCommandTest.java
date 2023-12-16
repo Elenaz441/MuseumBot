@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class PreViewMuseumsRankCommandTest {
 
     @InjectMocks
-    PreViewMuseumsRankCommand preViewMuseumsRankCommand;
+    private PreViewMuseumsRankCommand preViewMuseumsRankCommand;
 
     @Mock
-    MuseumService museumService;
+    private MuseumService museumService;
 
     private final CommandArgs commandArgs;
 
