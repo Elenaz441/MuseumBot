@@ -20,13 +20,13 @@ import java.util.List;
 class CommandContainerTest {
 
     @Mock
-    ExecutableWithState nonCommand;
+    private ExecutableWithState nonCommand;
 
     @Mock
-    Command command;
+    private Command command;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     private CommandContainer commandContainer;
 

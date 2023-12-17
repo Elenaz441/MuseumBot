@@ -22,10 +22,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PreViewMuseumsCommandTest {
 
     @InjectMocks
-    PreViewMuseumsCommand preViewMuseumsCommand;
+    private PreViewMuseumsCommand preViewMuseumsCommand;
 
     @Mock
-    MuseumService museumService;
+    private MuseumService museumService;
 
     private final CommandArgs commandArgs;
 

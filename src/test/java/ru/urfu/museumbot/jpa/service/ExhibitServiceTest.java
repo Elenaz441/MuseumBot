@@ -7,11 +7,18 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.urfu.museumbot.jpa.models.Exhibit;
 
-
+/**
+ * Класс для тестирования класса {@link ExhibitService}
+ */
 @ExtendWith(MockitoExtension.class)
 public class ExhibitServiceTest {
+
     @InjectMocks
     private ExhibitService exhibitService;
+
+    /**
+     * Проверка преобразования Event в строку
+     */
     @Test
     public void getFormattedString() {
         Exhibit exhibit = new Exhibit();

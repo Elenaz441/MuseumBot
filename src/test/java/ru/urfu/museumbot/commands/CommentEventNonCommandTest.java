@@ -24,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CommentEventNonCommandTest {
 
     @InjectMocks
-    CommentEventNonCommand commentEventNonCommand;
+    private CommentEventNonCommand commentEventNonCommand;
 
     @Mock
-    EventService eventService;
+    private EventService eventService;
 
     @Mock
-    ReviewService reviewService;
+    private ReviewService reviewService;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     private CommandArgs commandArgs;
 

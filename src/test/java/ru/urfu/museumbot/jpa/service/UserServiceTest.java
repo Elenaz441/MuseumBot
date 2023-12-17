@@ -66,7 +66,7 @@ class UserServiceTest {
 
         userService.addUser(user);
 
-        Mockito.verify(userRepository, Mockito.never()).save(user);
+        Mockito.verify(userRepository, Mockito.never()).save(Mockito.any(User.class));
     }
 
     /**
@@ -105,9 +105,9 @@ class UserServiceTest {
     }
 
     /**
-     * Тестирвоание метода, который возвращает
-     * мероприятия на которых пользователь находится в данный момент времени
-     * (Вытсавка происходит сейчас)
+     * Тестирование метода, возвращающего
+     * мероприятия, на которых пользователь находится в данный момент времени
+     * (Выставка проходит сейчас)
      */
     @Test
     void getUserEventsAfterNow(){

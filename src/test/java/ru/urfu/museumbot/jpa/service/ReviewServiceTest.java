@@ -27,16 +27,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReviewServiceTest {
 
     @InjectMocks
-    ReviewService reviewService;
+    private ReviewService reviewService;
 
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Mock
-    EventRepository eventRepository;
+    private EventRepository eventRepository;
 
     @Mock
-    ReviewRepository reviewRepository;
+    private ReviewRepository reviewRepository;
 
     /**
      * Проверка удаления Отзыва

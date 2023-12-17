@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class PreSignUpCommandTest {
 
     @InjectMocks
-    PreSignUpCommand preSignUpCommand;
+    private PreSignUpCommand preSignUpCommand;
 
     @Mock
-    EventService eventService;
+    private EventService eventService;
 
     private final List<Event> events;
 

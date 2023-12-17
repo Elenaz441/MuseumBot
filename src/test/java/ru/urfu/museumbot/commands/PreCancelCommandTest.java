@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class PreCancelCommandTest {
 
     @InjectMocks
-    PreCancelCommand preCancelCommand;
+    private PreCancelCommand preCancelCommand;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     private final List<Event> events;
 

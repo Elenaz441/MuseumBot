@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class ViewMuseumRankCommandTest {
 
     @InjectMocks
-    ViewMuseumRankCommand viewMuseumRankCommand;
+    private ViewMuseumRankCommand viewMuseumRankCommand;
 
     @Mock
-    MuseumService museumService;
+    private MuseumService museumService;
 
     private final CommandArgs commandArgs;
 

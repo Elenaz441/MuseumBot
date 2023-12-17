@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PreRateNonCommandTest {
 
     @InjectMocks
-    PreRateNonCommand preRateNonCommand;
+    private PreRateNonCommand preRateNonCommand;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     private CommandArgs commandArgs;
 
@@ -63,9 +63,11 @@ class PreRateNonCommandTest {
         commandArgs.setCallbackData("LeaveReview п");
         Message message = preRateNonCommand.getMessage(commandArgs);
         assertEquals(
-                "Извините, не смог найти событие.",
+                "Извините, не смог найти данное событие. Пожалуйста, воспользуйтесь данной функцией позже",
                 message.getText());
-        Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.INIT);
-        Mockito.verify(userService, Mockito.never()).setReviewingEvent(1L, 1L);
+        Mockito.verify(userService, Mockito.times(1))
+                .updateUserState(1L, State.INIT);
+        Mockito.verify(userService, Mockito.never())
+                .setReviewingEvent(Mockito.any(Long.class), Mockito.any(Long.class));
     }
 }

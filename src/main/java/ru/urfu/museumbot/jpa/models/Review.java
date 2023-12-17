@@ -81,6 +81,17 @@ public class Review {
     }
 
     @Override
+    public String toString() {
+        return "Review{" +
+                "id=" + id +
+                ", user=" + user +
+                ", event=" + event +
+                ", rating=" + rating +
+                ", review='" + review + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
