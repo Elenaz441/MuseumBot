@@ -66,7 +66,7 @@ class UserServiceTest {
 
         userService.addUser(user);
 
-        Mockito.verify(userRepository, Mockito.never()).save(user);
+        Mockito.verify(userRepository, Mockito.never()).save(Mockito.any(User.class));
     }
 
     /**
