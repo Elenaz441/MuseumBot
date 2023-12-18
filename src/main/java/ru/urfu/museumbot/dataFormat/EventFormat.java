@@ -22,4 +22,12 @@ public class EventFormat {
                 event.getAddress());
     }
 
+    public String toFormattedStringForNotification(Event event) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        return String.format("Завтра в %s состоится мероприятие \"%s\" по адресу %s",
+                dateFormat.format(event.getDate()),
+                event.getTitle(),
+                event.getAddress());
+    }
+
 }

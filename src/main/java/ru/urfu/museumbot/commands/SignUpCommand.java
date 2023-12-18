@@ -6,6 +6,7 @@ import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.jpa.service.NotificationService;
 import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
@@ -23,14 +24,17 @@ public class SignUpCommand implements Command {
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Autowired
     public SignUpCommand(EventService eventService,
                          ReviewService reviewService,
-                         UserService userService) {
+                         UserService userService,
+                         NotificationService notificationService) {
         this.eventService = eventService;
         this.reviewService = reviewService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -63,6 +67,9 @@ public class SignUpCommand implements Command {
             review.setUser(user);
             review.setEvent(event);
             reviewService.addReview(review);
+            if (user.isSettingReminders()) {
+                notificationService.createNotificationEvent(user, event);
+            }
         } else {
             text = String.format("Вы уже записаны на мероприятие \"%s\"", prevReview.getEvent().getTitle());
         }
