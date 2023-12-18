@@ -8,6 +8,8 @@ import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static ru.urfu.museumbot.commands.Commands.CANCEL;
 import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
@@ -19,7 +21,7 @@ import static ru.urfu.museumbot.commands.Commands.CANCEL_EVENT;
 @Service
 public class PreCancelCommand implements Command {
 
-    static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите отменить запись:";
+    private static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите отменить запись:";
 
     private final UserService userService;
 
@@ -35,8 +37,9 @@ public class PreCancelCommand implements Command {
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         Message message = new Message(chatId, CHOOSE_EVENT_MESSAGE);
-
-        message.setButtonsContext(new ButtonsContext(CANCEL_EVENT, viewMyEvents(chatId)));
+        Map<Long, String> variants = viewMyEvents(chatId).stream()
+                .collect(Collectors.toMap(Event::getId, Event::getTitle));
+        message.setButtonsContext(new ButtonsContext(CANCEL_EVENT, variants));
         return message;
     }
 

@@ -31,7 +31,7 @@ public class Review {
     @JoinColumn(foreignKey = @ForeignKey(name = "event_id"), name = "event_id")
     private Event event;
 
-    private  int rating = 0;
+    private int rating = -1;
 
     @Lob
     @Column(columnDefinition = "text")

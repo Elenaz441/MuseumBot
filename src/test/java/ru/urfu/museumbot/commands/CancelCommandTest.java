@@ -20,18 +20,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class CancelCommandTest {
 
     @InjectMocks
-    CancelCommand cancelCommand;
+    private CancelCommand cancelCommand;
 
     @Mock
-    EventService eventService;
+    private EventService eventService;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     @Mock
-    ReviewService reviewService;
+    private ReviewService reviewService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
     /**
      * Настройка данных перед каждым тестом

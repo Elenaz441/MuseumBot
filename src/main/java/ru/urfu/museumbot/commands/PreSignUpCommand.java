@@ -8,8 +8,11 @@ import ru.urfu.museumbot.jpa.service.EventService;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static ru.urfu.museumbot.commands.Commands.*;
+import static ru.urfu.museumbot.commands.Commands.ADD_EVENT;
+import static ru.urfu.museumbot.commands.Commands.SIGN_UP_FOR_EVENT;
 
 
 /**
@@ -19,7 +22,7 @@ import static ru.urfu.museumbot.commands.Commands.*;
 @Service
 public class PreSignUpCommand implements Command {
 
-    static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите записаться:";
+    private static final String CHOOSE_EVENT_MESSAGE = "Выберете мероприятие, на которое хотите записаться:";
 
     private final EventService eventService;
 
@@ -34,7 +37,8 @@ public class PreSignUpCommand implements Command {
     @Override
     public Message getMessage(CommandArgs args) {
         Message message = new Message(args.getChatId(), CHOOSE_EVENT_MESSAGE);
-        message.setButtonsContext(new ButtonsContext(ADD_EVENT, getEvents()));
+        Map<Long, String> variants = getEvents().stream().collect(Collectors.toMap(Event::getId, Event::getTitle));
+        message.setButtonsContext(new ButtonsContext(ADD_EVENT, variants));
         return message;
     }
 

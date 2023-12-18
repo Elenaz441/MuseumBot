@@ -6,15 +6,15 @@ import ru.urfu.museumbot.dataFormat.EventFormat;
 import ru.urfu.museumbot.jpa.service.EventService;
 import ru.urfu.museumbot.message.Message;
 
-import static ru.urfu.museumbot.commands.Commands.VIEW_UPCOMING_EVENTS;
 import java.util.stream.Collectors;
+
+import static ru.urfu.museumbot.commands.Commands.VIEW_UPCOMING_EVENTS;
 
 /**
  * Класс для обработки команды просмотра предстоящих мероприятий (в ближайшие 7 дней)
  */
 @Service
-public class ViewUpcomingEventsCommand implements Command{
-
+public class ViewUpcomingEventsCommand implements Command {
     private final EventService eventService;
 
     @Autowired

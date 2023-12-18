@@ -25,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class PreCancelCommandTest {
 
     @InjectMocks
-    PreCancelCommand preCancelCommand;
+    private PreCancelCommand preCancelCommand;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
-    List<Event> events;
+    private final List<Event> events;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
     /**
      * Подготовка данных для тестов
@@ -84,7 +84,7 @@ class PreCancelCommandTest {
         assertTrue(message.getButtonsContext().isPresent());
         assertEquals(2, message.getButtonsContext().get().getVariants().size());
         assertEquals("CancelEvent", message.getButtonsContext().get().getCallbackData());
-        assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(0).getTitle());
-        assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(1).getTitle());
+        assertEquals("Event 1", message.getButtonsContext().get().getVariants().get(1L));
+        assertEquals("Event 2", message.getButtonsContext().get().getVariants().get(2L));
     }
 }

@@ -25,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class ViewUpcomingEventsCommandTest {
 
     @InjectMocks
-    ViewUpcomingEventsCommand viewUpcomingEventsCommand;
+    private ViewUpcomingEventsCommand viewUpcomingEventsCommand;
 
     @Mock
-    EventService eventService;
+    private EventService eventService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
-    List<Event> events;
+    private final List<Event> events;
 
     /**
      * Подготовка данных для тестов

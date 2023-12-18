@@ -7,11 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.urfu.museumbot.jpa.models.*;
-import ru.urfu.museumbot.jpa.service.*;
+import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Review;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.jpa.service.ReviewService;
+import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Класс для тестирования класса {@link SignUpCommand}
@@ -20,18 +24,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class SignUpCommandTest {
 
     @InjectMocks
-    SignUpCommand signUpCommand;
+    private SignUpCommand signUpCommand;
 
     @Mock
-    EventService eventService;
+    private EventService eventService;
 
     @Mock
-    UserService userService;
+    private UserService userService;
 
     @Mock
-    ReviewService reviewService;
+    private ReviewService reviewService;
 
-    CommandArgs commandArgs;
+    private CommandArgs commandArgs;
 
     /**
      * Настройка данных перед каждым тестом

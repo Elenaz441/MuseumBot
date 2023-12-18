@@ -12,7 +12,7 @@ import static ru.urfu.museumbot.commands.Commands.START;
 @Service
 public class StartCommand implements Command {
 
-    static final String START_MESSAGE = "Здравствуйте! " +
+    private static final String START_MESSAGE = "Здравствуйте! " +
             "Я бот, который поможет вам отслеживать предстоящие культурные мероприятия. " +
             "Используйте команду /help, чтобы узнать, что я могу";
 

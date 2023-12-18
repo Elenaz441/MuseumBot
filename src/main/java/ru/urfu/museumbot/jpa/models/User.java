@@ -39,6 +39,17 @@ public class User {
     @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 
+    /**
+     * Состояние
+     */
+    private String state = "Init";
+
+    /**
+     * Идентификатор отзыва, который пользователь оставляет в данный момент времени
+     * Поле задаётся во время выполнения команды /leave_review
+     */
+    public Long reviewingEvent = null;
+
     public User() {
     }
 
@@ -98,6 +109,30 @@ public class User {
         this.reviews = reviews;
     }
 
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Long getReviewingEvent() {
+        return reviewingEvent;
+    }
+
+    public void setReviewingEvent(Long reviewingEvent) {
+        this.reviewingEvent = reviewingEvent;
+    }
+
+    /**
+     * добавляет отзыв в список
+     * @param review отзыв, который нужно добавить
+     */
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setUser(this);
+    }
+
     /**
      * <p>Удалить отзыв из списка</p>
      * @param review - отзыв, который нужно удалить
@@ -128,14 +163,5 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    /**
-     * добавляет отзыв в список
-     * @param review отзыв, который нужно добавить
-     */
-    public void addReview(Review review) {
-        reviews.add(review);
-        review.setUser(this);
     }
 }
