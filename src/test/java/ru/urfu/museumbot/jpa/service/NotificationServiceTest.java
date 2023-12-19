@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.urfu.museumbot.FakeBot;
 import ru.urfu.museumbot.jpa.models.Event;
+import ru.urfu.museumbot.jpa.models.Museum;
 import ru.urfu.museumbot.jpa.models.Notification;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.repository.EventRepository;
@@ -69,11 +70,14 @@ class NotificationServiceTest {
      */
     @Test
     void createNotificationEvent() throws InterruptedException {
+        Museum museum = new Museum();
+        museum.setTitle("Museum 1");
+        event.setMuseum(museum);
         notificationService = new NotificationService(userRepository,
                 eventRepository,
                 notificationRepository,
                 bot);
-        notification.setText("Завтра в 14:30 состоится мероприятие \"Event 1\" по адресу Ленина, 51");
+        notification.setText("Мероприятие \"Event 1\" состоится завтра в 14:30 по адресу Ленина, 51 (Museum 1).");
 
         notificationService.createNotificationEvent(user, event);
 
@@ -82,7 +86,7 @@ class NotificationServiceTest {
         Thread.sleep(1010);
 
         assertEquals(1, bot.getMessages().size());
-        assertEquals("Сработало напоминание: Завтра в 14:30 состоится мероприятие \"Event 1\" по адресу Ленина, 51",
+        assertEquals("Напоминание! Мероприятие \"Event 1\" состоится завтра в 14:30 по адресу Ленина, 51 (Museum 1).",
                 bot.getMessages().get(0).getText());
         Mockito.verify(notificationRepository, Mockito.times(1)).save(notification);
         Mockito.verify(userRepository, Mockito.times(1)).save(user);

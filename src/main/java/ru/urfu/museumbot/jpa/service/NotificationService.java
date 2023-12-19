@@ -97,7 +97,7 @@ public class NotificationService {
             @Override
             public void run() {
                 Message message = new Message(notification.getUser().getChatId(),
-                        "Сработало напоминание: %s".formatted(notification.getText()));
+                        "Напоминание! %s".formatted(notification.getText()));
                 bot.sendMessage(message);
             }
         }, notification.getSendingDate());
