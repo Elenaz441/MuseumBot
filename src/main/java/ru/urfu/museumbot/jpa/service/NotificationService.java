@@ -30,7 +30,7 @@ public class NotificationService {
     private final EventRepository eventRepository;
     private final NotificationRepository notificationRepository;
     private final Bot bot;
-    public final Map<Long, Timer> timers;
+    private final Map<Long, Timer> timers;
 
     @Autowired
     public NotificationService(UserRepository userRepository,
