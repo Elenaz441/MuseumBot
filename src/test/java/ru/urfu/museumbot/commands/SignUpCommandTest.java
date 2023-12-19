@@ -97,6 +97,9 @@ class SignUpCommandTest {
         assertEquals("Вы уже записаны на мероприятие \"Event 1\"", message.getText());
     }
 
+    /**
+     * Зарегистрировать пользователя, если у него в настройках указано не отправлять уведомление
+     */
     @Test
     void getMessageIfNotSettingReminders() {
         Long chatId = 1L;

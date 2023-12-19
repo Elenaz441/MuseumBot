@@ -148,6 +148,15 @@ public class User {
     }
 
     /**
+     * <p>добавляет уведомление в список</p>
+     * @param notification уведомление, который нужно добавить
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+        notification.setUser(this);
+    }
+
+    /**
      * <p>Удалить отзыв из списка</p>
      * @param review - отзыв, который нужно удалить
      */
@@ -156,6 +165,10 @@ public class User {
         review.setUser(null);
     }
 
+    /**
+     * <p>Удалить уведомление из списка</p>
+     * @param notification - уведомление, которое нужно удалить
+     */
     public void removeNotification(Notification notification) {
         notifications.remove(notification);
         notification.setUser(null);
