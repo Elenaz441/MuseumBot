@@ -42,6 +42,10 @@ public class Event {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    private List<Notification> notifications;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Review> reviews;
 
     @ManyToOne
@@ -106,6 +110,15 @@ public class Event {
         this.address = address;
     }
 
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
+
     public List<Review> getReviews() {
         return reviews;
     }
@@ -121,6 +134,11 @@ public class Event {
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setEvent(null);
+    }
+
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+        notification.setEvent(null);
     }
 
     @Override

@@ -19,14 +19,17 @@ public class CancelCommand implements Command {
     private final EventService eventService;
     private final ReviewService reviewService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Autowired
     public CancelCommand(EventService eventService,
                          ReviewService reviewService,
-                         UserService userService) {
+                         UserService userService,
+                         NotificationService notificationService) {
         this.eventService = eventService;
         this.reviewService = reviewService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     /**
@@ -57,6 +60,9 @@ public class CancelCommand implements Command {
             text = "Вы не записаны на данное мероприятие";
         } else {
             reviewService.deleteReview(review);
+            notificationService.deleteNotificationEvent(
+                    userService.getUserByChatId(chatId),
+                    eventService.getEventById(eventId));
         }
         return text;
     }

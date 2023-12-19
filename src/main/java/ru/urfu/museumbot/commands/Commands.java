@@ -14,6 +14,7 @@ public class Commands {
     public static final String LEAVE_REVIEW = "/leave_review";
     public static final String VIEW_MUSEUM = "/view_museum";
     public static final String VIEW_MUSEUM_RANK = "/view_museum_rank";
+    public static final String VIEW_SETTINGS = "/view_settings";
     public static final String ADD_EVENT = "AddEvent";
     public static final String CANCEL_EVENT = "CancelEvent";
     public static final String GET_MUSEUM = "GetMuseum";

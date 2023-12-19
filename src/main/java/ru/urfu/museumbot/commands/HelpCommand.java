@@ -27,6 +27,8 @@ public class HelpCommand implements Command {
             \t/view_museum - Посмотреть информацию о музее.
             \t/view_museum_rank - Посмотреть рейтинг музея и прочитать отзывы о мероприятиях,\040
             которые проходили в этом музее.
+            \t/view_settings - Посмотреть настройки уведомлений.
+                        
             """;
 
     public HelpCommand() {

@@ -15,6 +15,7 @@ import java.util.*;
  * <p>{@link User#randomExposureSetting} флаг на разрешение рассылки о случайном экспонате</p>
  * <p>{@link User#notificationTime} время получения уведомлений и напоминаний</p>
  * <p>{@link User#reviews} отзывы пользователя</p>
+ * <p>{@link User#notifications} уведомления пользователя</p>
  *
  */
 @Entity
@@ -34,6 +35,10 @@ public class User {
     private boolean randomExposureSetting = false;
 
     private Date notificationTime = new GregorianCalendar(2000, Calendar.JANUARY, 1, 14, 0).getTime();
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Notification> notifications = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -112,6 +117,7 @@ public class User {
     public String getState() {
         return state;
     }
+
     public void setState(String state) {
         this.state = state;
     }
@@ -122,6 +128,14 @@ public class User {
 
     public void setReviewingEvent(Long reviewingEvent) {
         this.reviewingEvent = reviewingEvent;
+    }
+
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
     }
 
     /**
@@ -140,6 +154,11 @@ public class User {
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setUser(null);
+    }
+
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+        notification.setUser(null);
     }
 
     @Override

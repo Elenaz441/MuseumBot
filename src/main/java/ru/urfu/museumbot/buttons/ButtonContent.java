@@ -28,7 +28,8 @@ public class ButtonContent {
             new BotCommand(VIEW_EXHIBIT, "Посмотреть информацию об экспонате"),
             new BotCommand(LEAVE_REVIEW, "Оставить отзыв"),
             new BotCommand(VIEW_MUSEUM, "Посмотреть информацию о музее"),
-            new BotCommand(VIEW_MUSEUM_RANK, "Посмотреть рейтинг и отзывы музея")
+            new BotCommand(VIEW_MUSEUM_RANK, "Посмотреть рейтинг и отзывы музея"),
+            new BotCommand(VIEW_SETTINGS, "Посмотреть настройки уведомлений")
     );
 
     /**
