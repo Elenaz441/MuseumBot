@@ -47,4 +47,16 @@ public class ExhibitService {
     public String getFormattedString(Exhibit exhibit){
         return new ExhibitFormat().toFormattedString(exhibit);
     }
+
+    /**
+     * @return случайный экспонат представленный в таблице
+     */
+    public Exhibit getRandomExhibit(){
+        Long count = exhibitRepository.count();
+        double rnd = Math.random();
+        System.out.println(rnd);
+        Long id = (long) (rnd * count) + 1L;
+        System.out.println(id);
+        return exhibitRepository.getExhibitById(id);
+    }
 }

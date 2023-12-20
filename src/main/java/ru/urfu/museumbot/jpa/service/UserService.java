@@ -2,7 +2,7 @@ package ru.urfu.museumbot.jpa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.urfu.museumbot.commands.State;
+import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
@@ -10,6 +10,9 @@ import ru.urfu.museumbot.jpa.repository.UserRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -111,6 +114,45 @@ public class UserService {
     public void setReviewingEvent(Long chatId, Long eventId){
         User user = getUserByChatId(chatId);
         user.setReviewingEvent(eventId);
+        userRepository.save(user);
+    }
+
+    /**
+     * Устанавливает настройку посылки уведомлений
+     */
+    public void updateNotificationSettings(Long chatId, boolean settings) {
+        User user = userRepository.getUserByChatId(chatId);
+        user.setSettingReminders(settings);
+        userRepository.save(user);
+    }
+
+    /**
+     * Устанавливает настройку еженедельной рассылки пользователю о рандомном экспонате
+     */
+    public void updateRandomExposureSetting(Long chatId, boolean settings) {
+        User user = userRepository.getUserByChatId(chatId);
+        user.setRandomExposureSetting(settings);
+        userRepository.save(user);
+    }
+
+    /**
+     * Устанавливает время в которое будут посылаться напоминания и рассылка пользователю
+     */
+    public void updateNotificationTime(Long chatId, Date time) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(time);
+        User user = userRepository.getUserByChatId(chatId);
+        user.setNotificationTime(cal.getTime());
+        userRepository.save(user);
+
+    }
+
+    /**
+     * Устанавливает в какой день недели рассылать информацию о рандомном экспонате
+     */
+    public void updateDayOfWeekDistribution(Long chatId, int ordinal) {
+        User user = userRepository.getUserByChatId(chatId);
+        user.setDayOfWeekDistribution(ordinal);
         userRepository.save(user);
     }
 }

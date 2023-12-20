@@ -3,6 +3,7 @@ package ru.urfu.museumbot.commands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.customException.IncorrectUserInputException;
+import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
