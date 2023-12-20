@@ -19,4 +19,5 @@ public class Commands {
     public static final String CANCEL_EVENT = "CancelEvent";
     public static final String GET_MUSEUM = "GetMuseum";
     public static final String GET_RANK = "GetRank";
+    public static final String CHANGE_SETTINGS = "/change_settings";
 }

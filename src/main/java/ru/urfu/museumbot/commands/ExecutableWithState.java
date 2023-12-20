@@ -1,5 +1,7 @@
 package ru.urfu.museumbot.commands;
 
+import ru.urfu.museumbot.enums.State;
+
 /**
  * Команды, которые начинаются не со /
  */

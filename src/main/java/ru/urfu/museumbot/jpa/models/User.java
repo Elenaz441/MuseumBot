@@ -16,7 +16,6 @@ import java.util.*;
  * <p>{@link User#notificationTime} время получения уведомлений и напоминаний</p>
  * <p>{@link User#reviews} отзывы пользователя</p>
  * <p>{@link User#notifications} уведомления пользователя</p>
- *
  */
 @Entity
 @Table(name = "user")
@@ -35,6 +34,8 @@ public class User {
     private boolean randomExposureSetting = false;
 
     private Date notificationTime = new GregorianCalendar(2000, Calendar.JANUARY, 1, 14, 0).getTime();
+
+    private Integer dayOfWeekDistribution;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -106,6 +107,14 @@ public class User {
         this.notificationTime = notificationTime;
     }
 
+    public Integer getDayOfWeekDistribution() {
+        return dayOfWeekDistribution;
+    }
+
+    public void setDayOfWeekDistribution(Integer dayOfWeekDistribution) {
+        this.dayOfWeekDistribution = dayOfWeekDistribution;
+    }
+
     public List<Review> getReviews() {
         return reviews;
     }
@@ -140,6 +149,7 @@ public class User {
 
     /**
      * добавляет отзыв в список
+     *
      * @param review отзыв, который нужно добавить
      */
     public void addReview(Review review) {
@@ -149,6 +159,7 @@ public class User {
 
     /**
      * <p>добавляет уведомление в список</p>
+     *
      * @param notification уведомление, который нужно добавить
      */
     public void addNotification(Notification notification) {
@@ -158,6 +169,7 @@ public class User {
 
     /**
      * <p>Удалить отзыв из списка</p>
+     *
      * @param review - отзыв, который нужно удалить
      */
     public void removeReview(Review review) {
@@ -167,6 +179,7 @@ public class User {
 
     /**
      * <p>Удалить уведомление из списка</p>
+     *
      * @param notification - уведомление, которое нужно удалить
      */
     public void removeNotification(Notification notification) {
