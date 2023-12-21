@@ -41,6 +41,7 @@ class ViewSettingsCommandTest {
         user.setSettingReminders(true);
         user.setRandomExposureSetting(false);
         user.setNotificationTime(calendar.getTime());
+        user.setDayOfWeekDistribution(4);
         Mockito.doReturn(user)
                 .when(userService)
                 .getUserByChatId(1L);
@@ -51,6 +52,7 @@ class ViewSettingsCommandTest {
                         У вас следующие настройки:
                         Присылать ли вам напоминание о мероприятии, на которое вы записаны, за день до начала? - да
                         Присылать ли вам информацию о случайном экспонате? - нет
+                        В какой день недели присылать информацию об экспонате? - Четверг
                         Присылать уведомления в 12:00 (если в предыдущих вопросах ответ "да").
                         """,
                 message.getText());

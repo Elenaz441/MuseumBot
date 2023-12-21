@@ -118,10 +118,10 @@ class NotificationServiceTest {
     }
 
     /**
-     * Тестирование удаления уведомления о мероприятии
+     * Тестирование удаления уведомления
      */
     @Test
-    void deleteNotificationEvent() throws InterruptedException {
+    void deleteNotification() throws InterruptedException {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, 1);
         notification.setSendingDate(calendar.getTime());
@@ -129,7 +129,6 @@ class NotificationServiceTest {
         Mockito.doReturn(List.of(notification))
                 .when(notificationRepository)
                 .getNotificationsBySendingDateAfter(Mockito.any(Date.class));
-        Mockito.doReturn(notification).when(notificationRepository).getNotificationByUserAndEvent(user, event);
         user.setNotifications(new ArrayList<>(List.of(notification)));
         event.setNotifications(new ArrayList<>(List.of(notification)));
         notificationService = new NotificationService(userRepository,
@@ -137,7 +136,7 @@ class NotificationServiceTest {
                 notificationRepository,
                 bot);
 
-        notificationService.deleteNotificationEvent(user, event);
+        notificationService.deleteNotification(notification);
 
         Thread.sleep(1010);
 
@@ -148,6 +147,35 @@ class NotificationServiceTest {
                 .deleteById(1L);
         Mockito.verify(userRepository, Mockito.times(1)).save(user);
         Mockito.verify(eventRepository, Mockito.times(1)).save(event);
+    }
+
+    /**
+     * Тестирование перезаписывания времени отправки при настройке уведомлений
+     */
+    @Test
+    void resetNotificationTimeForUser() {
+        notificationService = new NotificationService(userRepository,
+                eventRepository,
+                notificationRepository,
+                bot);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 0);
+        user.setNotificationTime(calendar.getTime());
+
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 15);
+        notification.setSendingDate(calendar.getTime());
+
+        notificationService.resetNotificationTimeForUser(notification, user);
+
+        calendar.setTime(notification.getSendingDate());
+
+        assertEquals(12, calendar.get(Calendar.HOUR_OF_DAY));
+        assertEquals(0, calendar.get(Calendar.MINUTE));
+        Mockito.verify(notificationRepository, Mockito.times(1)).save(notification);
     }
 
     /**

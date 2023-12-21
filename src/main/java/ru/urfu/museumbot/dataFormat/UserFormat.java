@@ -1,5 +1,6 @@
 package ru.urfu.museumbot.dataFormat;
 
+import ru.urfu.museumbot.enums.DayOfWeek;
 import ru.urfu.museumbot.jpa.models.User;
 
 import java.text.SimpleDateFormat;
@@ -20,10 +21,12 @@ public class UserFormat {
                         У вас следующие настройки:
                         Присылать ли вам напоминание о мероприятии, на которое вы записаны, за день до начала? - %s
                         Присылать ли вам информацию о случайном экспонате? - %s
+                        В какой день недели присылать информацию об экспонате? - %s
                         Присылать уведомления в %s (если в предыдущих вопросах ответ "да").
                         """,
                 settingReminders,
                 randomExposureSetting,
+                DayOfWeek.values()[user.getDayOfWeekDistribution()].getDayString(),
                 dateFormat.format(user.getNotificationTime()));
     }
 

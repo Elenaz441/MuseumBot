@@ -2,6 +2,7 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.jpa.models.Notification;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.service.*;
 import ru.urfu.museumbot.message.Message;
@@ -60,9 +61,10 @@ public class CancelCommand implements Command {
             text = "Вы не записаны на данное мероприятие";
         } else {
             reviewService.deleteReview(review);
-            notificationService.deleteNotificationEvent(
+            Notification notification = notificationService.getNotificationByUserAndEvent(
                     userService.getUserByChatId(chatId),
                     eventService.getEventById(eventId));
+            notificationService.deleteNotification(notification);
         }
         return text;
     }

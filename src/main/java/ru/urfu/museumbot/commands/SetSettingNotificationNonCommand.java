@@ -3,6 +3,9 @@ package ru.urfu.museumbot.commands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.enums.State;
+import ru.urfu.museumbot.jpa.models.Notification;
+import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.NotificationService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 import ru.urfu.museumbot.util.UserInputChecker;
@@ -19,10 +22,12 @@ public class SetSettingNotificationNonCommand implements ExecutableWithState {
             " пожалуйста, да или нет.";
 
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public SetSettingNotificationNonCommand(UserService userService) {
+    public SetSettingNotificationNonCommand(UserService userService, NotificationService notificationService) {
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -36,6 +41,12 @@ public class SetSettingNotificationNonCommand implements ExecutableWithState {
         boolean setting = userInput.equalsIgnoreCase("да");
         userService.updateNotificationSettings(chatId, setting);
         userService.updateUserState(chatId, State.SET_DISTRIBUTION);
+        if (!setting) {
+            User user = userService.getUserByChatId(chatId);
+            for (Notification notification:user.getNotifications()) {
+                notificationService.deleteNotification(notification);
+            }
+        }
         return new Message(chatId, SET_DISTRIBUTION_MESSAGE);
     }
 

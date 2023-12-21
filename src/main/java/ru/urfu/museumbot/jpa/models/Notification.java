@@ -84,7 +84,6 @@ public class Notification {
         return "Notification{" +
                 "id=" + id +
                 ", user=" + user +
-                ", event=" + event +
                 ", text='" + text + '\'' +
                 ", sendingDate=" + sendingDate +
                 '}';
