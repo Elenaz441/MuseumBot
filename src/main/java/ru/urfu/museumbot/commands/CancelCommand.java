@@ -64,7 +64,9 @@ public class CancelCommand implements Command {
             Notification notification = notificationService.getNotificationByUserAndEvent(
                     userService.getUserByChatId(chatId),
                     eventService.getEventById(eventId));
-            notificationService.deleteNotification(notification);
+            if (notification != null) {
+                notificationService.deleteNotification(notification);
+            }
         }
         return text;
     }
