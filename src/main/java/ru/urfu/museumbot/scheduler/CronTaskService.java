@@ -41,12 +41,12 @@ public class CronTaskService {
     }
 
     /**
-     * @return Словарь, который содержит все отложенные задания из дазы данных для рассылки
+     * @return Словарь, который содержит все отложенные задания из базы данных для рассылки
      */
     private LinkedHashMap<Long, CronTask> createCronTaskFromDB() {
         LinkedHashMap<Long, CronTask> tasks = new LinkedHashMap<>();
-        List<User> subscriberes = userRepository.getUserByRandomExposureSetting(true);
-        for (User user : subscriberes) {
+        List<User> subscribers = userRepository.getUserByRandomExposureSetting(true);
+        for (User user : subscribers) {
             CronTask task = createCronTaskRandomExhibit(user.getChatId());
             tasks.put(user.getChatId(), task);
         }
@@ -61,15 +61,13 @@ public class CronTaskService {
     }
 
     /**
-     * @return запланированное задание, т.е. еженедельную рассылку ботом информации о рандомном экспонате
+     * @return запланированное задание, т.е. еженедельную рассылку ботом информации о случайном экспонате
      */
     public CronTask createCronTaskRandomExhibit(Long chatId) {
         User user = userRepository.getUserByChatId(chatId);
         Date notificationTime = user.getNotificationTime();
         int dayOfWeek = user.getDayOfWeekDistribution();
         String expression = new CronExpressionFormat().getCronExpressionByUserSettings(notificationTime, dayOfWeek);
-        System.out.println(expression);
-        System.out.println(user.getChatId());
         return createCronTask(() -> bot.sendMessage(new Message(user.getChatId(),
                 new ExhibitFormat().toFormattedStringForDistribution(exhibitService.getRandomExhibit()))), expression);
     }
