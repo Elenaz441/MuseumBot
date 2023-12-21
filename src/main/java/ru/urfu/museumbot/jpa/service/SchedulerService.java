@@ -23,8 +23,8 @@ public class SchedulerService implements CommandLineRunner {
      * предназначенное пользователю с чатом ключа
      * необходимо быстро бежать по элементам, поэтому выбрана эта реализация интерфейса Map.
      */
-    LinkedHashMap<Long, CronTask> cronTasks;
-    SchedulingConfigurer configurer;
+    private final LinkedHashMap<Long, CronTask> cronTasks;
+    private final SchedulingConfigurer configurer;
     private ScheduledTaskRegistrar taskRegistrar;
 
     @Autowired
@@ -46,10 +46,27 @@ public class SchedulerService implements CommandLineRunner {
     }
 
     /**
-     * Добавить новую задачу
+     * добавляет отложенное потворяющееся задание в {@link SchedulerService#cronTasks}
+     * такая реализация обусловлена боллее быстрым доступом, нежели из базы
      */
-    public void addNewCron(Long chatId, CronTask task) {
+    public void addCron(Long chatId, CronTask task) {
         cronTasks.put(chatId, task);
+        updateTasks();
+    }
+
+    /**
+     * удаляет отложенное потворяющееся задание в {@link SchedulerService#cronTasks}
+     * такая реализация обусловлена боллее быстрым доступом, нежели из базы
+     */
+    public void removeCron(Long chatId) {
+        cronTasks.remove(chatId);
+        updateTasks();
+    }
+
+    /**
+     * обновляет список текущих запущенных задач
+     */
+    private void updateTasks() {
         this.taskRegistrar.destroy();
         run();
     }
