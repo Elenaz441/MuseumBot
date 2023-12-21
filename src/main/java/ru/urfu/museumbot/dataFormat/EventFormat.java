@@ -29,10 +29,6 @@ public class EventFormat {
                 dateFormat.format(event.getDate()),
                 event.getAddress(),
                 event.getMuseum().getTitle());
-//        return String.format("Завтра в %s состоится мероприятие \"%s\" по адресу %s",
-//                dateFormat.format(event.getDate()),
-//                event.getTitle(),
-//                event.getAddress());
     }
 
 }
