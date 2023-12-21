@@ -22,6 +22,9 @@ public class EventFormat {
                 event.getAddress());
     }
 
+    /**
+     * Метод форматирования мероприятия в строку для напоминания
+     */
     public String toFormattedStringForNotification(Event event) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         return String.format("Мероприятие \"%s\" состоится завтра в %s по адресу %s (%s).",
