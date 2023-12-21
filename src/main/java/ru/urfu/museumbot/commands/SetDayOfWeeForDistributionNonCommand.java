@@ -2,12 +2,14 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.customException.IncorrectUserInputException;
 import ru.urfu.museumbot.enums.DayOfWeek;
 import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Команда, которая устранавливает в какой день недели отправлять расслыку о рандомном экспонате
@@ -31,14 +33,19 @@ public class SetDayOfWeeForDistributionNonCommand implements ExecutableWithState
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         String userInput = args.getUserInput();
-        try {
-            DayOfWeek dayOfWeek = Arrays.stream(DayOfWeek.values())
+            Optional<DayOfWeek> dayOfWeek = Optional.ofNullable(Arrays.stream(DayOfWeek.values())
                     .filter(state -> state.getDayString().equalsIgnoreCase(userInput))
-                    .findFirst().orElse(DayOfWeek.SATURDAY);
-            userService.updateDayOfWeekDistribution(chatId, dayOfWeek.ordinal());
-        } catch (IllegalArgumentException e) {
-            System.out.println(String.format("Некорректный ввод от пользователя." +
-                    " Требуется ввести день недели. %s", e.getMessage()));
+                    .findFirst().orElse(null));
+        try{
+            if (dayOfWeek.isPresent()) {
+                userService.updateDayOfWeekDistribution(chatId, dayOfWeek.get().ordinal());
+            } else {
+                throw new IncorrectUserInputException("Некорректный ввод от пользователя." +
+                        " Требуется ввести день недели.");
+            }
+        }
+            catch (IncorrectUserInputException e){
+            System.out.println(String.format("День недели не поставился. %s", e.getMessage()));
             return new Message(chatId, FALURE_MESSAGE);
         }
         userService.updateUserState(chatId, State.SET_TIME);

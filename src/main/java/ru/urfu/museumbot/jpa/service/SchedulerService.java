@@ -18,12 +18,12 @@ import java.util.LinkedHashMap;
 @EnableScheduling
 public class SchedulerService implements CommandLineRunner {
     /**
-     * словарь, содержащий ключ-идентификатор чата, значеие-потворяющимися заданиями,
+     * словарь, содержащий ключ-идентификатор чата, значеие-потворяющиеся задания,
      * предназначенное пользователю с чатом ключа
      * необходимо быстро бежать по элементам, поэтому выбрана эта реализация интерфейса Map.
      */
-    LinkedHashMap<Long, CronTask> cronTasks;
-    SchedulingConfigurer configurer;
+    private final LinkedHashMap<Long, CronTask> cronTasks;
+    private final SchedulingConfigurer configurer;
     private ScheduledTaskRegistrar taskRegistrar;
 
     @Autowired
@@ -38,14 +38,34 @@ public class SchedulerService implements CommandLineRunner {
     @Override
     public void run(String... args) {
         this.taskRegistrar = new ScheduledTaskRegistrar();
-        for (CronTask task : cronTasks.values()) {
+        for (CronTask task :  cronTasks.values()) {
             taskRegistrar.addCronTask(task);
         }
         configurer.configureTasks(taskRegistrar);
     }
 
-    public void addNewCron(Long chatId, CronTask task) {
+    /**
+     * добавляет отложенное потворяющееся задание в {@link SchedulerService#cronTasks}
+     * такая реализация обусловлена боллее быстрым доступом, нежели из базы
+     */
+    public void addCron(Long chatId, CronTask task) {
         cronTasks.put(chatId, task);
+        updateTasks();
+    }
+
+    /**
+     * удаляет отложенное потворяющееся задание в {@link SchedulerService#cronTasks}
+     * такая реализация обусловлена боллее быстрым доступом, нежели из базы
+     */
+    public void removeCron(Long chatId) {
+        cronTasks.remove(chatId);
+        updateTasks();
+    }
+
+    /**
+     * обновляет список текущих запущенных задач
+     */
+    private void updateTasks() {
         this.taskRegistrar.destroy();
         run();
     }

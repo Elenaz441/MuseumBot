@@ -25,6 +25,13 @@ public class CronTaskService {
     private final Bot bot;
     private final UserRepository userRepository;
     private final ExhibitService exhibitService;
+
+    /**
+     * словарь, содержащий ключ-идентификатор чата, значеие-потворяющиеся заданиями,
+     * предназначенное пользователю с чатом ключа
+     * содержит все отложенные задания из дазы данных для рассылки
+     * необходимо быстро бежать по элементам, поэтому выбрана эта реализация интерфейса Map.
+     */
     private final LinkedHashMap<Long, CronTask> cronTasks;
 
     @Autowired
@@ -34,7 +41,6 @@ public class CronTaskService {
         this.cronTasks = createCronTaskFromDB();
         this.exhibitService = exhibitService;
     }
-
 
     public LinkedHashMap<Long, CronTask> getCronTasks() {
         return cronTasks;
@@ -68,8 +74,6 @@ public class CronTaskService {
         Date notificationTime = user.getNotificationTime();
         int dayOfWeek = user.getDayOfWeekDistribution();
         String expression = new CronExpressionFormat().getCronExpressionByUserSettings(notificationTime, dayOfWeek);
-        System.out.println(expression);
-        System.out.println(user.getChatId());
         return createCronTask(() -> bot.sendMessage(new Message(user.getChatId(),
                 new ExhibitFormat().toFormattedStringForDistribution(exhibitService.getRandomExhibit()))), expression);
     }
