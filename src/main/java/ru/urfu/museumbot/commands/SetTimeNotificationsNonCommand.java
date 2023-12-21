@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Команда, которая устанавливает в какое время отрпавлять уведомления пользователю
+ * Команда, которая устанавливает в какое время отправлять уведомления пользователю
  */
 @Service
 public class SetTimeNotificationsNonCommand implements ExecutableWithState{
