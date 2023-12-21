@@ -12,6 +12,9 @@ import ru.urfu.museumbot.message.Message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Класс для тестирования класса {@link SetSettingNotificationNonCommand}
+ */
 @ExtendWith(MockitoExtension.class)
 class SetSettingNotificationNonCommandTest {
     @Mock

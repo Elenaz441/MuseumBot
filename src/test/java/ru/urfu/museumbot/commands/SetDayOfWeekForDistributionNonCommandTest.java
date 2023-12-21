@@ -12,15 +12,18 @@ import ru.urfu.museumbot.message.Message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Класс для тестирования класса {@link SetDayOfWeekForDistributionNonCommand}
+ */
 @ExtendWith(MockitoExtension.class)
-class SetDayOfWeeForDistributionNonCommandTest {
+class SetDayOfWeekForDistributionNonCommandTest {
     @Mock
     private UserService userService;
     @InjectMocks
-    private SetDayOfWeeForDistributionNonCommand distributionNonCommand;
+    private SetDayOfWeekForDistributionNonCommand distributionNonCommand;
     private final CommandArgs args;
 
-    public SetDayOfWeeForDistributionNonCommandTest() {
+    public SetDayOfWeekForDistributionNonCommandTest() {
         args = new CommandArgs();
         args.setChatId(1L);
     }

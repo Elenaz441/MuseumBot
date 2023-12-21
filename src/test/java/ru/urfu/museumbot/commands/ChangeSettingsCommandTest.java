@@ -12,6 +12,9 @@ import ru.urfu.museumbot.message.Message;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Класс для тестирования класса {@link ChangeSettingsCommand}
+ */
 @ExtendWith(MockitoExtension.class)
 class ChangeSettingsCommandTest {
     private final CommandArgs args;

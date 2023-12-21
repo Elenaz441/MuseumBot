@@ -8,17 +8,17 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.scheduling.config.CronTask;
 import ru.urfu.museumbot.enums.DayOfWeek;
-import ru.urfu.museumbot.jpa.models.Exhibit;
-import ru.urfu.museumbot.jpa.models.Museum;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.repository.UserRepository;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Класс для тестирования класса {@link CronTaskService}
+ */
 @ExtendWith(MockitoExtension.class)
 class CronTaskServiceTest {
     @Mock

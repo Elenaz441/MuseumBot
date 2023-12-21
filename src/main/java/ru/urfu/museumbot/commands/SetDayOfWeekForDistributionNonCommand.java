@@ -15,7 +15,7 @@ import java.util.Optional;
  * Команда, которая устанавливает в какой день недели отправлять рассылку о случайном экспонате
  */
 @Service
-public class SetDayOfWeeForDistributionNonCommand implements ExecutableWithState {
+public class SetDayOfWeekForDistributionNonCommand implements ExecutableWithState {
     private static final String SET_TIME_MESSAGE = "Когда вам присылать уведомления?" +
             " (Напишите конкретное время, например 12:00)";
 
@@ -25,7 +25,7 @@ public class SetDayOfWeeForDistributionNonCommand implements ExecutableWithState
     private final UserService userService;
 
     @Autowired
-    public SetDayOfWeeForDistributionNonCommand(UserService userService) {
+    public SetDayOfWeekForDistributionNonCommand(UserService userService) {
         this.userService = userService;
     }
 

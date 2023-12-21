@@ -19,6 +19,9 @@ import java.util.LinkedHashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Класс для тестирования класса {@link SchedulerService}
+ */
 @ExtendWith(MockitoExtension.class)
 class SchedulerServiceTest {
     private final CronTaskService cronTaskService;
@@ -43,16 +46,23 @@ class SchedulerServiceTest {
         schedulerService = new SchedulerService(config, cronTaskService);
     }
 
+    /**
+     * Тестирование метода, который задаёт конфигурацию повторяющимся заданиям, т.е. приводит текущие задания в действие
+     */
     @Test
     void run() throws InterruptedException {
+        assertEquals(1, cronTaskService.getCronTasks().size());
         schedulerService.run();
         assertEquals(0, fakeBot.getMessages().size());
         Thread.sleep(3100);
         assertEquals("initial the distribution worked", fakeBot.getMessages().get(0).getText());
     }
 
+    /**
+     * Тестирование добавления отложенного потворяющегося задания в очередь заданий на выполнение
+     */
     @Test
-    void addNewCron() throws InterruptedException {
+    void addCron() throws InterruptedException {
         String seconds = formatter.format(Date.from(Instant.now().plus(5, ChronoUnit.SECONDS)));
         CronTask beReturned = new CronTask(() -> fakeBot.sendMessage(
                 new Message(2L, "2. the distribution worked")),
@@ -65,6 +75,9 @@ class SchedulerServiceTest {
         assertEquals("2. the distribution worked", fakeBot.getMessages().get(1).getText());
     }
 
+    /**
+     * Тестирование удаления отложенного потворяющегося задания из очереди заданий на выполнение
+     */
     @Test
     void removeNewCron() throws InterruptedException {
         schedulerService.run();

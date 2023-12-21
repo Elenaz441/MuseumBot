@@ -12,6 +12,10 @@ import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+ /**
+ * Класс для тестирования класса {@link SetDistributionNonCommand}
+ */
 @ExtendWith(MockitoExtension.class)
 class SetDistributionNonCommandTest {
     @Mock
@@ -41,23 +45,22 @@ class SetDistributionNonCommandTest {
      * Тестирование команды, когда пользовательский ввод корректен и положителен
      */
     @Test
-    void getMessageIfCcorrectUserInputYes() {
+    void getMessageIfCorrectUserInputYes() {
         args.setUserInput("Да");
         Message message = setDistributionNonCommand.getMessage(args);
           Mockito.verify(userService, Mockito.times(1))
                 .updateRandomExposureSetting(1L, true);
         Mockito.verify(userService, Mockito.times(1))
                 .updateUserState(1L, State.SET_DAY_OF_WEEK);
-        assertEquals("Напишите в какой день недели" +
-                " вы хотели бы получать информацию о сучайном экспонате. Например, Пятница.", message.getText());
-
+        assertEquals("Напишите в какой день недели вы хотели бы получать информацию о случайном экспонате." +
+                " Например, Пятница.", message.getText());
     }
 
     /**
-     * Тестирвоание команды, когда пользвоатель овтетил положительно на хотя бы одну из настроек
+     * Тестирвоание команды, когда пользвоатель ответил положительно хотя бы на одну из настроек
      */
     @Test
-    void getMessageIfCcorrectUserInputNoRemindersYes() {
+    void getMessageIfCorrectUserInputNoRemindersYes() {
         args.setUserInput("Нет");
         User user = new User();
         user.setId(1L);
@@ -71,13 +74,12 @@ class SetDistributionNonCommandTest {
                 .updateUserState(1L, State.SET_TIME);
         assertEquals("Когда вам присылать уведомления?" +
                 " (Напишите конкретное время, например 12:00)", message.getText());
-
     }
     /**
      * Тестирвоание команды, когда пользвоатель выбрал не посылать напоминания и рассылку
      */
     @Test
-    void getMessageIfCcorrectUserInputNoNoRemindersNo() {
+    void getMessageIfCorrectUserInputNoNoRemindersNo() {
         args.setUserInput("Нет");
         User user = new User();
         user.setId(1L);
@@ -87,6 +89,5 @@ class SetDistributionNonCommandTest {
         Message message = setDistributionNonCommand.getMessage(args);
         Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.INIT);
         assertEquals("Настройки успешно заданы.", message.getText());
-
     }
 }

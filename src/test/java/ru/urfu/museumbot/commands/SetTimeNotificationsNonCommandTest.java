@@ -21,6 +21,9 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Класс для тестирования класса {@link SetTimeNotificationsNonCommand}
+ */
 @ExtendWith(MockitoExtension.class)
 class SetTimeNotificationsNonCommandTest {
     @Mock
