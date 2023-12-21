@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.SchedulerService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 
@@ -20,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class SetDistributionNonCommandTest {
     @Mock
     private UserService userService;
+    @Mock
+    private SchedulerService schedulerService;
+
     @InjectMocks
     private SetDistributionNonCommand setDistributionNonCommand;
     private final CommandArgs args;
@@ -68,6 +72,7 @@ class SetDistributionNonCommandTest {
         user.setSettingReminders(true);
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Message message = setDistributionNonCommand.getMessage(args);
+        Mockito.verify(schedulerService, Mockito.times(1)).removeCron(1L);
         Mockito.verify(userService, Mockito.times(1))
                 .updateRandomExposureSetting(1L, false);
         Mockito.verify(userService, Mockito.times(1))
@@ -79,7 +84,7 @@ class SetDistributionNonCommandTest {
      * Тестирование команды, когда пользователь выбрал не посылать напоминания и рассылку
      */
     @Test
-    void getMessageIfCorrectUserInputNoNoRemindersNo() {
+    void getMessageIfCorrectUserInputNoRemindersNo() {
         args.setUserInput("Нет");
         User user = new User();
         user.setId(1L);
@@ -87,6 +92,7 @@ class SetDistributionNonCommandTest {
         user.setSettingReminders(false);
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Message message = setDistributionNonCommand.getMessage(args);
+        Mockito.verify(schedulerService, Mockito.times(1)).removeCron(1L);
         Mockito.verify(userService, Mockito.times(1)).updateUserState(1L, State.INIT);
         assertEquals("Настройки успешно заданы.", message.getText());
     }

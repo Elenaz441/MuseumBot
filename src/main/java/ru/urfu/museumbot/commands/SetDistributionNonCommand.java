@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.models.User;
+import ru.urfu.museumbot.jpa.service.SchedulerService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
 import ru.urfu.museumbot.util.UserInputChecker;
@@ -23,10 +24,12 @@ public class SetDistributionNonCommand implements ExecutableWithState {
     private static final String SUCCESS_SET_MESSAGE = "Настройки успешно заданы.";
 
     private final UserService userService;
+    private final SchedulerService schedulerService;
 
     @Autowired
-    public SetDistributionNonCommand(UserService userService) {
+    public SetDistributionNonCommand(UserService userService, SchedulerService schedulerService) {
         this.userService = userService;
+        this.schedulerService = schedulerService;
     }
 
     @Override
@@ -40,6 +43,9 @@ public class SetDistributionNonCommand implements ExecutableWithState {
         User user = userService.getUserByChatId(chatId);
         boolean setting = userInput.equalsIgnoreCase("да");
         userService.updateRandomExposureSetting(chatId, setting);
+        if (!setting){
+            schedulerService.removeCron(chatId);
+        }
         if (setting || user.isSettingReminders()) {
             if (setting) {
                 userService.updateUserState(chatId, State.SET_DAY_OF_WEEK);

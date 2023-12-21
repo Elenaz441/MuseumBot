@@ -35,7 +35,7 @@ public class User {
 
     private Date notificationTime = new GregorianCalendar(2000, Calendar.JANUARY, 1, 14, 0).getTime();
 
-    private Integer dayOfWeekDistribution;
+    private int dayOfWeekDistribution;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -107,11 +107,11 @@ public class User {
         this.notificationTime = notificationTime;
     }
 
-    public Integer getDayOfWeekDistribution() {
+    public int getDayOfWeekDistribution() {
         return dayOfWeekDistribution;
     }
 
-    public void setDayOfWeekDistribution(Integer dayOfWeekDistribution) {
+    public void setDayOfWeekDistribution(int dayOfWeekDistribution) {
         this.dayOfWeekDistribution = dayOfWeekDistribution;
     }
 
