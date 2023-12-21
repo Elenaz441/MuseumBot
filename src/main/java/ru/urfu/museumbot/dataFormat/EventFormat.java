@@ -24,10 +24,15 @@ public class EventFormat {
 
     public String toFormattedStringForNotification(Event event) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-        return String.format("Завтра в %s состоится мероприятие \"%s\" по адресу %s",
-                dateFormat.format(event.getDate()),
+        return String.format("Мероприятие \"%s\" состоится завтра в %s по адресу %s (%s).",
                 event.getTitle(),
-                event.getAddress());
+                dateFormat.format(event.getDate()),
+                event.getAddress(),
+                event.getMuseum().getTitle());
+//        return String.format("Завтра в %s состоится мероприятие \"%s\" по адресу %s",
+//                dateFormat.format(event.getDate()),
+//                event.getTitle(),
+//                event.getAddress());
     }
 
 }

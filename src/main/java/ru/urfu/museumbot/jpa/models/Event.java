@@ -3,6 +3,7 @@ package ru.urfu.museumbot.jpa.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -42,11 +43,11 @@ public class Event {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Notification> notifications;
+    private List<Notification> notifications = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "museum_event_id"), name = "museum_event_id")
@@ -62,6 +63,7 @@ public class Event {
     public void setMuseum(Museum museum) {
         this.museum = museum;
     }
+
     public Long getId() {
         return id;
     }
@@ -118,7 +120,6 @@ public class Event {
         this.notifications = notifications;
     }
 
-
     public List<Review> getReviews() {
         return reviews;
     }
@@ -136,6 +137,19 @@ public class Event {
         review.setEvent(null);
     }
 
+    /**
+     * <p>добавляет уведомление в список</p>
+     * @param notification уведомление, который нужно добавить
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+        notification.setEvent(this);
+    }
+
+    /**
+     * <p>Удалить уведомление из списка</p>
+     * @param notification - уведомление, которое нужно удалить
+     */
     public void removeNotification(Notification notification) {
         notifications.remove(notification);
         notification.setEvent(null);

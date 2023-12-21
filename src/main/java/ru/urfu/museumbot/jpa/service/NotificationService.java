@@ -30,7 +30,7 @@ public class NotificationService {
     private final EventRepository eventRepository;
     private final NotificationRepository notificationRepository;
     private final Bot bot;
-    private final Map<Long, Timer> timers;
+    public final Map<Long, Timer> timers;
 
     @Autowired
     public NotificationService(UserRepository userRepository,
@@ -49,28 +49,32 @@ public class NotificationService {
      * Создать уведомление о мероприятии для данного пользователя
      */
     public void createNotificationEvent(User user, Event event) {
-        String text = new EventFormat().toFormattedStringForNotification(event);
-
-        Notification notification = new Notification();
-        notification.setUser(user);
-        notification.setEvent(event);
-        notification.setText(text);
-
         Calendar userTimeCal = Calendar.getInstance();
         userTimeCal.setTime(user.getNotificationTime());
         Calendar sendingDateCal = Calendar.getInstance();
         sendingDateCal.setTime(event.getDate());
         sendingDateCal.add(Calendar.DATE, -1);
-        sendingDateCal.set(Calendar.HOUR_OF_DAY, userTimeCal.get(Calendar.HOUR));
+        sendingDateCal.set(Calendar.HOUR_OF_DAY, userTimeCal.get(Calendar.HOUR_OF_DAY));
         sendingDateCal.set(Calendar.MINUTE, userTimeCal.get(Calendar.MINUTE));
         sendingDateCal.set(Calendar.SECOND, userTimeCal.get(Calendar.SECOND));
-        notification.setSendingDate(sendingDateCal.getTime());
 
         long duration  = sendingDateCal.getTime().getTime() - new Date().getTime();
-        if (duration > 0L) {
-            notificationRepository.save(notification);
-            schedule(notification);
+        if (duration < 0L) {
+            return;
         }
+
+        String text = new EventFormat().toFormattedStringForNotification(event);
+        Notification notification = new Notification();
+        notification.setUser(user);
+        notification.setEvent(event);
+        notification.setText(text);
+        notification.setSendingDate(sendingDateCal.getTime());
+        notificationRepository.save(notification);
+        user.addNotification(notification);
+        userRepository.save(user);
+        event.addNotification(notification);
+        eventRepository.save(event);
+        schedule(notification);
     }
 
     /**
@@ -79,19 +83,9 @@ public class NotificationService {
     @Transactional
     public void deleteNotificationEvent(User user, Event event) {
         Notification notification = notificationRepository.getNotificationByUserAndEvent(user, event);
-        if (notification == null) {
-            return;
+        if (notification != null) {
+            deleteNotification(notification);
         }
-        user.removeNotification(notification);
-        userRepository.save(user);
-        event.removeNotification(notification);
-        eventRepository.save(event);
-
-        Timer timer = timers.get(notification.getId());
-        timer.cancel();
-        timers.remove(notification.getId());
-
-        notificationRepository.deleteById(notification.getId());
     }
 
     /**
@@ -103,7 +97,7 @@ public class NotificationService {
             @Override
             public void run() {
                 Message message = new Message(notification.getUser().getChatId(),
-                        "Сработало напоминание: %s".formatted(notification.getText()));
+                        "Напоминание! %s".formatted(notification.getText()));
                 bot.sendMessage(message);
             }
         }, notification.getSendingDate());
@@ -125,20 +119,31 @@ public class NotificationService {
      */
     @Async
     @Scheduled(cron = "0 0 2 * * *")
+    @Transactional
     public void deletePastNotifications() {
         List<Notification> notifications = notificationRepository.getNotificationsBySendingDateBefore(new Date());
         for (Notification notification:notifications) {
-            timers.remove(notification.getId());
-            User user = notification.getUser();
-            user.removeNotification(notification);
-            userRepository.save(user);
-
-            Event event = notification.getEvent();
-            event.removeNotification(notification);
-            eventRepository.save(event);
-
-            timers.remove(notification.getId());
-            notificationRepository.deleteById(notification.getId());
+            deleteNotification(notification);
         }
+    }
+
+    /**
+     * Удалить уведомление из бд
+     */
+    @Transactional
+    void deleteNotification(Notification notification) {
+        Timer timer = timers.get(notification.getId());
+        if (timer != null) {
+            timer.cancel();
+            timers.remove(notification.getId());
+        }
+
+        User user = notification.getUser();
+        user.removeNotification(notification);
+        userRepository.save(user);
+        Event event = notification.getEvent();
+        event.removeNotification(notification);
+        eventRepository.save(event);
+        notificationRepository.deleteById(notification.getId());
     }
 }
