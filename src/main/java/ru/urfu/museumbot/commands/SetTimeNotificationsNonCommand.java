@@ -68,7 +68,7 @@ public class SetTimeNotificationsNonCommand implements ExecutableWithState{
             schedulerService.removeCron(chatId);
         }
         if (user.isSettingReminders()) {
-            createNotificationsForUser(chatId);
+            updateNotificationsForUser(chatId);
         }
         userService.updateUserState(chatId, State.INIT);
         return new Message(chatId, MESSAGE_SUCCESS_SETTINGS);
@@ -90,9 +90,9 @@ public class SetTimeNotificationsNonCommand implements ExecutableWithState{
     }
 
     /**
-     * Создать напоминания для пользователя на те мероприятия, на которые он записан
+     * Обновить напоминания для пользователя на те мероприятия, на которые он записан
      */
-    private void createNotificationsForUser(Long chatId) {
+    private void updateNotificationsForUser(Long chatId) {
         User user = userService.getUserByChatId(chatId);
         List<Event> events = userService.getUserEvents(chatId);
         for (Event event:events) {

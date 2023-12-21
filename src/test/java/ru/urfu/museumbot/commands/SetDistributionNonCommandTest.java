@@ -57,7 +57,7 @@ class SetDistributionNonCommandTest {
     }
 
     /**
-     * Тестирвоание команды, когда пользвоатель ответил положительно хотя бы на одну из настроек
+     * Тестирование команды, когда пользователь ответил положительно хотя бы на одну из настроек
      */
     @Test
     void getMessageIfCorrectUserInputNoRemindersYes() {
@@ -76,7 +76,7 @@ class SetDistributionNonCommandTest {
                 " (Напишите конкретное время, например 12:00)", message.getText());
     }
     /**
-     * Тестирвоание команды, когда пользвоатель выбрал не посылать напоминания и рассылку
+     * Тестирование команды, когда пользователь выбрал не посылать напоминания и рассылку
      */
     @Test
     void getMessageIfCorrectUserInputNoNoRemindersNo() {

@@ -33,9 +33,9 @@ public class SetDayOfWeekForDistributionNonCommand implements ExecutableWithStat
     public Message getMessage(CommandArgs args) {
         Long chatId = args.getChatId();
         String userInput = args.getUserInput();
-            Optional<DayOfWeek> dayOfWeek = Optional.ofNullable(Arrays.stream(DayOfWeek.values())
+            Optional<DayOfWeek> dayOfWeek = Arrays.stream(DayOfWeek.values())
                     .filter(state -> state.getDayString().equalsIgnoreCase(userInput))
-                    .findFirst().orElse(null));
+                    .findFirst();
         try{
             if (dayOfWeek.isPresent()) {
                 userService.updateDayOfWeekDistribution(chatId, dayOfWeek.get().ordinal());

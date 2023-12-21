@@ -29,7 +29,7 @@ class SetDayOfWeekForDistributionNonCommandTest {
     }
 
     /**
-     * Тестирование команды, если получили некорерктный пользовательский ввод
+     * Тестирование команды, если получили некорректный пользовательский ввод
      */
     @Test
     void getMessageIfUserInputIncorrect() {
