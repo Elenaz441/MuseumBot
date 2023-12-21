@@ -52,9 +52,31 @@ class ViewSettingsCommandTest {
                         У вас следующие настройки:
                         Присылать ли вам напоминание о мероприятии, на которое вы записаны, за день до начала? - да
                         Присылать ли вам информацию о случайном экспонате? - нет
-                        В какой день недели присылать информацию об экспонате? - Четверг
-                        Присылать уведомления в 12:00 (если в предыдущих вопросах ответ "да").
-                        """,
+                        Присылать уведомления в 12:00.""",
                 message.getText());
+
+        user.setSettingReminders(false);
+
+
+        Message messageIfRemindersFalse = viewSettingsCommand.getMessage(commandArgs);
+
+        assertEquals("""
+                        У вас следующие настройки:
+                        Присылать ли вам напоминание о мероприятии, на которое вы записаны, за день до начала? - нет
+                        Присылать ли вам информацию о случайном экспонате? - нет
+                        """,
+                messageIfRemindersFalse.getText());
+
+        user.setRandomExposureSetting(true);
+
+        Message messageIfRandomExposureSettingTrue = viewSettingsCommand.getMessage(commandArgs);
+
+        assertEquals("""
+                        У вас следующие настройки:
+                        Присылать ли вам напоминание о мероприятии, на которое вы записаны, за день до начала? - нет
+                        Присылать ли вам информацию о случайном экспонате? - да
+                        В какой день недели присылать информацию об экспонате? - Четверг
+                        Присылать уведомления в 12:00.""",
+                messageIfRandomExposureSettingTrue.getText());
     }
 }
