@@ -150,7 +150,7 @@ public class UserService {
     /**
      * Устанавливает в какой день недели рассылать информацию о рандомном экспонате
      */
-    public void updateDayOfWeekDistribution(Long chatId, int ordinal) {
+    public void updateDayOfWeekDistribution(Long chatId, Integer ordinal) {
         User user = userRepository.getUserByChatId(chatId);
         user.setDayOfWeekDistribution(ordinal);
         userRepository.save(user);

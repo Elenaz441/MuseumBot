@@ -58,14 +58,11 @@ public class SetTimeNotificationsNonCommand implements ExecutableWithState{
             try {
                 schedulerService.addCron(chatId, cronTaskService.createCronTaskRandomExhibit(chatId));
             } catch (Exception e) {
-                System.out.println("Возникло исключение в ходе подписывания пользователя на рассылку.");
                 userService.updateRandomExposureSetting(chatId, false);
+                System.out.println("Возникло исключение в ходе подписывания пользователя на рассылку.");
                 userService.updateUserState(chatId, State.INIT);
                 return new Message(chatId, FAILURE_SUBSCRIBE_MESSAGE);
             }
-        }
-        else{
-            schedulerService.removeCron(chatId);
         }
         if (user.isSettingReminders()) {
             createNotificationsForUser(chatId);

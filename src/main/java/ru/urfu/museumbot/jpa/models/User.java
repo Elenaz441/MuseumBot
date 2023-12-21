@@ -1,6 +1,7 @@
 package ru.urfu.museumbot.jpa.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -34,7 +35,8 @@ public class User {
     private boolean randomExposureSetting = false;
 
     private Date notificationTime = new GregorianCalendar(2000, Calendar.JANUARY, 1, 14, 0).getTime();
-
+    @Column(nullable = true, unique = false)
+    @JsonProperty
     private Integer dayOfWeekDistribution;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
