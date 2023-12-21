@@ -30,7 +30,7 @@ public class NotificationService {
     private final EventRepository eventRepository;
     private final NotificationRepository notificationRepository;
     private final Bot bot;
-    public final Map<Long, Timer> timers;
+    private final Map<Long, Timer> timers;
 
     @Autowired
     public NotificationService(UserRepository userRepository,
@@ -43,6 +43,20 @@ public class NotificationService {
         this.bot = bot;
         this.timers = new HashMap<>();
         scheduleNotificationsFromDB();
+    }
+
+    /**
+     * Проверка, существует ли напоминание по данному пользователю и мероприятию
+     */
+    public boolean isNotificationExistedByUserAndEvent(User user, Event event) {
+        return notificationRepository.existsByUserAndEvent(user, event);
+    }
+
+    /**
+     * Получить уведомление по пользователю и мероприятию
+     */
+    public Notification getNotificationByUserAndEvent(User user, Event event) {
+        return notificationRepository.getNotificationByUserAndEvent(user, event);
     }
 
     /**
@@ -78,14 +92,46 @@ public class NotificationService {
     }
 
     /**
-     * Удалить уведомление о мероприятии для данного пользователя
+     * Удалить уведомление из бд
      */
     @Transactional
-    public void deleteNotificationEvent(User user, Event event) {
-        Notification notification = notificationRepository.getNotificationByUserAndEvent(user, event);
-        if (notification != null) {
-            deleteNotification(notification);
+    public void deleteNotification(Notification notification) {
+        Timer timer = timers.remove(notification.getId());
+        if (timer != null) {
+            timer.cancel();
         }
+
+        User user = notification.getUser();
+        user.removeNotification(notification);
+        userRepository.save(user);
+        Event event = notification.getEvent();
+        event.removeNotification(notification);
+        eventRepository.save(event);
+        notificationRepository.deleteById(notification.getId());
+    }
+
+    /**
+     * Поменять время уведомления по текущим настройкам пользователя
+     */
+    public void resetNotificationTimeForUser(Notification notification, User user) {
+        Calendar userTimeCal = Calendar.getInstance();
+        userTimeCal.setTime(user.getNotificationTime());
+
+        Calendar sendingDateCal = Calendar.getInstance();
+        sendingDateCal.setTime(notification.getSendingDate());
+        sendingDateCal.set(Calendar.HOUR_OF_DAY, userTimeCal.get(Calendar.HOUR_OF_DAY));
+        sendingDateCal.set(Calendar.MINUTE, userTimeCal.get(Calendar.MINUTE));
+        long duration  = sendingDateCal.getTime().getTime() - new Date().getTime();
+        if (duration < 0L) {
+            return;
+        }
+        Timer timer = timers.remove(notification.getId());
+        if (timer != null) {
+            timer.cancel();
+        }
+        notification.setSendingDate(sendingDateCal.getTime());
+        notificationRepository.save(notification);
+        schedule(notification);
     }
 
     /**
@@ -125,25 +171,5 @@ public class NotificationService {
         for (Notification notification:notifications) {
             deleteNotification(notification);
         }
-    }
-
-    /**
-     * Удалить уведомление из бд
-     */
-    @Transactional
-    void deleteNotification(Notification notification) {
-        Timer timer = timers.get(notification.getId());
-        if (timer != null) {
-            timer.cancel();
-            timers.remove(notification.getId());
-        }
-
-        User user = notification.getUser();
-        user.removeNotification(notification);
-        userRepository.save(user);
-        Event event = notification.getEvent();
-        event.removeNotification(notification);
-        eventRepository.save(event);
-        notificationRepository.deleteById(notification.getId());
     }
 }

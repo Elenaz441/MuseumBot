@@ -16,6 +16,11 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     /**
+     * Проверка, существует ли напоминание по данному пользователю и мероприятию
+     */
+    boolean existsByUserAndEvent(User user, Event event);
+
+    /**
      * Получить все уведомления после данной даты
      */
     List<Notification> getNotificationsBySendingDateAfter(Date date);

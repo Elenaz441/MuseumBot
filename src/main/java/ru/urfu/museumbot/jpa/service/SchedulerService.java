@@ -12,13 +12,14 @@ import ru.urfu.museumbot.scheduler.CronTaskService;
 import java.util.LinkedHashMap;
 
 /**
- * Класс управляющий отложенными потворяющимися заданиями
+ * Класс управляющий отложенными повторяющимися заданиями
  */
 @Service
 @EnableScheduling
 public class SchedulerService implements CommandLineRunner {
+
     /**
-     * словарь, содержащий ключ-идентификатор чата, значеие-потворяющиеся задания,
+     * словарь, содержащий ключ - идентификатор чата, значение - повторяющимися заданиями,
      * предназначенное пользователю с чатом ключа
      * необходимо быстро бежать по элементам, поэтому выбрана эта реализация интерфейса Map.
      */
@@ -38,7 +39,7 @@ public class SchedulerService implements CommandLineRunner {
     @Override
     public void run(String... args) {
         this.taskRegistrar = new ScheduledTaskRegistrar();
-        for (CronTask task :  cronTasks.values()) {
+        for (CronTask task : cronTasks.values()) {
             taskRegistrar.addCronTask(task);
         }
         configurer.configureTasks(taskRegistrar);

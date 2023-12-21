@@ -12,14 +12,14 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Команда, которая устранавливает в какой день недели отправлять расслыку о рандомном экспонате
+ * Команда, которая устанавливает в какой день недели отправлять рассылку о случайном экспонате
  */
 @Service
 public class SetDayOfWeeForDistributionNonCommand implements ExecutableWithState {
     private static final String SET_TIME_MESSAGE = "Когда вам присылать уведомления?" +
             " (Напишите конкретное время, например 12:00)";
 
-    private static final String FALURE_MESSAGE = "Настройка не выбрана. Чтобы установить настройку напишите, " +
+    private static final String FAILURE_MESSAGE = "Настройка не выбрана. Чтобы установить настройку напишите, " +
             "пожалуйста, день недели. Например, Пятница.";
 
     private final UserService userService;
@@ -46,7 +46,7 @@ public class SetDayOfWeeForDistributionNonCommand implements ExecutableWithState
         }
             catch (IncorrectUserInputException e){
             System.out.println(String.format("День недели не поставился. %s", e.getMessage()));
-            return new Message(chatId, FALURE_MESSAGE);
+            return new Message(chatId, FAILURE_MESSAGE);
         }
         userService.updateUserState(chatId, State.SET_TIME);
         return new Message(chatId, SET_TIME_MESSAGE);
