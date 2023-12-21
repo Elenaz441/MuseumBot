@@ -46,8 +46,8 @@ public class SchedulerService implements CommandLineRunner {
     }
 
     /**
-     * добавляет отложенное потворяющееся задание в {@link SchedulerService#cronTasks}
-     * такая реализация обусловлена боллее быстрым доступом, нежели из базы
+     * добавляет отложенное повторяющееся задание в {@link SchedulerService#cronTasks}
+     * такая реализация обусловлена более быстрым доступом, нежели из базы
      */
     public void addCron(Long chatId, CronTask task) {
         cronTasks.put(chatId, task);
@@ -55,8 +55,8 @@ public class SchedulerService implements CommandLineRunner {
     }
 
     /**
-     * удаляет отложенное потворяющееся задание в {@link SchedulerService#cronTasks}
-     * такая реализация обусловлена боллее быстрым доступом, нежели из базы
+     * удаляет отложенное повторяющееся задание в {@link SchedulerService#cronTasks}
+     * такая реализация обусловлена более быстрым доступом, нежели из базы
      */
     public void removeCron(Long chatId) {
         cronTasks.remove(chatId);
