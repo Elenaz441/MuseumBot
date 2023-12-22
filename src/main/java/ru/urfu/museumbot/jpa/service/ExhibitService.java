@@ -32,7 +32,7 @@ public class ExhibitService {
     }
 
     /**
-     * Получить все экспонаты из музея в котором проиходит мероприятие
+     * Получить все экспонаты из музея в котором происходит мероприятие
      *
      * @param eventId Идентификатор мероприятия
      */
@@ -52,11 +52,9 @@ public class ExhibitService {
      * @return случайный экспонат представленный в таблице
      */
     public Exhibit getRandomExhibit(){
-        Long count = exhibitRepository.count();
+        long count = exhibitRepository.count();
         double rnd = Math.random();
-        System.out.println(rnd);
         Long id = (long) (rnd * count) + 1L;
-        System.out.println(id);
         return exhibitRepository.getExhibitById(id);
     }
 }
