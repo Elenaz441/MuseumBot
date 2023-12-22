@@ -15,4 +15,9 @@ public interface ExhibitRepository extends JpaRepository<Exhibit, Long> {
      * @return экспонат c идентификатором id
      */
     Exhibit getExhibitById(Long id);
+
+    /**
+     * @return количество записей в таблице Экспонаты
+     */
+    long count();
 }

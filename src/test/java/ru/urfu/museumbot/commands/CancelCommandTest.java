@@ -31,6 +31,9 @@ class CancelCommandTest {
     @Mock
     private ReviewService reviewService;
 
+    @Mock
+    private NotificationService notificationService;
+
     private CommandArgs commandArgs;
 
     /**
@@ -59,13 +62,19 @@ class CancelCommandTest {
         review.setId(1L);
         review.setUser(user);
         review.setEvent(event);
+        Notification notification = new Notification();
+        notification.setId(1L);
+        notification.setUser(user);
+        notification.setEvent(event);
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Mockito.doReturn(event).when(eventService).getEventById(1L);
         Mockito.doReturn(review).when(reviewService).getReview(user, event);
+        Mockito.doReturn(notification).when(notificationService).getNotificationByUserAndEvent(user, event);
 
         Message message = cancelCommand.getMessage(commandArgs);
         assertEquals("Вы отменили свою запись на выбранное мероприятие", message.getText());
         Mockito.verify(reviewService, Mockito.times(1)).deleteReview(review);
+        Mockito.verify(notificationService, Mockito.times(1)).deleteNotification(notification);
     }
 
     /**
@@ -78,5 +87,7 @@ class CancelCommandTest {
         Message message = cancelCommand.getMessage(commandArgs);
         assertEquals("Вы не записаны на данное мероприятие", message.getText());
         Mockito.verify(reviewService, Mockito.never()).deleteReview(Mockito.any(Review.class));
+        Mockito.verify(notificationService, Mockito.never())
+                .deleteNotification(Mockito.any(Notification.class));
     }
 }

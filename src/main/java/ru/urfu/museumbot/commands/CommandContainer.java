@@ -2,6 +2,7 @@ package ru.urfu.museumbot.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.UserService;
 
@@ -33,7 +34,8 @@ public class CommandContainer {
 
     /**
      * Выбор нужного класса команды
-     * @param chatId Идентификатор чата пользователя с которым взаимодействует бот
+     *
+     * @param chatId            Идентификатор чата пользователя с которым взаимодействует бот
      * @param commandIdentifier - идентификатор команды
      * @return - класс обработки команды
      */

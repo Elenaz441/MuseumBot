@@ -32,7 +32,7 @@ public class ExhibitService {
     }
 
     /**
-     * Получить все экспонаты из музея в котором проиходит мероприятие
+     * Получить все экспонаты из музея в котором происходит мероприятие
      *
      * @param eventId Идентификатор мероприятия
      */
@@ -46,5 +46,15 @@ public class ExhibitService {
      */
     public String getFormattedString(Exhibit exhibit){
         return new ExhibitFormat().toFormattedString(exhibit);
+    }
+
+    /**
+     * @return случайный экспонат представленный в таблице
+     */
+    public Exhibit getRandomExhibit(){
+        long count = exhibitRepository.count();
+        double rnd = Math.random();
+        Long id = (long) (rnd * count) + 1L;
+        return exhibitRepository.getExhibitById(id);
     }
 }

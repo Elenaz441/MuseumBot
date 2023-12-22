@@ -11,6 +11,7 @@ import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;
 import ru.urfu.museumbot.jpa.service.EventService;
+import ru.urfu.museumbot.jpa.service.NotificationService;
 import ru.urfu.museumbot.jpa.service.ReviewService;
 import ru.urfu.museumbot.jpa.service.UserService;
 import ru.urfu.museumbot.message.Message;
@@ -35,6 +36,9 @@ class SignUpCommandTest {
     @Mock
     private ReviewService reviewService;
 
+    @Mock
+    private NotificationService notificationService;
+
     private CommandArgs commandArgs;
 
     /**
@@ -58,6 +62,7 @@ class SignUpCommandTest {
         User user = new User();
         user.setId(1L);
         user.setChatId(chatId);
+        user.setSettingReminders(true);
         Mockito.doReturn(user).when(userService).getUserByChatId(1L);
         Mockito.doReturn(event).when(eventService).getEventById(1L);
 
@@ -65,6 +70,7 @@ class SignUpCommandTest {
         assertEquals("Вы записались на выбранное мероприятие", message.getText());
 
         Mockito.verify(reviewService, Mockito.times(1)).addReview(Mockito.any(Review.class));
+        Mockito.verify(notificationService, Mockito.times(1)).createNotificationEvent(user, event);
     }
 
     /**
@@ -89,5 +95,26 @@ class SignUpCommandTest {
         Message message = signUpCommand.getMessage(commandArgs);
 
         assertEquals("Вы уже записаны на мероприятие \"Event 1\"", message.getText());
+    }
+
+    /**
+     * Зарегистрировать пользователя, если у него в настройках указано не отправлять уведомление
+     */
+    @Test
+    void getMessageIfNotSettingReminders() {
+        Long chatId = 1L;
+        Event event = new Event();
+        event.setId(1L);
+        User user = new User();
+        user.setId(1L);
+        user.setChatId(chatId);
+        user.setSettingReminders(false);
+        Mockito.doReturn(user).when(userService).getUserByChatId(1L);
+        Mockito.doReturn(event).when(eventService).getEventById(1L);
+
+        signUpCommand.getMessage(commandArgs);
+
+        Mockito.verify(notificationService, Mockito.never())
+                .createNotificationEvent(Mockito.any(User.class), Mockito.any(Event.class));
     }
 }

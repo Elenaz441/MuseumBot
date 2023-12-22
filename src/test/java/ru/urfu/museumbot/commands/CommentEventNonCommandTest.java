@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.urfu.museumbot.enums.State;
 import ru.urfu.museumbot.jpa.models.Event;
 import ru.urfu.museumbot.jpa.models.Review;
 import ru.urfu.museumbot.jpa.models.User;

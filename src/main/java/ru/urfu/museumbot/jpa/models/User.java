@@ -15,7 +15,7 @@ import java.util.*;
  * <p>{@link User#randomExposureSetting} флаг на разрешение рассылки о случайном экспонате</p>
  * <p>{@link User#notificationTime} время получения уведомлений и напоминаний</p>
  * <p>{@link User#reviews} отзывы пользователя</p>
- *
+ * <p>{@link User#notifications} уведомления пользователя</p>
  */
 @Entity
 @Table(name = "user")
@@ -34,6 +34,12 @@ public class User {
     private boolean randomExposureSetting = false;
 
     private Date notificationTime = new GregorianCalendar(2000, Calendar.JANUARY, 1, 14, 0).getTime();
+
+    private int dayOfWeekDistribution;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Notification> notifications = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -101,6 +107,14 @@ public class User {
         this.notificationTime = notificationTime;
     }
 
+    public int getDayOfWeekDistribution() {
+        return dayOfWeekDistribution;
+    }
+
+    public void setDayOfWeekDistribution(int dayOfWeekDistribution) {
+        this.dayOfWeekDistribution = dayOfWeekDistribution;
+    }
+
     public List<Review> getReviews() {
         return reviews;
     }
@@ -112,6 +126,7 @@ public class User {
     public String getState() {
         return state;
     }
+
     public void setState(String state) {
         this.state = state;
     }
@@ -124,8 +139,17 @@ public class User {
         this.reviewingEvent = reviewingEvent;
     }
 
+    public List<Notification> getNotifications() {
+        return notifications;
+    }
+
+    public void setNotifications(List<Notification> notifications) {
+        this.notifications = notifications;
+    }
+
     /**
      * добавляет отзыв в список
+     *
      * @param review отзыв, который нужно добавить
      */
     public void addReview(Review review) {
@@ -134,12 +158,33 @@ public class User {
     }
 
     /**
+     * <p>добавляет уведомление в список</p>
+     *
+     * @param notification уведомление, который нужно добавить
+     */
+    public void addNotification(Notification notification) {
+        notifications.add(notification);
+        notification.setUser(this);
+    }
+
+    /**
      * <p>Удалить отзыв из списка</p>
+     *
      * @param review - отзыв, который нужно удалить
      */
     public void removeReview(Review review) {
         reviews.remove(review);
         review.setUser(null);
+    }
+
+    /**
+     * <p>Удалить уведомление из списка</p>
+     *
+     * @param notification - уведомление, которое нужно удалить
+     */
+    public void removeNotification(Notification notification) {
+        notifications.remove(notification);
+        notification.setUser(null);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package ru.urfu.museumbot.message;
 
 import ru.urfu.museumbot.buttons.ButtonsContext;
+
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -43,5 +45,18 @@ public class Message {
         this.text = text;
     }
     public Message() {
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(text, message.text) && Objects.equals(chatId, message.chatId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, chatId);
     }
 }
