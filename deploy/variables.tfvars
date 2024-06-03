@@ -1,8 +1,0 @@
-OAuth-token               = "y0_AgAAAAAzKu9BAATuwQAAAAD_GbtVAABXIxPg0-VH37NSC8BCT5SkfeGJmQ"
-cloud-id                  = "b1gele75k06mgqpalvr4"
-folder-id                 = "b1ge63quelbllh6mamu6" 
-zone                      = "ru-central1-а"
-container-registry-id     = "crpqaf4gh429p5erld7j"
-name-docker-image         = "museum-bot-cont2"
-lockbox-secret-id         = "e6qv9mo0654qohbc8hgo"
-lockbox-secret-version-id = "e6qb8fmq4275tr9gee3v"
